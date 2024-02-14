@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>LCS Derivation and Configuration Visualizer</title>
+        <meta charset="utf-8">
+        <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
+
+        <style>
+            button {
+                margin: 0 5px;
+            }
+
+            .center {
+                margin: auto;
+                width: 97.5%;
+                padding: 10px;
+            }
+
+            .content {
+                margin: auto;
+                width: 97.5%;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .included {
+                color: #0000ff;
+                font-weight: bold;
+                text-decoration: underline;
+            }
+        </style>
+
+        <script src="derivationConfigurationVisualizer.js"></script>
+    </head>
+    <body onload="setup();">
+        <div class="content">
+            <div class="center">
+                <h1>LCS Derivation and Configuration Visualizer</h1>
+                <p>
+                    Enter two strings to generate a set of all possible longest common subsequences.
+                </p>
+                <p>
+                    <input type="text" id="x-box" name="x" size="25" oninput="fillTable();">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="text" id="y-box" name="y" size="25" oninput="fillTable();">
+                </p>
+                <div id="table"></div>
+                <p>Click on an LCS to see its derivation and configurations within the strings:</p>
+                <div class="center" id="lcs-buttons"></div>
+                <div class="center" id="lcs-configurations"></div>
+            </div>
+        </div>
+    </body>
+</html>

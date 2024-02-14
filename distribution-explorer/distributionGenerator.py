@@ -4,8 +4,7 @@ def genStringSet(length):
         return ['']
     else:
         return ['0' + s for s in genStringSet(length - 1)] + ['1' + s for s in genStringSet(length - 1)]
-
-
+      
 def lcsTable(x, y):
     # calculate length of x and y
     n, m = len(x), len(y)
@@ -22,7 +21,6 @@ def lcsTable(x, y):
                 T[i][j] = max(T[i - 1][j], T[i][j - 1])
 
     return T
-
 
 def lcsSet(x, y):
     T = lcsTable(x, y)
@@ -44,7 +42,6 @@ def lcsSet(x, y):
     return S
 
 # ===============================================================================
-
 
 def generate(n, m):
     # generate all binary strings of length n and m
@@ -71,21 +68,22 @@ def generate(n, m):
                         occurrences[l] += 1
                     else:
                         occurrences[l] = 1
-
+    
     # sort occurrences by key length
-    occurrences = {k: v for k, v in sorted(
-        occurrences.items(), key=lambda item: len(item[0]))}
+    occurrences = {k: v for k, v in sorted(occurrences.items(), key=lambda item: len(item[0]))}
 
     # create JSON file with each key-value pair as an array
     with open('res/files/' + str(n) + 'x' + str(m) + '.json', 'w') as f:
         f.write("{\n\t\"stringOccurrences\": [\n")
         for key in occurrences:
             f.write("\t\t[\"" + key + "\", " + str(occurrences[key]) + "],\n")
-        f.seek(f.tell() - 3, 0)  # remove last comma
+        f.seek(f.tell() - 3, 0) # remove last comma
         f.write("\n\t]\n}")
         f.close()
 
+# ===============================================================================
 
-for i in range(1, 11):
-    for j in range(i, 11):
-        generate(i, j)
+if __name__ == "__main__":
+    for i in range(1, 11):
+        for j in range(i, 11):
+            generate(i, j)

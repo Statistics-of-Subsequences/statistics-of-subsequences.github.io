@@ -1,24 +1,29 @@
 class VAO {
-    constructor(){
-        // this.id = gl.createVertexArray();
-    }
-
-    linkAttribute(vbo, layout, numComponents, type, stride, offset){
+    linkAttribute(vbo, layout, numComponents, type, stride, offset) {
         vbo.bind();
         gl.vertexAttribPointer(layout, numComponents, type, false, stride, offset);
         gl.enableVertexAttribArray(layout);
         vbo.unbind();
     }
 
-    bind(){
-        // gl.bindVertexArray(this.id);
-    }
+    // =============================================
+    // ==== NOTE: The following is required in  ====
+    // ===== OpenGL 3.3, but not in WebGL 2.0 ======
+    // =============================================
 
-    unbind(){
-        // gl.bindVertexArray(null);
-    }
+    // constructor() {
+    //     this.id = gl.createVertexArray();
+    // }
 
-    delete(){
-        // gl.deleteVertexArray(this.id);
-    }
+    // bind() {
+    //     gl.bindVertexArray(this.id);
+    // }
+
+    // unbind() {
+    //     gl.bindVertexArray(null);
+    // }
+
+    // delete() {
+    //     gl.deleteVertexArray(this.id);
+    // }
 }

@@ -25,8 +25,10 @@ class Model {
         if (this.kSelectedMesh != -1) {
             this.deselectK();
         }
-        this.meshes[index].selectK();
-        this.kSelectedMesh = index;
+        if (index != this.selectedMesh) {
+            this.meshes[index].selectK();
+            this.kSelectedMesh = index;
+        }
     }
 
     deselect() {
@@ -37,7 +39,7 @@ class Model {
     }
 
     deselectK() {
-        if (this.kSelectedMesh != -1) {
+        if (this.kSelectedMesh != -1 && this.kSelectedMesh != this.selectedMesh) {
             this.meshes[this.kSelectedMesh].deselect();
             this.kSelectedMesh = -1;
         }

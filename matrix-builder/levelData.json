@@ -1,0 +1,16 @@
+{
+    "1": {
+        "n": 1,
+        "m": 1,
+        "allowedProperties": {
+            "commute": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceInfix": false,
+            "reverse": false,
+            "complement": false
+        },
+        "goal": "res/graphics/level-1.svg",
+        "optimal-solution": 2
+    }
+}

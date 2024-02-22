@@ -181,7 +181,7 @@ def getPercent(stops, percent):
 
 # ===============================================================================
 
-def modelZero(bit, position, scaleFactor, vertexList, nextVertexIndex):
+def modelZero(position, scaleFactor, vertexList, nextVertexIndex):
     zeroVertices = [
         vec3(0.054, 0.000, 0.019),  # 0
         vec3(0.054, 0.000, 0.000),  # 1
@@ -256,7 +256,7 @@ def modelZero(bit, position, scaleFactor, vertexList, nextVertexIndex):
     position = addVector(position, scaleVector(vec3(0.108 + 0.0125, 0.0, 0.0), scaleFactor))
     return FaceComponents(faces, position, vertexList, nextVertexIndex + len(zeroVertices))
 
-def modelOne(bit, position, scaleFactor, vertexList, nextVertexIndex):
+def modelOne(position, scaleFactor, vertexList, nextVertexIndex):
     oneVertices = [
         vec3(0.030, 0.000, 0.002),  # 0
         vec3(0.052, 0.000, 0.002),  # 1
@@ -464,9 +464,9 @@ def genObj(n, m, objWriter):
             currentBit = int(label[bit])
 
             if currentBit == 0:
-                result = modelZero(bit, position, scaleFactor, vertices, nextVertexIndex)
+                result = modelZero(position, scaleFactor, vertices, nextVertexIndex)
             else:
-                result = modelOne(bit, position, scaleFactor, vertices, nextVertexIndex)
+                result = modelOne(position, scaleFactor, vertices, nextVertexIndex)
 
             faces = result.faces
             position = result.firstComponent

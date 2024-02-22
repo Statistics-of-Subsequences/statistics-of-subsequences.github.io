@@ -44,7 +44,6 @@ class Mesh {
 
     draw(shader, camera) {
         gl.useProgram(shader);
-        this.vao.bind();
 
         // bind textures
         var numDiffuse = 0;
@@ -76,7 +75,6 @@ class Mesh {
         this.material.vertexCount = this.vertices.length;
 
         // bind VAO
-        this.vao.bind();
         var vbo = new VBO(this.vertices);
         var materialVBO = new VBO(this.material);
         var ebo = new EBO(this.indices);
@@ -94,7 +92,6 @@ class Mesh {
         ebo.bind();
 
         // unbind all to prevent accidental modification
-        this.vao.unbind();
         vbo.unbind();
         materialVBO.unbind();
 

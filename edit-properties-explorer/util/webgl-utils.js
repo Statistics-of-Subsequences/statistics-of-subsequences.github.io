@@ -8,16 +8,16 @@ function flatten(v) {
     }
 
     var n = v.length;
-    var elemsAreArrays = false;
+    var elementssAreArrays = false;
 
     if (Array.isArray(v[0])) {
-        elemsAreArrays = true;
+        elementssAreArrays = true;
         n *= v[0].length;
     }
 
     var floats = new Float32Array(n);
 
-    if (elemsAreArrays) {
+    if (elementssAreArrays) {
         var idx = 0;
         for (var i = 0; i < v.length; ++i) {
             for (var j = 0; j < v[i].length; ++j) {
@@ -278,7 +278,7 @@ function mult(u, v) {
 
         return result;
     }
-    
+
     if (u.matrix && (u.length == v.length)) {
         for (var i = 0; i < v.length; i++) {
             var sum = 0.0;
@@ -301,24 +301,31 @@ function mult(u, v) {
     }
 }
 
-function scale(u, s) {
+function scale(s, u) {
+    var result = [];
+
     if (u.matrix) {
         for (var i = 0; i < u.length; ++i) {
+            result.push([]);
+
             for (var j = 0; j < u[i].length; ++j) {
-                u[i][j] *= s;
+                result[i].push(u[i][j] * s);
             }
         }
+
+        result.matrix = true;
+        return result;
     } else {
         for (var i = 0; i < u.length; ++i) {
-            u[i] *= s;
+            result.push(u[i] * s);
         }
-    }
 
-    return u;
+        return result;
+    }
 }
 
 function negate(u) {
-    return scale(u, -1.0);
+    return scale(-1.0, u);
 }
 
 function equal(u, v) {
@@ -326,18 +333,23 @@ function equal(u, v) {
 
     if (u.matrix && v.matrix) {
         for (var i = 0; i < u.length; ++i) {
-            if (u[i].length != v[i].length) { return false; }
+            if (u[i].length != v[i].length) {
+                return false;
+            }
             for (var j = 0; j < u[i].length; ++j) {
-                if (u[i][j] !== v[i][j]) { return false; }
+                if (u[i][j] !== v[i][j]) {
+                    return false;
+                }
             }
         }
     }
     else if (u.matrix && !v.matrix || !u.matrix && v.matrix) {
         return false;
-    }
-    else {
+    } else {
         for (var i = 0; i < u.length; ++i) {
-            if (u[i] !== v[i]) { return false; }
+            if (u[i] !== v[i]) {
+                return false;
+            }
         }
     }
 
@@ -402,7 +414,7 @@ function angle(u, v) {
 }
 
 function normalize(v) {
-    return scale(v, 1.0 / length(v));
+    return scale(1.0 / length(v), v);
 }
 
 function dot(u, v) {
@@ -479,7 +491,7 @@ function rotate(point, axis, angle) {
     return vec3(x, y, z);
 }
 
-function rotateOrigin(point, axis, origin, angle) {
+function rotateOffset(point, axis, origin, angle) {
     return add(rotate(sub(point, origin), axis, angle), origin);
 }
 
@@ -612,15 +624,9 @@ function ortho(width, height, near, far) {
 }
 
 function cuboid(left, right, bottom, top, near, far) {
-    if (left == right) {
-        throw "cuboid(): left and right are equal";
-    }
-    if (bottom == top) {
-        throw "cuboid(): bottom and top are equal";
-    }
-    if (near == far) {
-        throw "cuboid(): near and far are equal";
-    } 
+    if (left == right) { throw "cuboid(): left and right are equal"; }
+    if (bottom == top) { throw "cuboid(): bottom and top are equal"; }
+    if (near == far) { throw "cuboid(): near and far are equal"; }
     
     var result = new mat4();
     result[0][0] = 2.0 / (right - left);

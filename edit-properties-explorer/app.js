@@ -4,8 +4,8 @@
 var canvas, gl, shaderProgram, controller, onMobile;
 var width, height, aspectRatio;
 var xBox, yBox, lcsButton;
-var operationRadio, substitutionSection, permutationSection, operation = "substitute";
-var substitutionKBox, permutationBox, operationButton;
+var operationRadio, substitutionSection, permutationSection, sliceConcatSection, lcPrefix, lcSuffix, operation = "substitute";
+var substitutionKBox, permutationBox, sliceConcatModeBox, operationButton;
 var lcsGenerated;
 var n = 1;
 var m = 1;
@@ -54,12 +54,14 @@ function main() {
     lcsButton = document.getElementById("lcs-button");
     substitutionKBox = document.getElementById("substitution-k-box");
     permutationBox = document.getElementById("permutation-box");
+    sliceConcatModeBox = document.getElementById("slice-concat-mode");
     operationButton = document.getElementById("operation-button");
     lcsGenerated = false;
 
     operationRadio = document.getElementsByName("operation");
     substitutionSection = document.getElementById("substitution");
     permutationSection = document.getElementById("permutation");
+    sliceConcatSection = document.getElementById("slice-concat");
 
     xBox.value = "";
     yBox.value = "";
@@ -102,9 +104,12 @@ function main() {
             xBox.value = "";
         }
 
-        if (xBox.value.length != n || yBox.value.length != m) {
+        if (xBox.value.length < n || yBox.value.length < m) {
             lcsButton.disabled = true;
         } else {
+            if (xBox.value.length > n) {
+                xBox.value = xBox.value.slice(0, n);
+            }
             lcsButton.disabled = false;
         }
     }
@@ -118,6 +123,10 @@ function main() {
         if (xBox.value.length != n || yBox.value.length != m) {
             lcsButton.disabled = true;
         } else {
+            if (yBox.value.length > m) {
+                yBox.value = yBox.value.slice(0, m);
+            }
+
             lcsButton.disabled = false;
         }
     }
@@ -131,6 +140,154 @@ function main() {
             operationButton.disabled = false;
         } else {
             operationButton.disabled = true;
+        }
+    }
+
+    sliceConcatModeBox.onchange = function () {
+        var concatInputDiv = document.getElementById("concat-input");
+        while (concatInputDiv.firstChild) {
+            concatInputDiv.removeChild(concatInputDiv.firstChild);
+        }
+
+        var mode = sliceConcatModeBox.value;
+        if (mode == "prefix") {
+            var prefixText = document.createElement("p");
+            prefixText.innerHTML = "Prefix: ";
+            prefixText.style.display = "inline";
+
+            var prefixBox = document.createElement("input");
+            prefixBox.type = "text";
+            prefixBox.id = "prefix-box";
+            prefixBox.size = 5;
+            prefixBox.style.display = "inline";
+            prefixBox.onkeyup = function () {
+                if (!/^[01]*$/.test(prefixBox.value)) {
+                    prefixBox.value = "";
+                }
+
+                if (prefixBox.value.length >= lcPrefix) {
+                    if (prefixBox.value.length > lcPrefix) {
+                        prefixBox.value = prefixBox.value.slice(0, lcPrefix);
+                    }
+                    operationButton.disabled = false;
+                } else {
+                    operationButton.disabled = true;
+                }
+            }
+
+            // create two breaks
+            var br1 = document.createElement("br");
+            var br2 = document.createElement("br");
+
+            concatInputDiv.appendChild(prefixText);
+            concatInputDiv.appendChild(prefixBox);
+            concatInputDiv.appendChild(br1);
+            concatInputDiv.appendChild(br2);
+        } else if (mode == "suffix") {
+            var suffixText = document.createElement("p");
+            suffixText.innerHTML = "Suffix: ";
+            suffixText.style.display = "inline";
+
+            var suffixBox = document.createElement("input");
+            suffixBox.type = "text";
+            suffixBox.id = "suffix-box";
+            suffixBox.size = 5;
+            suffixBox.style.display = "inline";
+            suffixBox.onkeyup = function () {
+                if (!/^[01]*$/.test(suffixBox.value)) {
+                    suffixBox.value = "";
+                }
+
+                if (suffixBox.value.length >= lcSuffix) {
+                    if (suffixBox.value.length > lcSuffix) {
+                        suffixBox.value = suffixBox.value.slice(0, lcSuffix);
+                    }
+                    operationButton.disabled = false;
+                } else {
+                    operationButton.disabled = true;
+                }
+            }
+
+            // create two breaks
+            var br1 = document.createElement("br");
+            var br2 = document.createElement("br");
+
+            concatInputDiv.appendChild(suffixText);
+            concatInputDiv.appendChild(suffixBox);
+            concatInputDiv.appendChild(br1);
+            concatInputDiv.appendChild(br2);
+        } else if (mode == "infix") {
+            var prefixText = document.createElement("p");
+            prefixText.innerHTML = "Prefix: ";
+            prefixText.style.display = "inline";
+
+            var prefixBox = document.createElement("input");
+            prefixBox.type = "text";
+            prefixBox.id = "prefix-box";
+            prefixBox.size = 5;
+            prefixBox.style.display = "inline";
+            
+            var nbsp = document.createElement("p");
+            nbsp.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            nbsp.style.display = "inline";
+
+            var suffixText = document.createElement("p");
+            suffixText.innerHTML = "Suffix: ";
+            suffixText.style.display = "inline";
+
+            var suffixBox = document.createElement("input");
+            suffixBox.type = "text";
+            suffixBox.id = "suffix-box";
+            suffixBox.size = 5;
+            suffixBox.style.display = "inline";
+
+            prefixBox.onkeyup = function () {
+                if (!/^[01]*$/.test(prefixBox.value)) {
+                    prefixBox.value = "";
+                }
+
+                if (prefixBox.value.length >= lcPrefix && suffixBox.value.length >= lcSuffix) {
+                    if (prefixBox.value.length > lcPrefix) {
+                        prefixBox.value = prefixBox.value.slice(0, lcPrefix);
+                    }
+                    if (suffixBox.value.length > lcSuffix) {
+                        suffixBox.value = suffixBox.value.slice(0, lcSuffix);
+                    }
+                    operationButton.disabled = false;
+                } else {
+                    operationButton.disabled = true;
+                }
+            }
+
+            suffixBox.onkeyup = function () {
+                if (!/^[01]*$/.test(suffixBox.value)) {
+                    suffixBox.value = "";
+                }
+
+                if (prefixBox.value.length >= lcPrefix && suffixBox.value.length >= lcSuffix) {
+                    if (prefixBox.value.length > lcPrefix) {
+                        prefixBox.value = prefixBox.value.slice(0, lcPrefix);
+                    }
+                    if (suffixBox.value.length > lcSuffix) {
+                        suffixBox.value = suffixBox.value.slice(0, lcSuffix);
+                    }
+                    operationButton.disabled = false;
+                } else {
+                    operationButton.disabled = true;
+                }
+            }
+
+            // create two breaks
+            var br1 = document.createElement("br");
+            var br2 = document.createElement("br");
+
+            concatInputDiv.appendChild(prefixText);
+            concatInputDiv.appendChild(prefixBox);
+            concatInputDiv.appendChild(nbsp);
+            concatInputDiv.appendChild(suffixText);
+            concatInputDiv.appendChild(suffixBox);
+            concatInputDiv.appendChild(br1);
+            concatInputDiv.appendChild(br2);
         }
     }
 
@@ -159,6 +316,16 @@ function main() {
 
     // set background color
     gl.clearColor(0.9, 0.9, 0.9, 1.0);
+
+    // ====================================================
+    // ======= NOTE: No post-processing effects are =======
+    // ==== used in this project, so the FBO currently ====
+    // ======== serves no purpose. However, it is  ========
+    // ====== included for the sake of completeness. ======
+    // ====================================================
+
+    // create framebuffer object
+    var fbo = new FBO(width, height);
 
     // initialize and activate shader program
     shaderProgram = createShaderProgram(gl, "vertexShader", "fragmentShader");
@@ -195,10 +362,6 @@ function setup() {
         document.body.appendChild(panel); // add div to body
         panel.style.width = canvas.width + "px";
 
-        // remove computer controls div
-        var computerControls = document.getElementById("computer-controls");
-        computerControls.parentNode.removeChild(computerControls);
-
         // clear style on left div
         var left = document.getElementById("left");
         left.style.width = "100%";
@@ -218,8 +381,8 @@ function setup() {
         break0.parentNode.removeChild(break0);
 
     }
-
     document.getElementById("break1").style.height = canvas.height * 0.0536 + "px";
+    document.getElementById("legend").style.height = (canvas.height - (canvas.height * 0.0536) - document.getElementById("matrixDimensions").clientHeight) + "px";
     document.getElementById("break2").style.height = canvas.height * 0.0536 + "px";
 
     registerController();
@@ -307,9 +470,8 @@ function initializeMLC(shader) {
     objectModel = new Model("model_" + n + "x" + m + ".obj", shader);
 
     // Generate model matrix
-    var offset = vec3(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1));
     var reflectionPlane = vec4(1.0, 0.0, 0.0, 0.0);
-    modelMatrix = mult(reflectionMatrix(reflectionPlane), translationMatrix(offset));
+    modelMatrix = mult(reflectionMatrix(reflectionPlane), translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1)));
 
     // lighting initialization
     lights.push(new PointLight(vec3(0.0, Math.min(n, m) + 1.0, 0.0), vec3(2.0, 1.5, 0.5), 0.5, vec4(1.0, 0.98, 1.0, 1.0)));
@@ -322,7 +484,7 @@ function initializeMLC(shader) {
     perspectiveEye = vec3(perspectiveStart[0], perspectiveStart[1], perspectiveStart[2]);
     perspectiveOrientation = vec3(0.0, 4.0, -8.0);
     perspectiveUp = vec3(0.0, 1.0, 0.0);
-    orthoMatrix = ortho(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, 0.1, 100.0);
+    orthoMatrix = ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
     orthoEye = vec3(0, orthoSize, 0);
     orthoOrientation = vec3(0.0, 1.0, 0.0);
     orthoUp = vec3(0.0, 0.0, 1.0);
@@ -344,6 +506,8 @@ function changeMatrix() {
             return;
         }
     }
+
+    setLegend();
 
     xBox.value = "";
     yBox.value = "";
@@ -454,11 +618,73 @@ function changeLCS() {
         cellInput.value = "";
     }
 
+    while (sliceConcatModeBox.firstChild) {
+        sliceConcatModeBox.removeChild(sliceConcatModeBox.firstChild);
+    }
+    operationRadio[2].disabled = true;
+
     document.getElementById("new-x").value = "";
     document.getElementById("new-y").value = "";
     document.getElementById("new-length").innerHTML = "Length of Longest Common Subsequence: 0";
     document.getElementById("new-set").innerHTML = "Set of Longest Common Subsequences: {}";
     operationButton.disabled = true;
+
+    // find lcPrefix and lcSuffix
+    var xString = xBox.value;
+    var yString = yBox.value;
+
+    lcPrefix = 0; // longest common prefix
+    lcSuffix = 0; // longest common suffix
+
+    if (xString.length > 0 && yString.length > 0) {
+        while (xString.length > 0 && yString.length > 0 && xString[0] == yString[0]) {
+            lcPrefix++;
+            xString = xString.slice(1);
+            yString = yString.slice(1);
+        }
+
+        while (xString.length > 0 && yString.length > 0 && xString[xString.length - 1] == yString[yString.length - 1]) {
+            lcSuffix++;
+            xString = xString.slice(0, -1);
+            yString = yString.slice(0, -1);
+        }
+    }
+
+    if (lcPrefix > 0 || lcSuffix > 0) {
+        if (lcPrefix > 0) {
+            // add prefix as an option to sliceConcatModeBox
+            var option = document.createElement("option");
+            option.value = "prefix";
+            option.innerHTML = "Prefix";
+            sliceConcatModeBox.appendChild(option);
+        }
+
+        if (lcSuffix > 0) {
+            // add suffix as an option to sliceConcatModeBox
+            var option = document.createElement("option");
+            option.value = "suffix";
+            option.innerHTML = "Suffix";
+            sliceConcatModeBox.appendChild(option);
+        }
+
+        if (lcPrefix > 0 && lcSuffix > 0) {
+            // add infix as an option to sliceConcatModeBox
+            var option = document.createElement("option");
+            option.value = "infix";
+            option.innerHTML = "Infix";
+            sliceConcatModeBox.appendChild(option);
+        }
+
+        sliceConcatModeBox.value = sliceConcatModeBox.options[0].value;
+
+        var event = new Event("change");
+        sliceConcatModeBox.dispatchEvent(event);
+
+        operationRadio[2].disabled = false;
+    } else {
+        operationRadio[0].checked = true;
+        setOperation();
+    }
 }
 
 function performOperation() {
@@ -480,6 +706,33 @@ function performOperation() {
 
         newX = x;
         newY = permuteChars(yBox.value, perm);
+    } else if (operation = "slice-n-concat") {
+        var xString = xBox.value;
+        var yString = yBox.value;
+        var mode = sliceConcatModeBox.value;
+
+        if (mode == "prefix") {
+            var slicedX = xString.slice(lcPrefix);
+            var slicedY = yString.slice(lcPrefix);
+            var prefix = document.getElementById("prefix-box").value;
+
+            newX = parseInt(prefix + slicedX, 2);
+            newY = parseInt(prefix + slicedY, 2);
+        } else if (mode == "suffix") {
+            var slicedX = xString.slice(0, xString.length - lcSuffix);
+            var slicedY = yString.slice(0, yString.length - lcSuffix);
+            var suffix = document.getElementById("suffix-box").value;
+
+            newX = parseInt(slicedX + suffix, 2);
+            newY = parseInt(slicedY + suffix, 2);
+        } else if (mode == "infix") {
+            var prefix = document.getElementById("prefix-box").value;
+            var suffix = document.getElementById("suffix-box").value;
+
+            newX = parseInt(prefix + xString.slice(lcPrefix, xString.length - lcSuffix) + suffix, 2);
+            newY = parseInt(prefix + yString.slice(lcPrefix, yString.length - lcSuffix) + suffix, 2);
+        }
+         
     } else if (operation == "complement") {
         newX = x ^ (Math.pow(2, n) - 1);
         newY = y ^ (Math.pow(2, m) - 1);
@@ -563,14 +816,14 @@ function registerController() {
                 if (keys.indexOf("Space") != -1) {
                     orthoSize += 0.1 * Math.min(n, m);
                     orthoEye = vec3(camera.position[0], orthoSize, camera.position[2]);
-                    orthoMatrix = ortho(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, 0.1, 100.0);
+                    orthoMatrix = ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
                     camera.projectionMatrix = orthoMatrix;
                     camera.setPosition(orthoEye);
                 }
                 if (keys.indexOf("ShiftLeft") != -1) {
                     orthoSize -= 0.1 * Math.min(n, m);
                     orthoEye = vec3(camera.position[0], orthoSize, camera.position[2]);
-                    orthoMatrix = ortho(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, 0.1, 100.0);
+                    orthoMatrix = ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
                     camera.projectionMatrix = orthoMatrix;
                     camera.setPosition(orthoEye);
                 }
@@ -663,19 +916,29 @@ function setOperation() {
         operation = "substitute";
         substitutionSection.style.display = "block";
         permutationSection.style.display = "none";
+        sliceConcatSection.style.display = "none";
     } else if (operationRadio[1].checked) {
         operation = "permutation";
         substitutionSection.style.display = "none";
         permutationSection.style.display = "block";
+        sliceConcatSection.style.display = "none";
     } else if (operationRadio[2].checked) {
+        operation = "slice-n-concat";
+        substitutionSection.style.display = "none";
+        permutationSection.style.display = "none";
+        sliceConcatSection.style.display = "block";
+        operationButton.disabled = false;
+    } else if (operationRadio[3].checked) {
         operation = "complement";
         substitutionSection.style.display = "none";
         permutationSection.style.display = "none";
+        sliceConcatSection.style.display = "none";
         operationButton.disabled = false;
-    } else if (operationRadio[3].checked) {
+    } else if (operationRadio[4].checked) {
         operation = "reverse";
         substitutionSection.style.display = "none";
         permutationSection.style.display = "none";
+        sliceConcatSection.style.display = "none";
         operationButton.disabled = false;
     }
 
@@ -702,6 +965,129 @@ function toggleDivs(divIds) {
             div.style.display = "none";
         }
     }
+}
+
+function setLegend() {
+    // var legend = document.getElementById("legendSVG");
+
+    // // clear legend svg
+    // while (legend.firstChild) {
+    //     legend.removeChild(legend.firstChild);
+    // }
+
+    // var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    // svg.setAttribute("width", "100%");
+    // svg.setAttribute("height", "100%");
+    // svg.setAttribute("viewBox", "0 0 100 100");
+    // svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    
+    // // create linear gradient
+    // var gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+    // gradient.setAttribute("id", "gradient");
+    // gradient.setAttribute("x1", "0%");
+    // gradient.setAttribute("y1", "0%");
+    // gradient.setAttribute("x2", "100%");
+    // gradient.setAttribute("y2", "0%");
+    // gradient.setAttribute("spreadMethod", "pad");
+
+    // var stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+    // stop1.setAttribute("offset", "0%");
+    // stop1.setAttribute("stop-color", "blue");
+    // stop1.setAttribute("stop-opacity", "1");
+
+    // var stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+    // stop2.setAttribute("offset", "100%");
+    // stop2.setAttribute("stop-color", "red");
+    // stop2.setAttribute("stop-opacity", "1");
+
+    // gradient.appendChild(stop1);
+    // gradient.appendChild(stop2);
+    // svg.appendChild(gradient);
+
+    // // create rectangle
+    // var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    // rect.setAttribute("x", "0");
+    // rect.setAttribute("y", "0");
+    // rect.setAttribute("width", "100%");
+    // rect.setAttribute("height", "100");
+    // rect.setAttribute("fill", "url(#gradient)");
+
+    // svg.appendChild(rect);
+    // legend.appendChild(svg);
+}
+
+function showControls() {
+    // create popup
+    var popup = document.createElement("div");
+    popup.id = "popup";
+    popup.style.position = "fixed";
+    popup.style.top = "0";
+    popup.style.left = "0";
+    popup.style.width = "100%";
+    popup.style.height = "100%";
+    popup.style.backgroundColor = "rgba(0,0,0,0.75)";
+    popup.style.display = "flex";
+    popup.style.justifyContent = "center";
+    popup.style.alignItems = "center";
+    popup.style.zIndex = "1";
+
+    // create content
+    var content = document.createElement("div");
+    content.style.position = "relative";
+    content.style.width = "25%";
+    content.style.height = "25%";
+    content.style.backgroundColor = "white";
+    content.style.padding = "20px";
+    content.style.borderRadius = "10px";
+    content.style.overflow = "auto";
+    content.style.zIndex = "2";
+
+    // create title
+    var title = document.createElement("h2");
+    title.innerHTML = "Controls";
+    title.style.textAlign = "center";
+
+    // create list
+    var list = document.createElement("ul");
+    list.style.listStyleType = "none";
+    list.style.padding = "0";
+    list.style.margin = "0";
+
+    var items;
+    if (onMobile) {
+        items = ["Two Finger Drag - Pan Camera", "Drag - Rotate Camera", "Pinch - Zoom Camera"]; //  "Tap - Toggle Elevation/Orthographic Mode", "Double Tap - Reset Camera"
+    } else {
+        items = ["W - Move Forward", "A - Move Left", "S - Move Backward", "D - Move Right", "Space - Move Up", "Shift - Move Down", "Z - Toggle Elevation/Orthographic Mode", "R - Reset Camera"];
+    }
+    for (var i = 0; i < items.length; i++) {
+        var item = document.createElement("li");
+        item.innerHTML = items[i];
+        list.appendChild(item);
+    }
+
+    // create close button
+    var closeButton = document.createElement("button");
+    closeButton.innerHTML = "Close";
+    closeButton.style.position = "absolute";
+    closeButton.style.top = "0";
+    closeButton.style.left = "0";
+    closeButton.style.padding = "5px";
+    closeButton.style.borderRadius = "2.5px";
+    closeButton.style.cursor = "pointer";
+    closeButton.onclick = function () {
+        document.body.removeChild(popup);
+    }
+
+    // append elements
+    content.appendChild(title);
+    content.appendChild(list);
+
+    // center list to content
+    list.style.textAlign = "center";
+
+    content.appendChild(closeButton);
+    popup.appendChild(content);
+    document.body.appendChild(popup);
 }
 
 window.onresize = function () {

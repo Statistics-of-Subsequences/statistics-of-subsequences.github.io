@@ -55,10 +55,22 @@
         <div class="center">
             <h1>LCS Distribution Explorer</h1>
             <label for="n">n: </label>
-            <input type="number" id="n" name="n" min="1" max="10" value="1" size="5" />
+            <select id="n">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <label for="m">m: </label>
-            <input type="number" id="m" name="m" min="1" max="10" value="1" size="5" />
+            <select id="m">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button onclick="generateDistribution();">Generate Distibution</button>
             <br><br>

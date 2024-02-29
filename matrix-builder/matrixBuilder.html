@@ -76,10 +76,22 @@
         <div class="center">
             <h1>LCS Matrix Builder</h1>
             <label for="n">n: </label>
-            <input type="number" id="n" name="n" min="1" max="5" value="1" size="5" oninput="generateMatrixShell();" />
+            <select id="n" onchange="generateMatrixShell();">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <label for="m">m: </label>
-            <input type="number" id="m" name="m" min="1" max="5" value="1" size="5" oninput="generateMatrixShell();"/>
+            <select id="m" onchange="generateMatrixShell();">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button onclick="fillMatrix();">Fill Matrix</button>
             

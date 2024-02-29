@@ -15,16 +15,12 @@ function setup() {
     nBox.addEventListener('input', function() {
         if (parseInt(nBox.value) > parseInt(mBox.value)) {
             mBox.value = nBox.value;
-        } else if (parseInt(nBox.value) < 1) {
-            nBox.value = "1";
         }
     });
 
     mBox.addEventListener('input', function() {
         if (parseInt(mBox.value) < parseInt(nBox.value)) {
             nBox.value = mBox.value;
-        } else if (parseInt(mBox.value) < 1) {
-            mBox.value = "1";
         }
     });
 

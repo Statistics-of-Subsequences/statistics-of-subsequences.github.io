@@ -3,6 +3,15 @@ var matrix, infoMatrix, selectedCells;
 var rows, columns;
 const svgns = "http://www.w3.org/2000/svg";
 
+var allowedProperties = {
+    "commute": true,
+    "slicePrefix": true,
+    "sliceSuffix": true,
+    "sliceInfix": true,
+    "reverse": true,
+    "complement": true
+};
+
 function setup() {
     nBox = document.getElementById("n");
     mBox = document.getElementById("m");
@@ -12,8 +21,8 @@ function setup() {
     infoMatrix = [];
     matrix = document.createElementNS(svgns, "svg");
 
-    nBox.value = 1;
-    mBox.value = 1;
+    nBox.selectedIndex = 0;
+    mBox.selectedIndex = 0;
     generateMatrixShell();
 
     var svgElements = document.getElementsByTagName("svg");
@@ -88,7 +97,7 @@ function fillMatrix() {
         var column = currentCell.column;
         
         // commutative property
-        if (rows == columns) {
+        if (rows == columns && allowedProperties["commute"]) {
             var commutativeCell = infoMatrix[rows - 1 - column][row];
             if (commutativeCell.length == "Unknown") {
                 infoMatrix[rows - 1 - column][row].length = currentCell.length;
@@ -100,75 +109,86 @@ function fillMatrix() {
         }
 
         // complement property
-        var complementRow = rows - 1 - row;
-        var complementColumn = columns - 1 - column;
-        
-        var complementCell = infoMatrix[rows - 1 - complementRow][complementColumn];
-        if (complementCell.length == "Unknown") {
-            infoMatrix[rows - 1 - complementRow][complementColumn].length = currentCell.length;
-            infoMatrix[rows - 1 - complementRow][complementColumn].derivation = "Complement of " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
-            complementCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
-            selectedCells.push(complementCell);
-            queue.push(complementCell);
+        if (allowedProperties["complement"]) {
+            var complementRow = rows - 1 - row;
+            var complementColumn = columns - 1 - column;
+            
+            var complementCell = infoMatrix[rows - 1 - complementRow][complementColumn];
+            if (complementCell.length == "Unknown") {
+                infoMatrix[rows - 1 - complementRow][complementColumn].length = currentCell.length;
+                infoMatrix[rows - 1 - complementRow][complementColumn].derivation = "Complement of " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
+                complementCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
+                selectedCells.push(complementCell);
+                queue.push(complementCell);
+            }
         }
         
         // reverse property
-        var reverseRow = parseInt(row.toString(2).split("").reverse().join("").concat("0".repeat(mBox.value - row.toString(2).length)), 2);
-        var reverseColumn = parseInt(column.toString(2).split("").reverse().join("").concat("0".repeat(nBox.value - column.toString(2).length)), 2);
+        if (allowedProperties["reverse"]) {
+            var reverseRow = parseInt(row.toString(2).split("").reverse().join("").concat("0".repeat(mBox.value - row.toString(2).length)), 2);
+            var reverseColumn = parseInt(column.toString(2).split("").reverse().join("").concat("0".repeat(nBox.value - column.toString(2).length)), 2);
 
-        var reverseCell = infoMatrix[rows - 1 - reverseRow][reverseColumn];
-        if (reverseCell.length == "Unknown") {
-            infoMatrix[rows - 1 - reverseRow][reverseColumn].length = currentCell.length;
-            infoMatrix[rows - 1 - reverseRow][reverseColumn].derivation = "Reverse of " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
-            reverseCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
-            selectedCells.push(reverseCell);
-            queue.push(reverseCell);
+            var reverseCell = infoMatrix[rows - 1 - reverseRow][reverseColumn];
+            if (reverseCell.length == "Unknown") {
+                infoMatrix[rows - 1 - reverseRow][reverseColumn].length = currentCell.length;
+                infoMatrix[rows - 1 - reverseRow][reverseColumn].derivation = "Reverse of " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
+                reverseCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
+                selectedCells.push(reverseCell);
+                queue.push(reverseCell);
+            }
         }
 
-        // FIXME: SOMETIMES PRIORITIES THIS OVER OTHER PROPERTIES: 010 000 and 000 010 say the same thing
         // slice and concatenation property
-        var rowBinary = intToBinStr(row, mBox.value);
-        var columnBinary = intToBinStr(column, nBox.value);
+        if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceInfix"]) {
+            var rowBinary = intToBinStr(row, mBox.value);
+            var columnBinary = intToBinStr(column, nBox.value);
 
-        var tempRowBinary = rowBinary;
-        var tempColumnBinary = columnBinary;
-        
-        var lcPrefix = 0; // longest common prefix
-        while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[0] == tempColumnBinary[0]) {
-            lcPrefix++;
-            tempRowBinary = tempRowBinary.slice(1);
-            tempColumnBinary = tempColumnBinary.slice(1);
-        }
+            var tempRowBinary = rowBinary;
+            var tempColumnBinary = columnBinary;
+            
+            var lcPrefix = 0; // longest common prefix
+            while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[0] == tempColumnBinary[0]) {
+                lcPrefix++;
+                tempRowBinary = tempRowBinary.slice(1);
+                tempColumnBinary = tempColumnBinary.slice(1);
+            }
 
-        var lcSuffix = 0; // longest common suffix
-        while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[tempRowBinary.length - 1] == tempColumnBinary[tempColumnBinary.length - 1]) {
-            lcSuffix++;
-            tempRowBinary = tempRowBinary.slice(0, -1);
-            tempColumnBinary = tempColumnBinary.slice(0, -1);
-        }
+            var lcSuffix = 0; // longest common suffix
+            while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[tempRowBinary.length - 1] == tempColumnBinary[tempColumnBinary.length - 1]) {
+                lcSuffix++;
+                tempRowBinary = tempRowBinary.slice(0, -1);
+                tempColumnBinary = tempColumnBinary.slice(0, -1);
+            }
 
-        var remainingRow = rowBinary;
-        var remainingColumn = columnBinary;
-        var STATE = 0;
+            var remainingRowPrefix = rowBinary;
+            var remainingRowSuffix = rowBinary;
+            var remainingRowInfix = rowBinary;
+            var remainingColumnPrefix = columnBinary;
+            var remainingColumnSuffix = columnBinary;
+            var remainingColumnInfix = columnBinary;
+            var STATE = 0;
 
-        if (lcPrefix > 0) {
-            remainingRow = rowBinary.slice(lcPrefix);
-            remainingColumn = columnBinary.slice(lcPrefix);
-            STATE++;
-        }
+            if (lcPrefix > 0) {
+                remainingRowPrefix = rowBinary.slice(lcPrefix);
+                remainingRowInfix = rowBinary.slice(lcPrefix);
+                remainingColumnPrefix = columnBinary.slice(lcPrefix);
+                remainingColumnInfix = columnBinary.slice(lcPrefix);
+                STATE++;
+            }
 
-        if (lcSuffix > 0) {
-            remainingRow = remainingRow.slice(0, -lcSuffix);
-            remainingColumn = remainingColumn.slice(0, -lcSuffix);
-            STATE += 2;
-        }
+            if (lcSuffix > 0) {
+                remainingRowSuffix = rowBinary.slice(0, -lcSuffix);
+                remainingRowInfix = remainingRowInfix.slice(0, -lcSuffix);
+                remainingColumnSuffix = columnBinary.slice(0, -lcSuffix);
+                remainingColumnInfix = remainingColumnInfix.slice(0, -lcSuffix);
+                STATE += 2;
+            }
 
-        switch (STATE) {
-            case 1:
-                for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix - 1); PREFIX++) {
+            if ((allowedProperties["slicePrefix"] && STATE == 1) || (allowedProperties["sliceInfix"] && STATE == 3)) {
+                for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
                     var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
-                    var newRow = parseInt(r.toString(2).concat(remainingRow.toString(2)), 2);
-                    var newColumn = parseInt(r.toString(2).concat(remainingColumn.toString(2)), 2);
+                    var newRow = parseInt(r.toString(2).concat(remainingRowPrefix.toString(2)), 2);
+                    var newColumn = parseInt(r.toString(2).concat(remainingColumnPrefix.toString(2)), 2);
 
                     var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                     if (concatCell.length == "Unknown") {
@@ -177,14 +197,26 @@ function fillMatrix() {
                         concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                         selectedCells.push(concatCell);
                         queue.push(concatCell);
+
+                        // commutative property
+                        if (rows == columns && allowedProperties["commute"]) {
+                            var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
+                            if (commutativeCell.length == "Unknown") {
+                                infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
+                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
+                                selectedCells.push(commutativeCell);
+                                queue.push(commutativeCell);
+                            }
+                        }
                     }
                 }
-                break;
-            case 2:
-                for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix - 1); SUFFIX++) {
+            }
+            if ((allowedProperties["sliceSuffix"] && STATE == 2) || (allowedProperties["sliceInfix"] && STATE == 3)) {
+                for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                     var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
-                    var newRow = parseInt(remainingRow.toString(2).concat(c.toString(2)), 2);
-                    var newColumn = parseInt(remainingColumn.toString(2).concat(c.toString(2)), 2);
+                    var newRow = parseInt(remainingRowSuffix.toString(2).concat(c.toString(2)), 2);
+                    var newColumn = parseInt(remainingColumnSuffix.toString(2).concat(c.toString(2)), 2);
 
                     var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                     if (concatCell.length == "Unknown") {
@@ -197,33 +229,57 @@ function fillMatrix() {
                         concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                         selectedCells.push(concatCell);
                         queue.push(concatCell);
+
+                        // commutative property
+                        if (rows == columns && allowedProperties["commute"]) {
+                            var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
+                            if (commutativeCell.length == "Unknown") {
+                                infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
+                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
+                                selectedCells.push(commutativeCell);
+                                queue.push(commutativeCell);
+                            }
+                        }
                     }
                 }
-                break;  
-            case 3:
+            }
+            if (allowedProperties["sliceInfix"] && STATE == 3) {
                 for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
-                    for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix - 1); SUFFIX++) {
+                    for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                         var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
                         var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
 
-                        var newRow = parseInt(r.toString(2).concat(remainingRow).concat(c.toString(2)), 2);
-                        var newColumn = parseInt(r.toString(2).concat(remainingColumn).concat(c.toString(2)), 2);
+                        var newRow = parseInt(r.toString(2).concat(remainingRowInfix).concat(c.toString(2)), 2);
+                        var newColumn = parseInt(r.toString(2).concat(remainingColumnInfix).concat(c.toString(2)), 2);
 
                         var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                         if (concatCell.length == "Unknown") {
                             infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
                             if (rows == columns) {
-                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                             } else {
-                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [" + lcPrefix + ", " + (mBox.value - lcSuffix) + ") from " + intToBinStr(row, mBox.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [" + lcPrefix + ", " + (mBox.value - lcSuffix) + ") from " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                             }
                             concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                             selectedCells.push(concatCell);
                             queue.push(concatCell);
+
+                            // commutative property
+                            if (rows == columns && allowedProperties["commute"]) {
+                                var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
+                                if (commutativeCell.length == "Unknown") {
+                                    infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
+                                    infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                    commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
+                                    selectedCells.push(commutativeCell);
+                                    queue.push(commutativeCell);
+                                }
+                            }
                         }
                     }
                 }
-                break;
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 {
     "1": {
-        "n": 1,
-        "m": 1,
+        "n": 2,
+        "m": 2,
         "allowedProperties": {
             "commute": true,
             "slicePrefix": false,
@@ -11,6 +11,48 @@
             "complement": false
         },
         "goal": "res/graphics/level-1.svg",
-        "optimal-solution": 2
+        "optimal-solution": 4
+    },
+    "2": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceInfix": false,
+            "reverse": false,
+            "complement": false
+        },
+        "goal": "res/graphics/level-2.svg",
+        "optimal-solution": 4
+    },
+    "3": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceInfix": false,
+            "reverse": false,
+            "complement": false
+        },
+        "goal": "res/graphics/level-3.svg",
+        "optimal-solution": 8
+    },
+    "4": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceInfix": false,
+            "reverse": false,
+            "complement": false
+        },
+        "goal": "res/graphics/level-4.svg",
+        "optimal-solution": 11
     }
 }

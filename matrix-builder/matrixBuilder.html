@@ -103,6 +103,23 @@
             <div id="infoPopup"></div>
             <button onclick="downloadSVG();">Download</button>
         </div>
+        <div class="content">
+            <h3>Enabled Properties:</h3>
+            <div  style="display: inline-block; text-align: left;">
+                <input type="checkbox" id="commute" checked onchange="setAllowedProperties();">
+                <label for="commute">Commutative</label><br>
+                <input type="checkbox" id="complement" checked onchange="setAllowedProperties();">
+                <label for="complement">Complement</label><br>
+                <input type="checkbox" id="reverse" checked onchange="setAllowedProperties();">
+                <label for="reverse">Reverse</label><br>
+                <input type="checkbox" id="slicePrefix" checked onchange="setAllowedProperties();">
+                <label for="slicePrefix">Slice and Prefix</label><br>
+                <input type="checkbox" id="sliceSuffix" checked onchange="setAllowedProperties();">
+                <label for="sliceSuffix">Slice and Suffix</label><br>
+                <input type="checkbox" id="sliceInfix" checked onchange="setAllowedProperties();">
+                <label for="sliceInfix">Slice and Infix</label>
+            </div>
+        </div>
     </div>
 </body>
 </html>

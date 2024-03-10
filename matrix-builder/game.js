@@ -42,6 +42,14 @@ function startLevel(level) {
     optimalSolution = levelData.optimalSolution;
     currentSolution = 0;
 
+    // SET CHECKBOXES
+    document.getElementById("commute").checked = allowedProperties["commute"];
+    document.getElementById("complement").checked = allowedProperties["complement"];
+    document.getElementById("reverse").checked = allowedProperties["reverse"];
+    document.getElementById("slicePrefix").checked = allowedProperties["slicePrefix"];
+    document.getElementById("sliceSuffix").checked = allowedProperties["sliceSuffix"];
+    document.getElementById("sliceInfix").checked = allowedProperties["sliceInfix"];
+
     document.getElementById("level-select").style.display = "none";
     document.getElementById("game").style.display = "block";
 
@@ -202,8 +210,8 @@ function fillMatrix() {
 
         // slice and concatenation property
         if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceInfix"]) {
-            var rowBinary = intToBinStr(row, mBox.value);
-            var columnBinary = intToBinStr(column, nBox.value);
+            var rowBinary = intToBinStr(row, m);
+            var columnBinary = intToBinStr(column, n);
 
             var tempRowBinary = rowBinary;
             var tempColumnBinary = columnBinary;
@@ -230,6 +238,14 @@ function fillMatrix() {
             var remainingColumnInfix = columnBinary;
             var STATE = 0;
 
+            if (n == m && !allowedProperties["slicePrefix"] && allowedProperties["sliceSuffix"] && lcPrefix == n) {
+                lcSuffix = lcPrefix;
+                lcPrefix = 0;
+            } else if (n == m && !allowedProperties["slicePrefix"] && !allowedProperties["sliceSuffix"] && allowedProperties["sliceInfix"] && lcPrefix == n) {
+                lcPrefix = Math.ceil(lcPrefix / 2);
+                lcSuffix = n - lcPrefix;
+            }
+
             if (lcPrefix > 0) {
                 remainingRowPrefix = rowBinary.slice(lcPrefix);
                 remainingRowInfix = rowBinary.slice(lcPrefix);
@@ -246,7 +262,7 @@ function fillMatrix() {
                 STATE += 2;
             }
 
-            if ((allowedProperties["slicePrefix"] && STATE == 1) || (allowedProperties["sliceInfix"] && STATE == 3)) {
+            if (allowedProperties["slicePrefix"] && STATE == 1) {
                 for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
                     var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
                     var newRow = parseInt(r.toString(2).concat(remainingRowPrefix.toString(2)), 2);
@@ -255,7 +271,7 @@ function fillMatrix() {
                     var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                     if (concatCell.length == "Unknown") {
                         infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
-                        infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + (lcPrefix) + "&#12297;from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix);
+                        infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + (lcPrefix) + "&#12297;from " + intToBinStr(column, n) + " and " + intToBinStr(row, m) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix);
                         concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                         selectedCells.push(concatCell);
                         queue.push(concatCell);
@@ -265,7 +281,7 @@ function fillMatrix() {
                             var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
                             if (commutativeCell.length == "Unknown") {
                                 infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, n) + " and " + intToBinStr(newRow, m);
                                 commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                                 selectedCells.push(commutativeCell);
                                 queue.push(commutativeCell);
@@ -274,7 +290,7 @@ function fillMatrix() {
                     }
                 }
             }
-            if ((allowedProperties["sliceSuffix"] && STATE == 2) || (allowedProperties["sliceInfix"] && STATE == 3)) {
+            if (allowedProperties["sliceSuffix"] && STATE == 2) {
                 for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                     var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
                     var newRow = parseInt(remainingRowSuffix.toString(2).concat(c.toString(2)), 2);
@@ -284,9 +300,9 @@ function fillMatrix() {
                     if (concatCell.length == "Unknown") {
                         infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
                         if (rows == columns) {
-                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (n - lcSuffix) + ") from " + intToBinStr(column, n) + " and " + intToBinStr(row, m) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                         } else {
-                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [0, " + (mBox.value - lcSuffix) + ") from " + intToBinStr(row, mBox.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (n - lcSuffix) + ") from " + intToBinStr(column, n) + " and [0, " + (m - lcSuffix) + ") from " + intToBinStr(row, m) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                         }
                         concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                         selectedCells.push(concatCell);
@@ -297,7 +313,7 @@ function fillMatrix() {
                             var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
                             if (commutativeCell.length == "Unknown") {
                                 infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, n) + " and " + intToBinStr(newRow, m);
                                 commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                                 selectedCells.push(commutativeCell);
                                 queue.push(commutativeCell);
@@ -319,9 +335,9 @@ function fillMatrix() {
                         if (concatCell.length == "Unknown") {
                             infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
                             if (rows == columns) {
-                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (n - lcSuffix) + ") from " + intToBinStr(column, n) + " and " + intToBinStr(row, m) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                             } else {
-                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [" + lcPrefix + ", " + (mBox.value - lcSuffix) + ") from " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (n - lcSuffix) + ") from " + intToBinStr(column, n) + " and [" + lcPrefix + ", " + (m - lcSuffix) + ") from " + intToBinStr(row, m) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                             }
                             concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                             selectedCells.push(concatCell);
@@ -332,7 +348,7 @@ function fillMatrix() {
                                 var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
                                 if (commutativeCell.length == "Unknown") {
                                     infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                                    infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                    infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, n) + " and " + intToBinStr(newRow, m);
                                     commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                                     selectedCells.push(commutativeCell);
                                     queue.push(commutativeCell);
@@ -452,7 +468,6 @@ function lcs(x, y) {
     // return bottom right cell
     return T[n][m];
 }
-
 
 function intToBinStr(num, bits) {
     return "0".repeat(bits - num.toString(2).length).concat(num.toString(2));

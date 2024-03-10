@@ -4,55 +4,83 @@
         "m": 2,
         "allowedProperties": {
             "commute": true,
+            "complement": false,
+            "reverse": false,
             "slicePrefix": false,
             "sliceSuffix": false,
-            "sliceInfix": false,
-            "reverse": false,
-            "complement": false
+            "sliceInfix": false
         },
         "goal": "res/graphics/level-1.svg",
-        "optimal-solution": 4
+        "optimalSolution": 4
     },
     "2": {
         "n": 2,
         "m": 2,
         "allowedProperties": {
-            "commute": true,
+            "commute": false,
+            "complement": true,
+            "reverse": false,
             "slicePrefix": false,
             "sliceSuffix": false,
-            "sliceInfix": false,
-            "reverse": false,
-            "complement": false
+            "sliceInfix": false
         },
         "goal": "res/graphics/level-2.svg",
-        "optimal-solution": 4
+        "optimalSolution": 4
     },
     "3": {
-        "n": 3,
-        "m": 3,
+        "n": 2,
+        "m": 2,
         "allowedProperties": {
-            "commute": true,
+            "commute": false,
+            "complement": false,
+            "reverse": true,
             "slicePrefix": false,
             "sliceSuffix": false,
-            "sliceInfix": false,
-            "reverse": false,
-            "complement": false
+            "sliceInfix": false
         },
         "goal": "res/graphics/level-3.svg",
-        "optimal-solution": 8
+        "optimalSolution": 3
     },
     "4": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": true,
+            "sliceSuffix": false,
+            "sliceInfix": false
+        },
+        "goal": "res/graphics/level-4.svg",
+        "optimalSolution": 3
+    },
+    "5": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": true,
+            "sliceInfix": false
+        },
+        "goal": "res/graphics/level-5.svg",
+        "optimalSolution": 3
+    },
+    "6": {
         "n": 3,
         "m": 3,
         "allowedProperties": {
-            "commute": true,
+            "commute": false,
+            "complement": false,
+            "reverse": false,
             "slicePrefix": false,
             "sliceSuffix": false,
-            "sliceInfix": false,
-            "reverse": false,
-            "complement": false
+            "sliceInfix": true
         },
-        "goal": "res/graphics/level-4.svg",
-        "optimal-solution": 11
+        "goal": "res/graphics/level-6.svg",
+        "optimalSolution": 3
     }
 }

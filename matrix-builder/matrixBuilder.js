@@ -5,11 +5,11 @@ const svgns = "http://www.w3.org/2000/svg";
 
 var allowedProperties = {
     "commute": true,
+    "complement": true,
+    "reverse": true,
     "slicePrefix": true,
     "sliceSuffix": true,
-    "sliceInfix": true,
-    "reverse": true,
-    "complement": true
+    "sliceInfix": true
 };
 
 function setup() {
@@ -30,6 +30,11 @@ function setup() {
         svgElements[i].addEventListener("click", selectCell);
         svgElements[i].addEventListener("mouseover", showPopup);
         svgElements[i].addEventListener("mouseout", hidePopup);
+    }
+
+    var checkboxes = document.getElementsByTagName("input");
+    for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = true;
     }
 }
 
@@ -168,6 +173,14 @@ function fillMatrix() {
             var remainingColumnInfix = columnBinary;
             var STATE = 0;
 
+            if (rows == columns && !allowedProperties["slicePrefix"] && allowedProperties["sliceSuffix"] && lcPrefix == Math.log2(rows)) {
+                lcSuffix = lcPrefix;
+                lcPrefix = 0;
+            } else if (rows == columns && !allowedProperties["slicePrefix"] && !allowedProperties["sliceSuffix"] && allowedProperties["sliceInfix"] && lcPrefix == Math.log2(rows)) {
+                lcPrefix = Math.ceil(lcPrefix / 2);
+                lcSuffix = Math.log2(rows) - lcPrefix;
+            }
+            
             if (lcPrefix > 0) {
                 remainingRowPrefix = rowBinary.slice(lcPrefix);
                 remainingRowInfix = rowBinary.slice(lcPrefix);
@@ -184,7 +197,7 @@ function fillMatrix() {
                 STATE += 2;
             }
 
-            if ((allowedProperties["slicePrefix"] && STATE == 1) || (allowedProperties["sliceInfix"] && STATE == 3)) {
+            if (allowedProperties["slicePrefix"] && (STATE == 1 || STATE == 3)) {
                 for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
                     var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
                     var newRow = parseInt(r.toString(2).concat(remainingRowPrefix.toString(2)), 2);
@@ -212,7 +225,7 @@ function fillMatrix() {
                     }
                 }
             }
-            if ((allowedProperties["sliceSuffix"] && STATE == 2) || (allowedProperties["sliceInfix"] && STATE == 3)) {
+            if (allowedProperties["sliceSuffix"] && (STATE == 2 || STATE == 3)) {
                 for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                     var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
                     var newRow = parseInt(remainingRowSuffix.toString(2).concat(c.toString(2)), 2);
@@ -282,6 +295,15 @@ function fillMatrix() {
             }
         }
     }
+}
+
+function setAllowedProperties() {
+    allowedProperties["commute"] = document.getElementById("commute").checked;
+    allowedProperties["complement"] = document.getElementById("complement").checked;
+    allowedProperties["reverse"] = document.getElementById("reverse").checked;
+    allowedProperties["slicePrefix"] = document.getElementById("slicePrefix").checked;
+    allowedProperties["sliceSuffix"] = document.getElementById("sliceSuffix").checked;
+    allowedProperties["sliceInfix"] = document.getElementById("sliceInfix").checked;
 }
 
 function selectCell(evt) {
@@ -422,13 +444,14 @@ function getPercent(stops, percent) {
 }
 
 function downloadSVG() {
-    var svgData = new XMLSerializer().serializeToString(matrix);
-    var fileName = prompt("Enter file name", "matrix");
-    var blob = new Blob([svgData], {type: "image/svg+xml"});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = fileName + ".svg";
-    a.click();
-    URL.revokeObjectURL(url);
+    var svgData = matrix.outerHTML;
+    var fileName = prompt("Enter file name", "level-");
+    var svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = fileName + ".svg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 }

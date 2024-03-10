@@ -4,7 +4,7 @@
 var canvas, gl, shaderProgram, controller, onMobile;
 var width, height, aspectRatio;
 var xBox, yBox, lcsButton;
-var operationRadio, substitutionSection, permutationSection, permMap, sliceConcatSection, lcPrefix, lcSuffix, operation = "substitute";
+var operationRadio, substitutionSection, permutationSection, permMap, sliceConcatSection, lcPrefix, lcSuffix, lcInfix, operation = "substitute";
 var substitutionKBox, permutationBox, sliceConcatModeBox, operationButton;
 var lcsGenerated;
 var n = 1;
@@ -182,6 +182,14 @@ function main() {
             concatInputDiv.appendChild(br1);
             concatInputDiv.appendChild(br2);
         } else if (mode == "infix") {
+            tempLCPrefix = lcPrefix;
+            tempLCSuffix = lcSuffix;
+
+            if (lcInfix != 0) {
+                lcPrefix = Math.ceil(lcInfix / 2);
+                lcSuffix = lcInfix - lcPrefix;
+            }
+
             var prefixLabel = document.createElement("label");
             prefixLabel.innerHTML = "Prefix: ";
             prefixLabel.for = "prefix-box";
@@ -239,6 +247,9 @@ function main() {
             concatInputDiv.appendChild(suffixBox);
             concatInputDiv.appendChild(br1);
             concatInputDiv.appendChild(br2);
+
+            lcPrefix = tempLCPrefix;
+            lcSuffix = tempLCSuffix;
         }
     }
 
@@ -616,6 +627,13 @@ function changeLCS() {
             xString = xString.slice(0, -1);
             yString = yString.slice(0, -1);
         }
+    }
+
+    if (n == m && lcPrefix == n) {
+        lcSuffix = lcPrefix;
+        lcInfix = lcPrefix;
+    } else {
+        lcInfix = 0;
     }
 
     if (lcPrefix > 0 || lcSuffix > 0) {

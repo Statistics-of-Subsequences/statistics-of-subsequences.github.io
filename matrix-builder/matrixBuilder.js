@@ -9,7 +9,7 @@ var allowedProperties = {
     "reverse": true,
     "slicePrefix": true,
     "sliceSuffix": true,
-    "sliceInfix": true
+    "sliceCircumfix": true
 };
 
 function setup() {
@@ -144,7 +144,7 @@ function fillMatrix() {
         }
 
         // slice and concatenation property
-        if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceInfix"]) {
+        if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceCircumfix"]) {
             var rowBinary = intToBinStr(row, mBox.value);
             var columnBinary = intToBinStr(column, nBox.value);
 
@@ -167,33 +167,33 @@ function fillMatrix() {
 
             var remainingRowPrefix = rowBinary;
             var remainingRowSuffix = rowBinary;
-            var remainingRowInfix = rowBinary;
+            var remainingRowCircumfix = rowBinary;
             var remainingColumnPrefix = columnBinary;
             var remainingColumnSuffix = columnBinary;
-            var remainingColumnInfix = columnBinary;
+            var remainingColumnCircumfix = columnBinary;
             var STATE = 0;
 
             if (rows == columns && !allowedProperties["slicePrefix"] && allowedProperties["sliceSuffix"] && lcPrefix == Math.log2(rows)) {
                 lcSuffix = lcPrefix;
                 lcPrefix = 0;
-            } else if (rows == columns && !allowedProperties["slicePrefix"] && !allowedProperties["sliceSuffix"] && allowedProperties["sliceInfix"] && lcPrefix == Math.log2(rows)) {
+            } else if (rows == columns && !allowedProperties["slicePrefix"] && !allowedProperties["sliceSuffix"] && allowedProperties["sliceCircumfix"] && lcPrefix == Math.log2(rows)) {
                 lcPrefix = Math.ceil(lcPrefix / 2);
                 lcSuffix = Math.log2(rows) - lcPrefix;
             }
             
             if (lcPrefix > 0) {
                 remainingRowPrefix = rowBinary.slice(lcPrefix);
-                remainingRowInfix = rowBinary.slice(lcPrefix);
+                remainingRowCircumfix = rowBinary.slice(lcPrefix);
                 remainingColumnPrefix = columnBinary.slice(lcPrefix);
-                remainingColumnInfix = columnBinary.slice(lcPrefix);
+                remainingColumnCircumfix = columnBinary.slice(lcPrefix);
                 STATE++;
             }
 
             if (lcSuffix > 0) {
                 remainingRowSuffix = rowBinary.slice(0, -lcSuffix);
-                remainingRowInfix = remainingRowInfix.slice(0, -lcSuffix);
+                remainingRowCircumfix = remainingRowCircumfix.slice(0, -lcSuffix);
                 remainingColumnSuffix = columnBinary.slice(0, -lcSuffix);
-                remainingColumnInfix = remainingColumnInfix.slice(0, -lcSuffix);
+                remainingColumnCircumfix = remainingColumnCircumfix.slice(0, -lcSuffix);
                 STATE += 2;
             }
 
@@ -257,14 +257,14 @@ function fillMatrix() {
                     }
                 }
             }
-            if (allowedProperties["sliceInfix"] && STATE == 3) {
+            if (allowedProperties["sliceCircumfix"] && STATE == 3) {
                 for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
                     for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                         var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
                         var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
 
-                        var newRow = parseInt(r.toString(2).concat(remainingRowInfix).concat(c.toString(2)), 2);
-                        var newColumn = parseInt(r.toString(2).concat(remainingColumnInfix).concat(c.toString(2)), 2);
+                        var newRow = parseInt(r.toString(2).concat(remainingRowCircumfix).concat(c.toString(2)), 2);
+                        var newColumn = parseInt(r.toString(2).concat(remainingColumnCircumfix).concat(c.toString(2)), 2);
 
                         var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                         if (concatCell.length == "Unknown") {
@@ -303,7 +303,7 @@ function setAllowedProperties() {
     allowedProperties["reverse"] = document.getElementById("reverse").checked;
     allowedProperties["slicePrefix"] = document.getElementById("slicePrefix").checked;
     allowedProperties["sliceSuffix"] = document.getElementById("sliceSuffix").checked;
-    allowedProperties["sliceInfix"] = document.getElementById("sliceInfix").checked;
+    allowedProperties["sliceCircumfix"] = document.getElementById("sliceCircumfix").checked;
 }
 
 function selectCell(evt) {
@@ -444,11 +444,11 @@ function getPercent(stops, percent) {
 }
 
 function downloadSVG() {
-    var svgData = matrix.outerHTML;
-    var fileName = prompt("Enter file name", "level-");
-    var svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    var svgData = new XMLSerializer().serializeToString(matrix);
+    var svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
     var svgUrl = URL.createObjectURL(svgBlob);
     var downloadLink = document.createElement("a");
+    var fileName = prompt("Enter file name", "level-");
     downloadLink.href = svgUrl;
     downloadLink.download = fileName + ".svg";
     document.body.appendChild(downloadLink);

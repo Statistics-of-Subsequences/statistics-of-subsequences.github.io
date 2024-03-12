@@ -4,7 +4,7 @@
 var canvas, gl, shaderProgram, controller, onMobile;
 var width, height, aspectRatio;
 var xBox, yBox, lcsButton;
-var operationRadio, substitutionSection, permutationSection, permMap, sliceConcatSection, lcPrefix, lcSuffix, lcInfix, operation = "substitute";
+var operationRadio, substitutionSection, permutationSection, permMap, sliceConcatSection, lcPrefix, lcSuffix, lcCircumfix, operation = "substitute";
 var substitutionKBox, permutationBox, sliceConcatModeBox, operationButton;
 var lcsGenerated;
 var n = 1;
@@ -181,13 +181,13 @@ function main() {
             concatInputDiv.appendChild(suffixBox);
             concatInputDiv.appendChild(br1);
             concatInputDiv.appendChild(br2);
-        } else if (mode == "infix") {
+        } else if (mode == "circumfix") {
             tempLCPrefix = lcPrefix;
             tempLCSuffix = lcSuffix;
 
-            if (lcInfix != 0) {
-                lcPrefix = Math.ceil(lcInfix / 2);
-                lcSuffix = lcInfix - lcPrefix;
+            if (lcCircumfix != 0) {
+                lcPrefix = Math.ceil(lcCircumfix / 2);
+                lcSuffix = lcCircumfix - lcPrefix;
             }
 
             var prefixLabel = document.createElement("label");
@@ -631,9 +631,9 @@ function changeLCS() {
 
     if (n == m && lcPrefix == n) {
         lcSuffix = lcPrefix;
-        lcInfix = lcPrefix;
+        lcCircumfix = lcPrefix;
     } else {
-        lcInfix = 0;
+        lcCircumfix = 0;
     }
 
     if (lcPrefix > 0 || lcSuffix > 0) {
@@ -648,8 +648,8 @@ function changeLCS() {
         }
 
         if (lcPrefix > 0 && lcSuffix > 0) {
-            // add infix as an option to sliceConcatModeBox
-            sliceConcatModeBox.appendChild(new Option("Infix", "infix"));
+            // add circumfix as an option to sliceConcatModeBox
+            sliceConcatModeBox.appendChild(new Option("Circumfix", "circumfix"));
         }
 
         sliceConcatModeBox.selectedIndex = -1;
@@ -702,7 +702,7 @@ function performOperation() {
 
             newX = parseInt(slicedX + suffix, 2);
             newY = parseInt(slicedY + suffix, 2);
-        } else if (mode == "infix") {
+        } else if (mode == "circumfix") {
             var prefix = document.getElementById("prefix-box").value;
             var suffix = document.getElementById("suffix-box").value;
 

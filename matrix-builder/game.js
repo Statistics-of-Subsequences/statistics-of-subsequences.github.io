@@ -48,7 +48,7 @@ function startLevel(level) {
     document.getElementById("reverse").checked = allowedProperties["reverse"];
     document.getElementById("slicePrefix").checked = allowedProperties["slicePrefix"];
     document.getElementById("sliceSuffix").checked = allowedProperties["sliceSuffix"];
-    document.getElementById("sliceInfix").checked = allowedProperties["sliceInfix"];
+    document.getElementById("sliceCircumfix").checked = allowedProperties["sliceCircumfix"];
 
     document.getElementById("level-select").style.display = "none";
     document.getElementById("game").style.display = "block";
@@ -94,7 +94,7 @@ function checkSolution() {
             var goalSVGData = parsed.querySelector('svg').innerHTML;
             if (solutionSVGData == goalSVGData) {
                 if (currentSolution == optimalSolution) {
-                    alert("You have found the optimal solution!");
+                    alert("You have found an optimal solution!");
                 } else {
                     alert("You have found a solution, but it is not optimal.");
                 }
@@ -127,6 +127,8 @@ function generateMatrixShell() {
             infoMatrix[i][j] = new Cell(rows - 1 - i, j, matrix.childNodes[i].childNodes[j], "Unknown", "Not Derived Yet");
         }
     }
+
+    currentSolution = 0;
 }
 
 function generateSVGTable(cellWidth, cellHeight) {
@@ -209,7 +211,7 @@ function fillMatrix() {
         }
 
         // slice and concatenation property
-        if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceInfix"]) {
+        if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceCircumfix"]) {
             var rowBinary = intToBinStr(row, m);
             var columnBinary = intToBinStr(column, n);
 
@@ -232,37 +234,37 @@ function fillMatrix() {
 
             var remainingRowPrefix = rowBinary;
             var remainingRowSuffix = rowBinary;
-            var remainingRowInfix = rowBinary;
+            var remainingRowCircumfix = rowBinary;
             var remainingColumnPrefix = columnBinary;
             var remainingColumnSuffix = columnBinary;
-            var remainingColumnInfix = columnBinary;
+            var remainingColumnCircumfix = columnBinary;
             var STATE = 0;
 
             if (n == m && !allowedProperties["slicePrefix"] && allowedProperties["sliceSuffix"] && lcPrefix == n) {
                 lcSuffix = lcPrefix;
                 lcPrefix = 0;
-            } else if (n == m && !allowedProperties["slicePrefix"] && !allowedProperties["sliceSuffix"] && allowedProperties["sliceInfix"] && lcPrefix == n) {
+            } else if (n == m && !allowedProperties["slicePrefix"] && !allowedProperties["sliceSuffix"] && allowedProperties["sliceCircumfix"] && lcPrefix == n) {
                 lcPrefix = Math.ceil(lcPrefix / 2);
                 lcSuffix = n - lcPrefix;
             }
 
             if (lcPrefix > 0) {
                 remainingRowPrefix = rowBinary.slice(lcPrefix);
-                remainingRowInfix = rowBinary.slice(lcPrefix);
+                remainingRowCircumfix = rowBinary.slice(lcPrefix);
                 remainingColumnPrefix = columnBinary.slice(lcPrefix);
-                remainingColumnInfix = columnBinary.slice(lcPrefix);
+                remainingColumnCircumfix = columnBinary.slice(lcPrefix);
                 STATE++;
             }
 
             if (lcSuffix > 0) {
                 remainingRowSuffix = rowBinary.slice(0, -lcSuffix);
-                remainingRowInfix = remainingRowInfix.slice(0, -lcSuffix);
+                remainingRowCircumfix = remainingRowCircumfix.slice(0, -lcSuffix);
                 remainingColumnSuffix = columnBinary.slice(0, -lcSuffix);
-                remainingColumnInfix = remainingColumnInfix.slice(0, -lcSuffix);
+                remainingColumnCircumfix = remainingColumnCircumfix.slice(0, -lcSuffix);
                 STATE += 2;
             }
 
-            if (allowedProperties["slicePrefix"] && STATE == 1) {
+            if (allowedProperties["slicePrefix"] && (STATE == 1 || STATE == 3)) {
                 for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
                     var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
                     var newRow = parseInt(r.toString(2).concat(remainingRowPrefix.toString(2)), 2);
@@ -290,7 +292,7 @@ function fillMatrix() {
                     }
                 }
             }
-            if (allowedProperties["sliceSuffix"] && STATE == 2) {
+            if (allowedProperties["sliceSuffix"] && (STATE == 2 || STATE == 3)) {
                 for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                     var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
                     var newRow = parseInt(remainingRowSuffix.toString(2).concat(c.toString(2)), 2);
@@ -322,14 +324,14 @@ function fillMatrix() {
                     }
                 }
             }
-            if (allowedProperties["sliceInfix"] && STATE == 3) {
+            if (allowedProperties["sliceCircumfix"] && STATE == 3) {
                 for (var PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
                     for (var SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
                         var r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
                         var c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
 
-                        var newRow = parseInt(r.toString(2).concat(remainingRowInfix).concat(c.toString(2)), 2);
-                        var newColumn = parseInt(r.toString(2).concat(remainingColumnInfix).concat(c.toString(2)), 2);
+                        var newRow = parseInt(r.toString(2).concat(remainingRowCircumfix).concat(c.toString(2)), 2);
+                        var newColumn = parseInt(r.toString(2).concat(remainingColumnCircumfix).concat(c.toString(2)), 2);
 
                         var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                         if (concatCell.length == "Unknown") {

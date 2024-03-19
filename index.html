@@ -3,29 +3,107 @@
     <head>
         <title> BLISS Playground </title>
         <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="script.js"></script>
     </head>
-    <body>
-        <div style="text-align: center">
-            <h1>BLISS Playground</h1>
-            <p>Explore the tools and visualizations available for the Statistics of Subsequences project.</p>
 
-            <!-- make a 2x2 grid of SQUARE divs, the dimensions of which are determined by the window size -->
-            <div style="display: flex; justify-content: center;">
-                <div style="padding: 5px; width: 20vw; height: 20vw;" onclick="window.location.href='derivation-and-configuration-visualizer/derivationConfigurationVisualizer.html'">
-                    <image src="res/img/derivation-and-configuration-visualizer.png" style="width: 100%; height: 100%; object-fit: cover;">
+    <body>
+        <header>
+            <div id="header-mobile-section">
+                <div id="header-title-section" class="header-section">
+                    <h1>BLISS Playground</h1>
                 </div>
-                <div style="padding: 5px; width: 20vw; height: 20vw;" onclick="window.location.href='matrix-builder/matrixBuilder.html'">
-                    <image src="res/img/matrix-builder.png" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-            </div>
-            <div style="display: flex; justify-content: center;">
-                <div style="padding: 5px; width: 20vw; height: 20vw;" onclick="window.location.href='edit-properties-explorer/editPropertiesExplorer.html'">
-                    <image src="res/img/edit-properties-explorer.png" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div style="padding: 5px; width: 20vw; height: 20vw;" onclick="window.location.href='distribution-explorer/distributionExplorer.html'">
-                    <image src="res/img/distribution-explorer.png" style="width: 100%; height: 100%; object-fit: cover;">
+                <div id="header-about-section" class="header-section">
+                    <a href="about-us.html">ABOUT</a>
                 </div>
             </div>
-        </div>
+        </header>
+
+        <main>
+            <content data-index="0" data-status="active">
+                <div class="content-image-section"></div>
+                <div class="content-description-section">
+                    <p>
+                        Description of Tool
+                    </p>
+                </div>
+                <div class="content-navigation-section-left">
+                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
+                        ⮜ </button>
+                </div>
+                <div class="content-title-section">
+                    <h2><a href='derivation-and-configuration-visualizer/derivationConfigurationVisualizer.html'>
+                        Derivation and Configuration Visualizer</a></h2>
+                </div>
+                <div class="content-navigation-section-right">
+                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
+                        ⮞
+                    </button>
+                </div>
+            </content>
+            <content data-index="1" data-status="inactive">
+                <div class="content-image-section"></div>
+                <div class="content-description-section">
+                    <p>
+                        Description of Tool
+                    </p>
+                </div>
+                <div class="content-navigation-section-left">
+                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
+                        ⮜ </button>
+                </div>
+                <div class="content-title-section">
+                    <h2><a href='matrix-builder/matrixBuilder.html'>
+                        Matrix Builder</a></h2>
+                </div>
+                <div class="content-navigation-section-right">
+                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
+                        ⮞
+                    </button>
+                </div>
+            </content>
+            <content data-index="2" data-status="inactive">
+                <div class="content-image-section"></div>
+                <div class="content-description-section">
+                    <p>
+                        Description of Tool
+                    </p>
+                </div>
+                <div class="content-navigation-section-left">
+                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
+                        ⮜ </button>
+                </div>
+                <div class="content-title-section">
+                    <h2><a href='edit-properties-explorer/editPropertiesExplorer.html'>
+                        Edit Properties Explorer</a></h2>
+                </div>
+                <div class="content-navigation-section-right">
+                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
+                        ⮞
+                    </button>
+                </div>
+            </content>
+            <content data-index="3" data-status="inactive">
+                <div class="content-image-section"></div>
+                <div class="content-description-section">
+                    <p>
+                        Description of Tool
+                    </p>
+                </div>
+                <div class="content-navigation-section-left">
+                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
+                        ⮜ </button>
+                </div>
+                <div class="content-title-section">
+                    <h2><a href='distribution-explorer/distributionExplorer.html'>
+                        Distribution Explorer</a></h2>
+                </div>
+                <div class="content-navigation-section-right">
+                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
+                        ⮞
+                    </button>
+                </div>
+            </content>
+        </main>
     </body>
 </html>

@@ -1,0 +1,202 @@
+:root {
+    /* --main-background-color: #D7D2C1; */
+    --bubble-background-color: #EBEBEB;
+    --background-color: #282D3E;
+    --border-color: #39344d;
+    --highlight-color: #D1283F;
+}
+
+body {
+    background: linear-gradient(180deg, #D1283F, #5C121C);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0px;
+    overflow: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, a, p, span {
+    font-family: Avant Garde, Avantgarde, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+    font-weight: 400;
+    color: var(--border-color);
+    margin: 0px;
+}
+
+
+h1 {
+    font-size: 4rem;
+    line-height: 1.5rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--highlight-color);
+}
+
+header {
+    display: flex;
+    width: 100%;
+    background-color: var(--bubble-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0px 0px 25px 25px;
+}
+
+header .header-section {
+    padding: 3rem 2rem;
+    display: flex;
+    border-left: 1px solid var(--border-color);
+    align-items: center;
+    justify-content: center;
+}
+
+header .header-section h1 {
+    font-family: 'Passero One', arial, serif;
+}
+
+#header-about-section {
+    flex-grow: 1;
+}
+
+#header-title-section {
+    flex-basis: 90%;
+}
+
+main {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+main > content {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 9fr 1fr;
+    position: absolute;
+    transition: transform 750ms ease-in-out;
+}
+
+main > content > * {
+    background-color: var(--bubble-background-color);
+}
+
+main > content[data-status="inactive"] {
+    transform: translateX(-100%);
+    transition: none;
+}
+
+main > content[data-status="active"] {
+    transform: translateX(0%);
+}
+
+main > content[data-status="before"] {
+    transform: translateX(-100%);
+}
+
+main > content[data-status="after"] {
+    transform: translateX(100%);
+}
+
+main > content[data-status="becoming-active-from-before"] {
+    transform: translateX(-100%);
+    transition: none;
+}
+
+main > content[data-status="becoming-active-from-after"] {
+    transform: translateX(100%);
+    transition: none;
+}
+
+main > content > .content-image-section {
+    grid-column: 1/8;
+    background-position: 50% 30%;
+    background-size: cover; /* contain */
+    background-repeat: no-repeat;
+    border-radius: 50px 50px 50px 50px;
+    margin: 2.5% 1.25% 1.25% 2.5%;
+}
+
+main > content:first-child > .content-image-section {
+    background-image: url('./res/img/derivation-configuration-visualizer-preview.png');
+}
+
+main > content:nth-child(2) > .content-image-section {
+    background-image: url('./res/img/matrix-builder-preview.png');
+}
+
+main > content:nth-child(3) > .content-image-section {
+    background-image: url('./res/img/edit-properties-explorer-preview.png');
+}
+
+main > content:nth-child(4) > .content-image-section {
+    background-image: url('./res/img/distribution-explorer-preview.png');
+}
+
+main > content > .content-description-section {
+    grid-column: 8/11;
+    flex-direction: column;
+    padding: 10%;
+    border-radius: 50px 50px 50px 50px;
+    margin: 5.83% 5.83% 2.9167% 2.9167%;
+}
+
+main > content > .content-description-section > p {
+    font-size: 1.25em;
+}
+
+main > content > .content-title-section {
+    grid-column: 2/10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1.25% 0% 2.5% 0%;
+    padding: 3rem;
+}
+
+main > content > .content-title-section > h2 {
+    font-size: 2rem;
+    line-height: 1.5rem;
+}
+
+main > content > .content-navigation-section-left {
+    grid-column: 1/2;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    border-radius: 50px 0px 0px 50px;
+    margin: 10% 0% 20% 17.5%;
+}
+
+main > content > .content-navigation-section-right {
+    grid-column: 10/11;
+    flex-direction: column;
+    border-left: 1px solid var(--border-color);
+    border-radius: 0px 50px 50px 0px;
+    margin: 10% 17.5% 20% 0%;
+}
+
+main > content > .content-navigation-section-left > .content-navigation-button,
+main > content > .content-navigation-section-right > .content-navigation-button {
+    background-color: transparent;
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    color: var(--border-color);
+    font-size: 3rem;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+main > content > .content-navigation-section-left > .content-navigation-button:hover,
+main > content > .content-navigation-section-right > .content-navigation-button:hover {
+    color: var(--highlight-color);
+}

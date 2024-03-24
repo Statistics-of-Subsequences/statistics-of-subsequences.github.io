@@ -41,7 +41,7 @@ var camera;
 // =================
 function main() {
     // check platform
-    onMobile = mobileAndTabletCheck();
+    onMobile = mobileAndTabletCheck() || (window.innerHeight > window.innerWidth);
 
     // Create the window
     canvas = document.getElementById('window');
@@ -951,7 +951,7 @@ function setLegend() {
     var legendTitle = document.getElementById("legendTitle");
     if (onMobile) {
         legendTitle.style.marginTop = "1.5%";
-        legendTitle.style.marginBottom = "1.5%";
+        legendTitle.style.marginBottom = "0%";
     } else {
         legendTitle.style.marginTop = "4.75%";
         legendTitle.style.marginBottom = "4.75%";
@@ -959,7 +959,7 @@ function setLegend() {
     
     var legendTitlePercent = 100 * legendTitle.clientHeight / document.getElementById("legend").clientHeight;
     var topAndBottomMarginsPercent = parseFloat(legendTitle.style.marginTop) + 2 * parseFloat(legendTitle.style.marginBottom);
-    var heightPercent = 100 - legendTitlePercent - topAndBottomMarginsPercent - 1.75;
+    var heightPercent = 100 - legendTitlePercent - topAndBottomMarginsPercent - 1.75 * (2 * onMobile);
 
     legend.setAttribute("width", "90%");
     legend.setAttribute("height", heightPercent + "%");
@@ -1082,11 +1082,13 @@ function setLegend() {
     
     if (onMobile) {
         disclaimerText.setAttribute("y", "97.5%");
+        disclaimerText.setAttribute("font-size", "100%");
     } else {
         disclaimerText.setAttribute("y", "92.5%");
+        disclaimerText.setAttribute("font-size", "60%");
     }
 
-    disclaimerText.setAttribute("font-size", "60%");
+    
     disclaimerText.setAttribute("text-anchor", "middle");
     var disclaimerTextNode = document.createTextNode("If the edited pair of binary strings is the same as the selected pair,  the edited pair will not be displayed.");
     disclaimerText.appendChild(disclaimerTextNode);

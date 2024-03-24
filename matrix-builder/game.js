@@ -60,9 +60,11 @@ function startLevel(level) {
 
     var svgElements = document.getElementsByTagName("svg");
     for (var i = 0; i < svgElements.length; i++) {
-        svgElements[i].addEventListener("click", selectCell);
-        svgElements[i].addEventListener("mouseover", showPopup);
-        svgElements[i].addEventListener("mouseout", hidePopup);
+        if (svgElements[i].parentNode.tagName.toLowerCase() != 'button') {
+            svgElements[i].addEventListener("click", selectCell);
+            svgElements[i].addEventListener("mouseover", showPopup);
+            svgElements[i].addEventListener("mouseout", hidePopup);
+        }
     }
 }
 

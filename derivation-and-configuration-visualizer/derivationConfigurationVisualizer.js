@@ -1,8 +1,12 @@
+import { generateSVGTable, fillTable } from './tableRender.js';
+
 var xBox, yBox, tableMatrix, lcsSet, lcsTable, lcsConfigurations, lcsResults;
-var table;
-const svgns = "http://www.w3.org/2000/svg";
 
 document.addEventListener("DOMContentLoaded", () => {
+    for(const elm of document.getElementsByTagName("input")) {
+        elm.oninput = fillTable;
+    }
+
     xBox = document.getElementById("x-box");
     yBox = document.getElementById("y-box");
     tableMatrix = document.getElementById("table");
@@ -10,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lcsConfigurations = document.getElementById("lcs-configurations");
     lcsResults = document.querySelector("#lcs-results");
 
-    table = document.createElementNS(svgns, "svg");
+    table = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
     xBox.value = "";
     yBox.value = "";
@@ -44,159 +48,6 @@ function fillTable() {
         lcsResults.classList.add("hidden");
         lcsConfigurations.style.display = "none";
     }
-}
-
-function generateSVGTable(x, y, cellWidth, cellHeight) {
-    // clear the table
-    table.innerHTML = "";
-
-    var rows = x.length + 2;
-    var columns = y.length + 2;
-
-    lcsTable = LCSTable(x, y);
-    var subsequences = findAllLCS(x, y);
-
-    // create buttons for each lcs
-    lcsSet.innerHTML = "";
-    for (var i = 0; i < subsequences.length; i++) {
-        var subsequence = subsequences[i];
-
-        if (subsequence.length > 0) {
-            var button = document.createElement("button");
-            button.innerHTML = subsequences[i] + "\t";
-            button.setAttribute("onclick", "displayLCSInformation(\"" + x + "\", \"" + y + "\", \"" + subsequences[i] + "\")");
-            lcsSet.appendChild(button);
-        }
-    }
-
-    table.setAttributeNS(null, "width", columns * cellWidth + 50);
-    table.setAttributeNS(null, "height", rows * cellHeight + 50);
-
-    const outline = document.createElementNS(svgns, "rect");
-    outline.setAttributeNS(null, "x", 25);
-    outline.setAttributeNS(null, "y", 25);
-    outline.setAttributeNS(null, "width", columns * cellWidth);
-    outline.setAttributeNS(null, "height", rows * cellHeight);
-    outline.setAttributeNS(null, "fill", "white");
-    outline.setAttributeNS(null, "stroke", "black");
-    outline.setAttributeNS(null, "stroke-width", "2");
-    table.appendChild(outline);
-
-    const horizontalLine = document.createElementNS(svgns, "line");
-    horizontalLine.setAttributeNS(null, "x1", 25);
-    horizontalLine.setAttributeNS(null, "y1", 25 + cellHeight);
-    horizontalLine.setAttributeNS(null, "x2", 25 + columns * cellWidth);
-    horizontalLine.setAttributeNS(null, "y2", 25 + cellHeight);
-    horizontalLine.setAttributeNS(null, "stroke", "black");
-    horizontalLine.setAttributeNS(null, "stroke-width", "2");
-    table.appendChild(horizontalLine);
-
-    const verticalLine = document.createElementNS(svgns, "line");
-    verticalLine.setAttributeNS(null, "x1", 25 + cellWidth);
-    verticalLine.setAttributeNS(null, "y1", 25);
-    verticalLine.setAttributeNS(null, "x2", 25 + cellWidth);
-    verticalLine.setAttributeNS(null, "y2", 25 + rows * cellHeight);
-    verticalLine.setAttributeNS(null, "stroke", "black");
-    verticalLine.setAttributeNS(null, "stroke-width", "2");
-    table.appendChild(verticalLine);
-
-    // draw the remaining horizontal lines
-    for (var i = 2; i < rows; i++) {
-        const line = document.createElementNS(svgns, "line");
-        line.setAttributeNS(null, "x1", 25);
-        line.setAttributeNS(null, "y1", 25 + i * cellHeight);
-        line.setAttributeNS(null, "x2", 25 + columns * cellWidth);
-        line.setAttributeNS(null, "y2", 25 + i * cellHeight);
-        line.setAttributeNS(null, "stroke", "black");
-        line.setAttributeNS(null, "stroke-width", "1");
-        table.appendChild(line);
-    }
-
-    // draw the remaining vertical lines
-    for (var i = 2; i < columns; i++) {
-        const line = document.createElementNS(svgns, "line");
-        line.setAttributeNS(null, "x1", 25 + i * cellWidth);
-        line.setAttributeNS(null, "y1", 25);
-        line.setAttributeNS(null, "x2", 25 + i * cellWidth);
-        line.setAttributeNS(null, "y2", 25 + rows * cellHeight);
-        line.setAttributeNS(null, "stroke", "black");
-        line.setAttributeNS(null, "stroke-width", "1");
-        table.appendChild(line);
-    }
-
-    // draw the y values in the first row starting at column 2
-    for (var i = 2; i < columns; i++) {
-        const text = document.createElementNS(svgns, "text");
-        text.setAttributeNS(null, "x", 25 + i * cellWidth + 25);
-        text.setAttributeNS(null, "y", 25 + cellHeight / 2 + 10);
-        text.setAttributeNS(null, "font-size", "20");
-        text.setAttributeNS(null, "text-anchor", "middle");
-        text.setAttributeNS(null, "alignment-baseline", "middle");
-        text.innerHTML = y[i - 2];
-        table.appendChild(text);
-    }
-
-    // draw the x values in the first column starting at row 2
-    for (var i = 2; i < rows; i++) {
-        const text = document.createElementNS(svgns, "text");
-        text.setAttributeNS(null, "x", 25 + cellWidth / 2);
-        text.setAttributeNS(null, "y", 25 + i * cellHeight + 25);
-        text.setAttributeNS(null, "font-size", "20");
-        text.setAttributeNS(null, "text-anchor", "middle");
-        text.setAttributeNS(null, "alignment-baseline", "middle");
-        text.innerHTML = x[i - 2];
-        table.appendChild(text);
-    }
-
-    // fill the second row with 0s
-    for (var i = 2; i < rows; i++) {
-        const text = document.createElementNS(svgns, "text");
-        text.setAttributeNS(null, "x", 75 + cellWidth / 2);
-        text.setAttributeNS(null, "y", 25 + i * cellHeight + 25);
-        text.setAttributeNS(null, "font-size", "20");
-        text.setAttributeNS(null, "text-anchor", "middle");
-        text.setAttributeNS(null, "alignment-baseline", "middle");
-        text.innerHTML = "0";
-        table.appendChild(text);
-    }
-
-    // fill the second column with 0s
-    for (var i = 2; i < columns; i++) {
-        const text = document.createElementNS(svgns, "text");
-        text.setAttributeNS(null, "x", 25 + i * cellWidth + 25);
-        text.setAttributeNS(null, "y", 75 + cellHeight / 2 + 10);
-        text.setAttributeNS(null, "font-size", "20");
-        text.setAttributeNS(null, "text-anchor", "middle");
-        text.setAttributeNS(null, "alignment-baseline", "middle");
-        text.innerHTML = "0";
-        table.appendChild(text);
-    }
-
-    // fill the first cell with 0
-    const text = document.createElementNS(svgns, "text");
-    text.setAttributeNS(null, "x", 75 + cellWidth / 2);
-    text.setAttributeNS(null, "y", 75 + cellHeight / 2 + 10);
-    text.setAttributeNS(null, "font-size", "20");
-    text.setAttributeNS(null, "text-anchor", "middle");
-    text.setAttributeNS(null, "alignment-baseline", "middle");
-    text.innerHTML = "0";
-    table.appendChild(text);
-
-    // draw the lcs values in the table
-    for (var i = 2; i < rows; i++) {
-        for (var j = 2; j < columns; j++) {
-            const text = document.createElementNS(svgns, "text");
-            text.setAttributeNS(null, "x", 25 + j * cellWidth + 25);
-            text.setAttributeNS(null, "y", 25 + i * cellHeight + 25);
-            text.setAttributeNS(null, "font-size", "20");
-            text.setAttributeNS(null, "text-anchor", "middle");
-            text.setAttributeNS(null, "alignment-baseline", "middle");
-            text.innerHTML = lcsTable[i - 1][j - 1];
-            table.appendChild(text);
-        }
-    }
-
-    return table;
 }
 
 function displayLCSInformation(x, y, lcs) {
@@ -286,7 +137,7 @@ function animateBacktracking(lcs) {
         var x2 = 50 + (backtracking[i + 1][0] + 1) * 50;
         var y2 = 50 + (backtracking[i + 1][1] + 1) * 50;
 
-        var line = document.createElementNS(svgns, "line");
+        var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttributeNS(null, "x1", x1);
         line.setAttributeNS(null, "y1", y1);
         line.setAttributeNS(null, "x2", x1);
@@ -296,7 +147,7 @@ function animateBacktracking(lcs) {
         line.setAttributeNS(null, "stroke-linecap", "round");
         table.insertBefore(line, backChild);
 
-        var anim = document.createElementNS(svgns, "animate");
+        var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
         anim.setAttributeNS(null, "attributeName", "x2");
         anim.setAttributeNS(null, "from", x1);
         anim.setAttributeNS(null, "to", x2);
@@ -304,7 +155,7 @@ function animateBacktracking(lcs) {
         anim.setAttributeNS(null, "fill", "freeze");
         line.appendChild(anim);
 
-        var anim = document.createElementNS(svgns, "animate");
+        var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
         anim.setAttributeNS(null, "attributeName", "y2");
         anim.setAttributeNS(null, "from", y1);
         anim.setAttributeNS(null, "to", y2);
@@ -314,7 +165,7 @@ function animateBacktracking(lcs) {
 
         // if line was diagonal, draw a rect at the row and column
         if (x1 != x2 && y1 != y2) {
-            var rect = document.createElementNS(svgns, "rect");
+            var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             rect.setAttributeNS(null, "x", x1 - 25);
             rect.setAttributeNS(null, "y", 25);
             rect.setAttributeNS(null, "width", "50");
@@ -325,7 +176,7 @@ function animateBacktracking(lcs) {
             rect.setAttributeNS(null, "stroke-width", "2");
             table.insertBefore(rect, backChild);
 
-            var rect2 = document.createElementNS(svgns, "rect");
+            var rect2 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             rect2.setAttributeNS(null, "x", 25);
             rect2.setAttributeNS(null, "y", y1 - 25);
             rect2.setAttributeNS(null, "width", "50");

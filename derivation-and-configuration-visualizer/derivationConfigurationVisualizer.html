@@ -9,13 +9,15 @@
         <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
         <link rel="stylesheet" type="text/css" href="../common.css">
-        <link rel="stylesheet" type="text/css" href="derivationConfigurationVisualizer.css">
-        <script src="derivationConfigurationVisualizer.js"></script>
+        <link rel="stylesheet" type="text/css" href="./derivationConfigurationVisualizer.css">
+        <script src="../light-dark.js"></script>
+        <!-- <script type="module" src="derivationConfigurationVisualizer.js"></script> -->
+        <script src="./tableRender.js"></script>
     </head>
     <body>
         <header>
             <h1>LCS Derivation and Configuration Visualizer</h1>
-            <p>
+            <p class="sub-text">
                 Enter two strings to view all possible longest common subsequences for those strings.
             </p>
         </header>
@@ -23,14 +25,14 @@
             <div id="input-wrapper">
                 <span>
                     <label for="x-box">String 1:</label>
-                    <input type="text" id="x-box" name="x" size="25" oninput="fillTable();">
+                    <input type="text" id="x-box" name="x" maxlength="10">
                 </span>
                 <span>
                     <label for="y-box">String 2:</label>
-                    <input type="text" id="y-box" name="y" size="25" oninput="fillTable();">
+                    <input type="text" id="y-box" name="y" maxlength="10">
                 </span>
             </div>
-            <div id="table"></div>
+            <svg id="table"></svg>
             <div id="lcs-results" class="hidden">
                 <p>Click on an LCS to see its derivation and configurations within the strings:</p>
                 <div class="center" id="lcs-buttons"></div>

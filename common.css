@@ -5,7 +5,7 @@
     --header-background: #c3ccf5;
     --accent: #8a85ad;
     --dark-body-text: #f2f4fc;
-    --dark-sub-text: #888991;
+    --dark-sub-text: #B1B2BB;
     --dark-body-background: #282D3E;
     --dark-header-background: #1B1E2B;
     --dark-accent: #39344d;
@@ -84,16 +84,16 @@ p, a, label {
 
 #day-theme {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
+    top: 1vh;
+    right: 1vw;
+    width: 3.5vh;
+    aspect-ratio: 1/1;
     border: none;
     border-radius: 50%;
     transition: 0.2s filter linear;
     background-image: linear-gradient(var(--body-background), var(--accent));
     fill: var(--body-text);
-    padding: 5px;
+    padding: 0.5vh;
 }
 #day-theme:hover {
     filter: brightness(80%);
@@ -118,4 +118,17 @@ p, a, label {
 }
 .night-mode #moon-icon {
     display: none;
+}
+
+.sub-text {
+    color: var(--sub-text);
+}
+.night-mode .sub-text {
+    color: var(--dark-sub-text);
+}
+
+#table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3vh;
 }

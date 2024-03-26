@@ -4,14 +4,14 @@ import { generateLCSMemo, findAllLCS } from './table-calculate.js';
 const cellWidth = 50;
 const cellHeight = 50;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",  () => {
     const string1 = document.querySelector("#x-box");
     const string2 = document.querySelector("#y-box");
-    string1.oninput = () => {
+    string1.oninput = async () => {
         generateSVGTable(string1.value, string2.value, cellWidth, cellHeight);
         const memo = generateLCSMemo(string1.value, string2.value);
         fillTable(memo, cellWidth, cellHeight);
-        const paths = findAllLCS(string1.value, string2.value, memo);
+        const paths = await findAllLCS(string1.value, string2.value, memo);
         createLCSButtons(string1.value, string2.value, paths);
         displayLCSInformation(string1.value, string2.value, paths);
     }
@@ -29,7 +29,7 @@ function createLCSButtons(string1, string2, paths) {
     for (let lcs of paths.keys()) {
         const button = document.createElement("button");
         button.textContent = lcs;
-        button.onclick = displayLCSInformation(string1, string2, lcs, paths.get(lcs))
+        button.onclick = displayLCSInformation(string1, string2, lcs, paths.get(lcs));
         lcsSet.appendChild(button);
     }
 	

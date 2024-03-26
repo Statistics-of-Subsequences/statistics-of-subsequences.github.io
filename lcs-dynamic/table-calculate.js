@@ -27,13 +27,17 @@ export function generateLCSMemo(string1, string2) {
 }
 
 // find all lcs of two strings, returning a map of possible LCS strings and all paths that can be taken to reach that string
-export function findAllLCS(string1, string2, memo) {
+export async function findAllLCS(string1, string2, memo) {
     let output = new Map();
 
     const toCheck = [{i: string1.length - 1, j: string2.length - 1, lcs: "", path: []}]
-
+    let maxSize = 1;
     //Calculate partial LCS lengths
     while(toCheck.length > 0) {
+        if(toCheck.length > maxSize) {
+            maxSize = toCheck;
+            console.log(maxSize);
+        }
         const current = toCheck.shift();
         // If value doesn't change, then current cell is not part of LCS, and only need to check partials where value doesn't change
         // (which implies the current cell is not used)
@@ -41,16 +45,20 @@ export function findAllLCS(string1, string2, memo) {
         if(current.i >= 0 && current.j >= 0) {
             const upVal = (current.i === 0) ? 0 : memo[current.i - 1][current.j];
             const leftVal = (current.j === 0) ? 0 : memo[current.i][current.j - 1];
+            const diagVal = (current.i === 0 || current.j === 0) ? 0 : memo[current.i - 1][current.j - 1];
             const same = (string1[current.i] === string2[current.j]) ? string1[current.i] : "";
-
-            if(upVal === memo[current.i][current.j]) {
-                toCheck.push({i: current.i - 1, j: current.j, lcs: current.lcs, path: current.path.concat({row: current.i, column: current.j, included: false})});
-            } 
-            if(leftVal === memo[current.i][current.j]) {
-                toCheck.push({i: current.i, j: current.j - 1, lcs: current.lcs, path: current.path.concat({row: current.i, column: current.j, included: false})});
-            }
-            if(same) {
-                toCheck.push({i: current.i - 1, j: current.j - 1, lcs: same + current.lcs, path: current.path.concat({row: current.i, column: current.j, included: true})});
+            
+            if(diagVal !== memo[current.i][current.j]) {
+                if(upVal === memo[current.i][current.j]) {
+                    toCheck.push({i: current.i - 1, j: current.j, lcs: current.lcs, path: current.path.concat({row: current.i, column: current.j, included: false})});
+                } 
+                if(leftVal === memo[current.i][current.j]) {
+                    toCheck.push({i: current.i, j: current.j - 1, lcs: current.lcs, path: current.path.concat({row: current.i, column: current.j, included: false})});
+                } else if(upVal !== memo[current.i][current.j]) {
+                    toCheck.push({i: current.i - 1, j: current.j - 1, lcs: same + current.lcs, path: current.path.concat({row: current.i, column: current.j, included: same !== ""})});
+                }
+            } else {
+                toCheck.push({i: current.i - 1, j: current.j - 1, lcs: same + current.lcs, path: current.path.concat({row: current.i, column: current.j, included: same !== ""})});
             }
         //At this point, partial cannot grow longer LCS, so just add to output (ignoring blank partials)
         } else if(current.lcs !== "") {

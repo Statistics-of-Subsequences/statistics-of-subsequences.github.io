@@ -55,9 +55,11 @@ export async function findAllLCS(string1, string2, memo) {
                 if(leftVal === memo[current.i][current.j]) {
                     toCheck.push({i: current.i, j: current.j - 1, lcs: current.lcs, path: current.path.concat({row: current.i, column: current.j, included: false})});
                 } else if(upVal !== memo[current.i][current.j]) {
+                    //If left, top, and diagonal are all different
                     toCheck.push({i: current.i - 1, j: current.j - 1, lcs: same + current.lcs, path: current.path.concat({row: current.i, column: current.j, included: same !== ""})});
                 }
             } else {
+                // If diagonal is the same as current partial, then the position directly above and left must also be the same, and thus don't need to be checked
                 toCheck.push({i: current.i - 1, j: current.j - 1, lcs: same + current.lcs, path: current.path.concat({row: current.i, column: current.j, included: same !== ""})});
             }
         //At this point, partial cannot grow longer LCS, so just add to output (ignoring blank partials)

@@ -1,9 +1,14 @@
 :root {
-    --body-text: #f2f4fc;
-    --sub-text: #888991;
-    --body-background: #282D3E;
-    --header-background: #1B1E2B;
-    --accent: #39344d;
+    --body-text: #171a26;
+    --sub-text: #4b4b50;
+    --body-background: #eef0f6;
+    --header-background: #c3ccf5;
+    --accent: #8a85ad;
+    --dark-body-text: #f2f4fc;
+    --dark-sub-text: #888991;
+    --dark-body-background: #282D3E;
+    --dark-header-background: #1B1E2B;
+    --dark-accent: #39344d;
 }
 
 html {
@@ -18,6 +23,10 @@ body {
     width: 100%;
     margin: 0;
     padding: 0;
+    border-color: var(--accent);
+}
+body.night-mode {
+    border-color: var(--dark-accent);
 }
 
 header {
@@ -25,15 +34,25 @@ header {
     border: 1px solid var(--accent);
     width: 100%;
 }
+.night-mode header {
+    background-color: var(--dark-header-background);
+    border: var(--dark-accent);
+}
 
 main {
     background: linear-gradient(90deg, var(--body-background) 0%, var(--body-background) 75%, var(--header-background) 100%);
+}
+.night-mode main {
+    background: linear-gradient(90deg, var(--dark-body-background) 0%, var(--dark-body-background) 75%, var(--dark-header-background) 100%);
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: "Sarabun", "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
     font-weight: 400;
     color: var(--body-text);
+}
+.night-mode :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--dark-body-text);
 }
 
 p, a, label {
@@ -42,6 +61,9 @@ p, a, label {
     color: var(--body-text);
     text-decoration: none;
     transition: 0.2s filter linear;
+}
+.night-mode :is(p, a, label) {
+    color: var(--dark-body-text);
 }
 
 .center {
@@ -57,5 +79,43 @@ p, a, label {
 }
 
 .hidden {
+    display: none;
+}
+
+#day-theme {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    transition: 0.2s filter linear;
+    background-image: linear-gradient(var(--body-background), var(--accent));
+    fill: var(--body-text);
+    padding: 5px;
+}
+#day-theme:hover {
+    filter: brightness(80%);
+}
+.night-mode #day-theme {
+    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
+    fill: var(--dark-body-text);
+}
+.night-mode #day-theme:hover {
+    filter: brightness(130%);
+}
+
+#sun-icon {
+    display: none;
+}
+.night-mode #sun-icon {
+    display: block;
+}
+
+#moon-icon {
+    display: block;
+}
+.night-mode #moon-icon {
     display: none;
 }

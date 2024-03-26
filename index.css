@@ -36,7 +36,6 @@ main {
 
 .content-title {
     grid-column: 2;
-    background-color: var(--title-background-color);
 }
 
 .content-title > h2 {
@@ -45,11 +44,9 @@ main {
 
 .content-nav:first-child {
     grid-column: 1;
-    background-color: var(--navigation-button-background-color);
 }
 .content-nav:last-child {
     grid-column: 3;
-    background-color: var(--navigation-button-background-color);
 }
 
 .content-nav {
@@ -57,15 +54,23 @@ main {
     border-right: none;
     border-bottom: none;
     background-color: transparent;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--body-text);
     font-size: 3vw;
     cursor: pointer;
     width: 100%;
     height: 100%;
     transition: 0.2s backdrop-filter linear;
+      -webkit-user-select: none;
+              user-select: none;
+}
+.night-mode .content-nav {
+    color: var(--dark-body-text);
 }
 
 #header-about:hover, .content-nav:hover {
+    backdrop-filter: brightness(90%);
+}
+.night-mode :is(#header-about, .content-nav):hover {
     backdrop-filter: brightness(130%);
 }
 

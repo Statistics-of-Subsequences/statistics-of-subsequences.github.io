@@ -22,7 +22,7 @@ function createText(content, x, y) {
     return text;
 }
 
-function generateSVGTable(string1, string2, cellWidth, cellHeight) {
+export function generateSVGTable(string1, string2, cellWidth, cellHeight) {
     const table = document.querySelector("#table");
 
     // clear the table
@@ -76,7 +76,7 @@ function generateSVGTable(string1, string2, cellWidth, cellHeight) {
     }
 }
 
-function fillTable(memo, cellWidth, cellHeight) {
+export function fillTable(memo, cellWidth, cellHeight) {
     const table = document.querySelector("#table");
 
     // draw the lcs values in the table
@@ -86,5 +86,3 @@ function fillTable(memo, cellWidth, cellHeight) {
         }
     }
 }
-
-export default { generateSVGTable, fillTable };

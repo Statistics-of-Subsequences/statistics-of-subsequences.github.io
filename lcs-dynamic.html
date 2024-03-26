@@ -8,13 +8,16 @@
         <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
-        <link rel="stylesheet" type="text/css" href="../common.css">
-        <link rel="stylesheet" type="text/css" href="./derivationConfigurationVisualizer.css">
-        <script src="../light-dark.js"></script>
-        <!-- <script type="module" src="derivationConfigurationVisualizer.js"></script> -->
-        <script src="./tableRender.js"></script>
+        <link rel="stylesheet" type="text/css" href="./common.css">
+        <link rel="stylesheet" type="text/css" href="./lcs-dynamic/lcs-dynamic.css">
+        <script src="./light-dark.js"></script>
+        <script type="module" src="./lcs-dynamic/table-render.js"></script>
+        <script type="module" src="./lcs-dynamic/table-calculate.js"></script>
+        <script type="module" src="./lcs-dynamic/table-animate.js"></script>
+        <script type="module" src="./lcs-dynamic/lcs-dynamic.js"></script>
     </head>
     <body>
+        <script>setTheme();</script>
         <header>
             <h1>LCS Derivation and Configuration Visualizer</h1>
             <p class="sub-text">

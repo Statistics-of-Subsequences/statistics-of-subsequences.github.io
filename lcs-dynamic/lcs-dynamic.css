@@ -21,6 +21,7 @@ main {
     display: flex;
     justify-content: space-evenly;
     width: 50%;
+    margin-bottom: 2vh;
 }
 
 input {

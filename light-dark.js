@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+function setTheme() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add("night-mode");
     }
@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.remove("night-mode");
         }
     });
+}
 
+document.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.createElement("div");
     wrapper.classList.add("center");
     wrapper.id = "day-theme";

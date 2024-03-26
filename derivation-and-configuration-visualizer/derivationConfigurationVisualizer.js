@@ -1,13 +1,14 @@
-var xBox, yBox, tableMatrix, lcsSet, lcsTable, lcsConfigurations;
+var xBox, yBox, tableMatrix, lcsSet, lcsTable, lcsConfigurations, lcsResults;
 var table;
 const svgns = "http://www.w3.org/2000/svg";
 
-function setup() {
+document.addEventListener("DOMContentLoaded", () => {
     xBox = document.getElementById("x-box");
     yBox = document.getElementById("y-box");
     tableMatrix = document.getElementById("table");
     lcsSet = document.getElementById("lcs-buttons");
     lcsConfigurations = document.getElementById("lcs-configurations");
+    lcsResults = document.querySelector("#lcs-results");
 
     table = document.createElementNS(svgns, "svg");
 
@@ -15,7 +16,7 @@ function setup() {
     yBox.value = "";
     lcsConfigurations.style.display = "none";
     fillTable();
-}
+});
 
 function fillTable() {
     var x = xBox.value;
@@ -35,10 +36,12 @@ function fillTable() {
     tableMatrix.appendChild(generateSVGTable(x, y, 50, 50));
 
     // if there is an lcs, show the configurations
-    if (lcsSet.innerHTML != "") {
+    if (lcsSet.innerHTML !== "") {
         lcsConfigurations.style.display = "block";
         lcsConfigurations.innerHTML = "";
+        lcsResults.classList.remove("hidden");
     } else {
+        lcsResults.classList.add("hidden");
         lcsConfigurations.style.display = "none";
     }
 }

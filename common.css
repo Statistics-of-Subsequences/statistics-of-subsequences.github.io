@@ -1,0 +1,61 @@
+:root {
+    --body-text: #f2f4fc;
+    --sub-text: #888991;
+    --body-background: #282D3E;
+    --header-background: #1B1E2B;
+    --accent: #39344d;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: var(--header-background);
+    border: 1px solid var(--accent);
+    width: 100%;
+}
+
+main {
+    background: linear-gradient(90deg, var(--body-background) 0%, var(--body-background) 75%, var(--header-background) 100%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Sarabun", "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
+    font-weight: 400;
+    color: var(--body-text);
+}
+
+p, a, label {
+    font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
+    font-weight: 400;
+    color: var(--body-text);
+    text-decoration: none;
+    transition: 0.2s filter linear;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.v-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}

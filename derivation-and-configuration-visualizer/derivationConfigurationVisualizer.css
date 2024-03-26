@@ -1,0 +1,24 @@
+h1 {
+    font-size: 4vw;
+    margin-top: 1vh;
+    margin-bottom: 3vh;
+}
+
+header {
+    box-sizing: border-box;
+    padding-left: 20px;
+}
+
+main {
+    flex-grow: 1;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    padding-top: 20px;
+}
+
+#input-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    width: 50%;
+}

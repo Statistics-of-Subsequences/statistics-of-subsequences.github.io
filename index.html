@@ -1,109 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
     <head>
         <title> BLISS Playground </title>
+        <meta charset="utf-8">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <script src="script.js"></script>
+        <link rel="stylesheet" type="text/css" href="common.css">
+        <link rel="stylesheet" type="text/css" href="index.css">
+        <script src="index.js"></script>
     </head>
-
     <body>
         <header>
-            <div id="header-mobile-section">
-                <div id="header-title-section" class="header-section">
-                    <h1>BLISS Playground</h1>
-                </div>
-                <div id="header-about-section" class="header-section">
-                    <a href="about-us.html">ABOUT</a>
-                </div>
+            <div id="header-title">
+                <h1>BLISS Playground</h1>
+            </div>
+            <div id="header-about" class="center">
+                <a href="about-us.html">ABOUT</a>
             </div>
         </header>
-
         <main>
-            <content data-index="0" data-status="active">
-                <div class="content-image-section"></div>
-                <div class="content-description-section">
-                    <p>
-                        Description of Tool
-                    </p>
-                </div>
-                <div class="content-navigation-section-left">
-                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
-                        ⮜ </button>
-                </div>
-                <div class="content-title-section">
-                    <h2><a href='derivation-and-configuration-visualizer/derivationConfigurationVisualizer.html'>
-                        Derivation and Configuration Visualizer</a></h2>
-                </div>
-                <div class="content-navigation-section-right">
-                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
-                        ⮞
-                    </button>
-                </div>
-            </content>
-            <content data-index="1" data-status="inactive">
-                <div class="content-image-section"></div>
-                <div class="content-description-section">
-                    <p>
-                        Description of Tool
-                    </p>
-                </div>
-                <div class="content-navigation-section-left">
-                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
-                        ⮜ </button>
-                </div>
-                <div class="content-title-section">
-                    <h2><a href='matrix-builder/matrixBuilder.html'>
-                        Matrix Builder</a></h2>
-                </div>
-                <div class="content-navigation-section-right">
-                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
-                        ⮞
-                    </button>
-                </div>
-            </content>
-            <content data-index="2" data-status="inactive">
-                <div class="content-image-section"></div>
-                <div class="content-description-section">
-                    <p>
-                        Description of Tool
-                    </p>
-                </div>
-                <div class="content-navigation-section-left">
-                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
-                        ⮜ </button>
-                </div>
-                <div class="content-title-section">
-                    <h2><a href='edit-properties-explorer/editPropertiesExplorer.html'>
-                        Edit Properties Explorer</a></h2>
-                </div>
-                <div class="content-navigation-section-right">
-                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
-                        ⮞
-                    </button>
-                </div>
-            </content>
-            <content data-index="3" data-status="inactive">
-                <div class="content-image-section"></div>
-                <div class="content-description-section">
-                    <p>
-                        Description of Tool
-                    </p>
-                </div>
-                <div class="content-navigation-section-left">
-                    <button class="content-navigation-button" type="button" onclick="handleLeftClick()">
-                        ⮜ </button>
-                </div>
-                <div class="content-title-section">
-                    <h2><a href='distribution-explorer/distributionExplorer.html'>
-                        Distribution Explorer</a></h2>
-                </div>
-                <div class="content-navigation-section-right">
-                    <button class="content-navigation-button" type="button" onclick="handleRightClick()">
-                        ⮞
-                    </button>
-                </div>
-            </content>
+            <div class="content-label"></div>
+            <button class="content-nav" type="button" onclick="handleLeftClick()">⮜</button>
+            <div class="content-title center">
+                <h2><a href='derivation-and-configuration-visualizer/derivationConfigurationVisualizer.html'>Derivation and Configuration Visualizer</a></h2>
+            </div>
+            <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
+        </main>
+        <main class="hidden">
+            <div class="content-label"></div>
+            <button class="content-nav" type="button" onclick="handleLeftClick()">⮜</button>
+            <div class="content-title center">
+                <h2><a href='matrix-builder/matrixBuilder.html'>Matrix Builder</a></h2>
+            </div>
+            <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
+        </main>
+        <main class="hidden">
+            <div class="content-label"></div>
+            <button class="content-nav" type="button" onclick="handleLeftClick()">⮜</button>
+            <div class="content-title center">
+                <h2><a href='edit-properties-explorer/editPropertiesExplorer.html'>Edit Properties Explorer</a></h2>
+            </div>
+            <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
+        </main>
+        <main class="hidden">
+            <div class="content-label"></div>
+            <button class="content-nav" type="button" onclick="handleLeftClick()">⮜</button>
+            <div class="content-title center">
+                <h2><a href='distribution-explorer/distributionExplorer.html'>Distribution Explorer</a></h2>
+            </div>
+            <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
         </main>
     </body>
 </html>

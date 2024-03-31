@@ -82,7 +82,7 @@ export function fillTable(memo, cellWidth, cellHeight) {
     // draw the lcs values in the table
     for (var i = 0; i < memo.length; i++) {
         for (var j = 0; j < memo[0].length; j++) {
-            table.appendChild(createText(memo[i][j], 2.5 * cellWidth + j * cellWidth, 2.5 * cellHeight + i * cellHeight));
+            table.appendChild(createText(memo[i][j].len, 2.5 * cellWidth + j * cellWidth, 2.5 * cellHeight + i * cellHeight));
         }
     }
 }

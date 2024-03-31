@@ -1,5 +1,6 @@
 import { generateSVGTable, fillTable } from './table-render.js';
-import { generateLCSMemo, findAllLCS } from './table-calculate.js';
+import { generateLCSMemo, findOccurences } from './table-calculate.js';
+import { setString1Path, setString2Path, animateBacktracking } from './table-animate.js';
 
 const cellWidth = 50;
 const cellHeight = 50;
@@ -8,106 +9,117 @@ document.addEventListener("DOMContentLoaded",  () => {
     const string1 = document.querySelector("#x-box");
     const string2 = document.querySelector("#y-box");
     string1.oninput = async () => {
+        setString1Path([]);
+        setString2Path([]);
         generateSVGTable(string1.value, string2.value, cellWidth, cellHeight);
         const memo = generateLCSMemo(string1.value, string2.value);
         fillTable(memo, cellWidth, cellHeight);
-        const paths = await findAllLCS(string1.value, string2.value, memo);
-        createLCSButtons(string1.value, string2.value, paths);
-        displayLCSInformation(string1.value, string2.value, paths);
+        createLCSButtons(string1.value, string2.value, memo);
     }
     string2.oninput = string1.oninput;
 
     generateSVGTable("", "", cellWidth, cellHeight);
 });
 
-function createLCSButtons(string1, string2, paths) {
+function createLCSButtons(string1, string2, memo) {
     const lcsResults = document.querySelector("#lcs-results");
     const lcsConfigurations = lcsResults.querySelector("#lcs-configurations");
     const lcsSet = lcsResults.querySelector("#lcs-buttons");
     lcsSet.innerHTML = "";
+    lcsConfigurations.classList.add("hidden");
     
-    for (let lcs of paths.keys()) {
-        const button = document.createElement("button");
-        button.textContent = lcs;
-        button.onclick = displayLCSInformation(string1, string2, lcs, paths.get(lcs));
-        lcsSet.appendChild(button);
-    }
-	
-	// if there is an lcs, show the configurations
-    if (lcsSet.innerHTML !== "") {
-        lcsConfigurations.style.display = "block";
-        lcsConfigurations.innerHTML = "";
+    if(string1.length > 0 && string2.length > 0 && memo[string1.length - 1][string2.length - 1].lcs.length > 0) {
+        for (let lcs of memo[string1.length - 1][string2.length - 1].lcs) {
+            const button = document.createElement("button");
+            button.textContent = lcs;
+            button.onclick = () => {
+                displayLCSInformation(string1, string2, lcs);
+                lcsConfigurations.classList.remove("hidden");
+            };
+            lcsSet.appendChild(button);
+        }
+
         lcsResults.classList.remove("hidden");
     } else {
         lcsResults.classList.add("hidden");
-        lcsConfigurations.style.display = "none";
     }
 }
 
-function displayLCSInformation(string1, string2, lcs, lcsPaths) {
-    return;
-    // clear the configurations
-    lcsConfigurations.innerHTML = "<h3>Configurations of \"" + lcs + "\"</h3>";
+let selectedX, selectedY;
+function displayLCSInformation(string1, string2, lcs) {
+    document.querySelector("#lcs-config-string").textContent = `Configurations of "${lcs}"`;
+    const tableBody = document.querySelector("#lcs-config-table").querySelector("tbody");
+    tableBody.innerHTML = '';
+    document.querySelector("#string1-config").textContent = `Configurations in "${string1}"`;
+    document.querySelector("#string2-config").textContent = `Configurations in "${string2}"`;
 
-    // make a table
-    var table = document.createElement("table");
-    table.setAttribute("border", "0");
-    table.setAttribute("cellspacing", "0");
-    table.setAttribute("cellpadding", "0");
-    table.setAttribute("width", "50%");
-    table.setAttribute("height", "100%");
+    const string1Subsequences = findOccurences(string1, lcs).filter(s => s.pop());
+    const string2Subsequences = findOccurences(string2, lcs).filter(s => s.pop());
+    const sequences = Array(Math.max(string1Subsequences.length, string2Subsequences.length))
+                        .fill()
+                        .map((_,i) => {return {x: string1Subsequences[i], y: string2Subsequences[i]}});
 
-    // add table to the configurations and center it
-    lcsConfigurations.appendChild(table);
-    lcsConfigurations.setAttribute("align", "center");
+    for (let rowData of sequences) {
+        const row = document.createElement("tr");
 
-    // add header row
-    var headerRow = document.createElement("tr");
-    table.appendChild(headerRow);
+        const xWordWrapper = document.createElement("div");
+        if(rowData.x) {
+            for(let x = 0; x < string1.length; x++) {
+                const letter = document.createElement("p");
+                letter.textContent = string1[x];
+                if(rowData.x[x] > 0) {
+                    letter.classList.add("included");
+                }
+                xWordWrapper.appendChild(letter);
+                xWordWrapper.onclick = () => {
+                    if(selectedX) {
+                        if(selectedX === xWordWrapper) {
+                            return;
+                        }
 
-    // add header cells
-    var headerCell = document.createElement("th");
-    headerCell.innerHTML = "<b>Configurations in \"" + x + "\"</b>";
-    headerRow.appendChild(headerCell);
+                        selectedX.classList.remove("selected");
+                    }
 
-    headerCell = document.createElement("th");
-    headerCell.innerHTML = "<b>Configurations in \"" + y + "\"</b>";
-    headerRow.appendChild(headerCell);
-
-    // add the configurations
-    var configurationsX = configurations(x, lcs);
-    var configurationsY = configurations(y, lcs);
-
-    // make another row
-    var row = document.createElement("tr");
-    table.appendChild(row);
-
-    var xCell = document.createElement("td");
-    xCell.setAttribute("valign", "top");
-    xCell.setAttribute("align", "center");
-
-    var yCell = document.createElement("td");
-    yCell.setAttribute("valign", "top");
-    yCell.setAttribute("align", "center");
-
-    for (let configurationX of configurationsX) {
-        if (xCell.innerHTML != "") {
-            xCell.innerHTML += "<br>";
+                    xWordWrapper.classList.add("selected");
+                    selectedX = xWordWrapper;
+                    setString1Path(rowData.x);
+                    animateBacktracking();
+                }
+            }
         }
-        xCell.innerHTML += x.split('').map((char, index) => configurationX.includes(index) ? "<span class=\"included\">" + char + "</span>" : char).join('');
-    }
+        const xEntry = document.createElement("td");
+        xEntry.appendChild(xWordWrapper);
+        row.appendChild(xEntry);
 
-    for (let configurationY of configurationsY) {
-        if (yCell.innerHTML != "") {
-            yCell.innerHTML += "<br>";
+        const yWordWrapper = document.createElement("div");
+        if(rowData.y) {
+            for(let y = 0; y < string2.length; y++) {
+                const letter = document.createElement("p");
+                letter.textContent = string2[y];
+                if(rowData.y[y] > 0) {
+                    letter.classList.add("included");
+                }
+                yWordWrapper.appendChild(letter);
+                yWordWrapper.onclick = () => {
+                    if(selectedY) {
+                        if(selectedY === yWordWrapper) {
+                            return;
+                        }
+                        
+                        selectedY.classList.remove("selected");
+                    }
+
+                    yWordWrapper.classList.add("selected");
+                    selectedY = yWordWrapper;
+                    setString2Path(rowData.y);
+                    animateBacktracking();
+                }
+            }
         }
-        yCell.innerHTML += y.split('').map((char, index) => configurationY.includes(index) ? "<span class=\"included\">" + char + "</span>" : char).join('');
+        const yEntry = document.createElement("td");
+        yEntry.appendChild(yWordWrapper);
+        row.appendChild(yEntry);
+
+        tableBody.appendChild(row);
     }
-
-    row.appendChild(xCell);
-    row.appendChild(yCell);
-
-    // animate the backtracking
-    animateBacktracking(lcs);
 }
-

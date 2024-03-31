@@ -4,11 +4,18 @@
     --body-background: #eef0f6;
     --header-background: #c3ccf5;
     --accent: #8a85ad;
+    --bright-accent-shine: #d5d4db;
+    --bright-accent: #c5c4d0;
+    --bright-accent-dull: #aca9c5;
+
     --dark-body-text: #f2f4fc;
     --dark-sub-text: #B1B2BB;
     --dark-body-background: #282D3E;
     --dark-header-background: #1B1E2B;
     --dark-accent: #39344d;
+    --bright-dark-accent-shine: #69647e;
+    --bright-dark-accent: #59546f;
+    --bright-dark-accent-dull: #4d4864;
 }
 
 html {
@@ -55,14 +62,14 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--dark-body-text);
 }
 
-p, a, label {
+p, a, label, td, th, b {
     font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
     font-weight: 400;
     color: var(--body-text);
     text-decoration: none;
     transition: 0.2s filter linear;
 }
-.night-mode :is(p, a, label) {
+.night-mode :is(p, a, label, td, th, b) {
     color: var(--dark-body-text);
 }
 
@@ -94,6 +101,7 @@ p, a, label {
     background-image: linear-gradient(var(--body-background), var(--accent));
     fill: var(--body-text);
     padding: 0.5vh;
+    cursor: pointer;
 }
 #day-theme:hover {
     filter: brightness(80%);
@@ -125,10 +133,4 @@ p, a, label {
 }
 .night-mode .sub-text {
     color: var(--dark-sub-text);
-}
-
-#table {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 3vh;
 }

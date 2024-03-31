@@ -1,95 +1,143 @@
-function animateBacktracking(lcs) {
-    var backtracking = findBacktracking(lcsTable, lcs);
-    clearBlueObjects();
-    var backChild = table.childNodes[1];
+const animationInterval = 500;
 
-    // disable inputs
-    var buttons = document.querySelectorAll("button");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = true;
+let string1 = [];
+let string2 = [];
+let activeInterval = null;
+
+export function setString1Path(strIndices) {
+    string1 = strIndices;
+}
+export function setString2Path(strIndices) {
+    string2 = strIndices;
+}
+
+export function getIntervalStatus() {
+    return activeInterval;
+}
+
+function generateSteps(str1, str2, indices1, indices2) {
+    let output = [];
+    
+    let x = str1.length;
+    let y = str2.length;
+    while(x > 0 || y > 0) {
+        let nextOutput = { x: x, y: y, included: false };
+        if(indices1.length > 0 && indices2.length > 0 && x === indices1[indices1.length - 1] && y === indices2[indices2.length - 1]) {
+            x -= 1;
+            y -= 1;
+            nextOutput.included = true;
+            indices1.pop();
+            indices2.pop();
+        } else if(indices1.length > 0 && x !== indices1[indices1.length - 1]) {
+            x -= 1;
+        } else if(indices2.length > 0 && y !== indices2[indices2.length - 1]) {
+            y -= 1;
+        } else {
+            x -= 1;
+            y -= 1;
+        }
+
+        if(x < 0) {
+            x = 0;
+        }
+        if(y < 0) {
+            y = 0;
+        }
+
+        
+        output.push(nextOutput);
     }
-    xBox.disabled = true;
-    yBox.disabled = true;
+
+    output.push({ x: 0, y: 0 });
+    return output;
+}
+
+export function animateBacktracking() {
+    clearBlueObjects();
+    if(string1.length === 0 || string2.length === 0) {
+        return;
+    }
+
+    const str1Indices = string1.map((v, i) => v > 0 ? i + 1 : -1).filter(i => i != -1);
+    const str2Indices = string2.map((v, i) => v > 0 ? i + 1 : -1).filter(i => i != -1);
+    const steps = generateSteps(string1, string2, str1Indices, str2Indices);
+
+    const lineGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    lineGroup.id = "path-bin";
+    lineGroup.style.opacity = 0.5;
+    document.querySelector("#table").appendChild(lineGroup);
     
     // animate the line
-    var i = 0;
-    var interval = setInterval(function () {
-        var x1 = 50 + (backtracking[i][0] + 1) * 50;
-        var y1 = 50 + (backtracking[i][1] + 1) * 50;
-        var x2 = 50 + (backtracking[i + 1][0] + 1) * 50;
-        var y2 = 50 + (backtracking[i + 1][1] + 1) * 50;
+    let i = 0;
+    var activeInterval = setInterval(() => {
+        var y1 = 25 + (steps[i].x + 1) * 50;
+        var x1 = 25 + (steps[i].y + 1) * 50;
+        var y2 = 25 + (steps[i + 1].x + 1) * 50;
+        var x2 = 25 + (steps[i + 1].y + 1) * 50;
 
-        var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttributeNS(null, "x1", x1);
         line.setAttributeNS(null, "y1", y1);
         line.setAttributeNS(null, "x2", x1);
         line.setAttributeNS(null, "y2", y1);
-        line.setAttributeNS(null, "stroke", "blue");
-        line.setAttributeNS(null, "stroke-width", "25");
+        line.setAttributeNS(null, "stroke", "#0000CC");
+        line.setAttributeNS(null, "stroke-width", 25);
         line.setAttributeNS(null, "stroke-linecap", "round");
-        table.insertBefore(line, backChild);
+        lineGroup.appendChild(line);
 
-        var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
-        anim.setAttributeNS(null, "attributeName", "x2");
-        anim.setAttributeNS(null, "from", x1);
-        anim.setAttributeNS(null, "to", x2);
-        anim.setAttributeNS(null, "dur", "1s");
-        anim.setAttributeNS(null, "fill", "freeze");
-        line.appendChild(anim);
+        const animX = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+        animX.setAttributeNS(null, "attributeName", "x2");
+        animX.setAttributeNS(null, "from", x1);
+        animX.setAttributeNS(null, "to", x2);
+        animX.setAttributeNS(null, "dur", "0.2s");
+        animX.setAttributeNS(null, "fill", "freeze");
+        line.appendChild(animX);
 
-        var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
-        anim.setAttributeNS(null, "attributeName", "y2");
-        anim.setAttributeNS(null, "from", y1);
-        anim.setAttributeNS(null, "to", y2);
-        anim.setAttributeNS(null, "dur", "0.1s");
-        anim.setAttributeNS(null, "fill", "freeze");
-        line.appendChild(anim);
+        const animY = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+        animY.setAttributeNS(null, "attributeName", "y2");
+        animY.setAttributeNS(null, "from", y1);
+        animY.setAttributeNS(null, "to", y2);
+        animY.setAttributeNS(null, "dur", "0.2s");
+        animY.setAttributeNS(null, "fill", "freeze");
+        line.appendChild(animY);
 
-        // if line was diagonal, draw a rect at the row and column
-        if (x1 != x2 && y1 != y2) {
-            var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            rect.setAttributeNS(null, "x", x1 - 25);
-            rect.setAttributeNS(null, "y", 25);
-            rect.setAttributeNS(null, "width", "50");
-            rect.setAttributeNS(null, "height", "50");
-            rect.setAttributeNS(null, "opacity", "0.5");
-            rect.setAttributeNS(null, "fill", "blue");
-            rect.setAttributeNS(null, "stroke", "blue");
-            rect.setAttributeNS(null, "stroke-width", "2");
-            table.insertBefore(rect, backChild);
+        // if line was diagonal, draw a rectX at the row and column
+        if (steps[i].included) {
+            var rectX = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rectX.setAttributeNS(null, "x", x1 - 25);
+            rectX.setAttributeNS(null, "y", 0);
+            rectX.setAttributeNS(null, "width", 50);
+            rectX.setAttributeNS(null, "height", 50);
+            rectX.setAttributeNS(null, "opacity", 0.5);
+            rectX.setAttributeNS(null, "fill", "#0000CC");
+            rectX.setAttributeNS(null, "stroke", "blue");
+            lineGroup.appendChild(rectX);
 
-            var rect2 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            rect2.setAttributeNS(null, "x", 25);
-            rect2.setAttributeNS(null, "y", y1 - 25);
-            rect2.setAttributeNS(null, "width", "50");
-            rect2.setAttributeNS(null, "height", "50");
-            rect2.setAttributeNS(null, "opacity", "0.5");
-            rect2.setAttributeNS(null, "fill", "blue");
-            rect2.setAttributeNS(null, "stroke", "blue");
-            rect2.setAttributeNS(null, "stroke-width", "2");
-            table.insertBefore(rect2, backChild);
+            var rectY = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rectY.setAttributeNS(null, "x", 0);
+            rectY.setAttributeNS(null, "y", y1 - 25);
+            rectY.setAttributeNS(null, "width", 50);
+            rectY.setAttributeNS(null, "height", 50);
+            rectY.setAttributeNS(null, "opacity", 0.5);
+            rectY.setAttributeNS(null, "fill", "#0000CC");
+            rectY.setAttributeNS(null, "stroke", "blue");
+            lineGroup.appendChild(rectY);
         }
 
-        i++;
-        if (i == backtracking.length - 1) {
-            clearInterval(interval);
+        if (i === steps.length - 2) {
+            clearInterval(activeInterval);
+            activeInterval = null;
+            return;
         }
-    }, 500);
 
-    // enable inputs
-    setTimeout(function() {
-        for (var i = 0; i < buttons.length; i++) {
-            buttons[i].disabled = false;
-        }
-        xBox.disabled = false;
-        yBox.disabled = false;
-    }, 500 * (backtracking.length - 1) + 1000);
+        i += 1;
+    }, animationInterval);
 }
 
 // clear all blue objects
 function clearBlueObjects() {
-    var blueObjects = document.querySelectorAll("[stroke='blue']");
-    for (var i = 0; i < blueObjects.length; i++) {
-        blueObjects[i].remove();
+    const path = document.querySelector("#path-bin");
+    if(path) {
+        path.remove();
     }
 }

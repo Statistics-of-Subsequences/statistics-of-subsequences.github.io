@@ -40,6 +40,7 @@ header {
     background-color: var(--header-background);
     border: 1px solid var(--accent);
     width: 100%;
+    padding-left: 2vw;
 }
 .night-mode header {
     background-color: var(--dark-header-background);

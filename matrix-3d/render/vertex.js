@@ -1,4 +1,4 @@
-class Vertex {
+export default class Vertex {
     constructor(position, normal, uv) {
         this.position = position;
         this.normal = normal;

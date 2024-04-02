@@ -1,4 +1,6 @@
-class ObjectGroup {
+import * as WebGL from "./util/webgl-utils.js";
+
+export class ObjectGroup {
     constructor(name) {
         this.name = name;
         this.vertices = [];
@@ -47,13 +49,13 @@ class ObjectGroup {
     }
 }
 
-class Material {
+export class Material {
     constructor(name) {
         this.name = name;
         this.vertexCount = 1;
-        this.ambient = vec3();
-        this.diffuse = vec3();
-        this.specular = vec3();
+        this.ambient = WebGL.vec3();
+        this.diffuse = WebGL.vec3();
+        this.specular = WebGL.vec3();
         this.shininess = 0.0;
         this.diffuseMap = null;
         this.specularMap = null;
@@ -94,7 +96,7 @@ class Material {
     }
 }
 
-class Face {
+export class Face {
     constructor(vertexIndices, normalIndices, uvIndices) {
         this.vertexIndices = vertexIndices;
         this.normalIndices = normalIndices;
@@ -102,7 +104,7 @@ class Face {
     }
 }
 
-class OBJ {
+export class OBJ {
     constructor() {
         this.vertices = [];
         this.normals = [];
@@ -146,15 +148,15 @@ class OBJ {
             }
             else if (line.startsWith("Ka")) { // Material ambient definition
                 var values = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
-                currentMaterial.ambient = vec3(parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]));
+                currentMaterial.ambient = WebGL.vec3(parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]));
             }
             else if (line.startsWith("Kd")) { // Material diffuse definition
                 var values = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
-                currentMaterial.diffuse = vec3(parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]));
+                currentMaterial.diffuse = WebGL.vec3(parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]));
             }
             else if (line.startsWith("Ks")) { // Material specular definition
                 var values = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
-                currentMaterial.specular = vec3(parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]));
+                currentMaterial.specular = WebGL.vec3(parseFloat(values[0]), parseFloat(values[1]), parseFloat(values[2]));
             }
             else if (line.startsWith("Ns")) { // Material shininess definition
                 var values = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
@@ -182,13 +184,13 @@ class OBJ {
 
             if (line.startsWith("v ")) { // Vertex position definition
                 var coords = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
-                this.vertices.push(vec3(parseFloat(coords[0]), parseFloat(coords[1]), parseFloat(coords[2])));
+                this.vertices.push(WebGL.vec3(parseFloat(coords[0]), parseFloat(coords[1]), parseFloat(coords[2])));
             } else if (line.startsWith("vt")) { // Vertex UV definition
                 var coords = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
-                this.uvs.push(vec2(parseFloat(coords[0]), 1.0 - parseFloat(coords[1])));
+                this.uvs.push(WebGL.vec2(parseFloat(coords[0]), 1.0 - parseFloat(coords[1])));
             } else if (line.startsWith("vn")) { // Vertex normal definition
                 var coords = line.match(/[+-]?([0-9]+[.])?[0-9]+/g);
-                this.normals.push(vec3(parseFloat(coords[0]), parseFloat(coords[1]), parseFloat(coords[2])));
+                this.normals.push(WebGL.vec3(parseFloat(coords[0]), parseFloat(coords[1]), parseFloat(coords[2])));
             } else if (line.charAt(0) === 'g') { // Object group definition
                 var objectName = line.split(" ")[1];
                 this.objects.push(new ObjectGroup(objectName));

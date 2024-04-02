@@ -1,5 +1,5 @@
 import { generateSVGTable, fillTable } from './table-render.js';
-import { generateLCSMemo, findOccurences } from './table-calculate.js';
+import { generateLCSMemo, findOccurences } from '../LCS.js';
 import { setString1Path, setString2Path, animateBacktracking } from './table-animate.js';
 
 const cellWidth = 50;

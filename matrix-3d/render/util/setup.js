@@ -57,15 +57,13 @@
  * visible.
  */
 
-WebGLUtils = function() {
-
 /**
  * Creates the HTLM for a failure message
  * @param {string} canvasContainerId id of container of th
  *        canvas.
  * @return {string} The html.
  */
-var makeFailHTML = function(msg) {
+export function makeFailHTML(msg) {
   return '' +
     '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' +
     '<td align="center">' +
@@ -101,7 +99,7 @@ var OTHER_PROBLEM = '' +
  *     creation attributes you want to pass in.
  * @return {WebGLRenderingContext} The created context.
  */
-var setupWebGL = function(canvas, opt_attribs) {
+export function setupWebGL(canvas, opt_attribs) {
   function showLink(str) {
     var container = canvas.parentNode;
     if (container) {
@@ -127,7 +125,7 @@ var setupWebGL = function(canvas, opt_attribs) {
  *     from. If one is not passed in one will be created.
  * @return {!WebGLContext} The created context.
  */
-var create3DContext = function(canvas, opt_attribs) {
+export function create3DContext(canvas, opt_attribs) {
   var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
   var context = null;
   for (var ii = 0; ii < names.length; ++ii) {
@@ -140,12 +138,6 @@ var create3DContext = function(canvas, opt_attribs) {
   }
   return context;
 }
-
-return {
-  create3DContext: create3DContext,
-  setupWebGL: setupWebGL
-};
-}();
 
 /**
  * Provides requestAnimationFrame in a cross browser way.

@@ -1,4 +1,4 @@
-class Texture {
+export default class Texture {
     constructor(filePath, textureType, slot) {
         this.type = textureType;
 

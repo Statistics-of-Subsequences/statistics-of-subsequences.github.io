@@ -1,5 +1,12 @@
-class Model {
-    constructor(fileName, shader) {
+import * as WebGL from "./util/webgl-utils.js";
+import Texture from "./texture.js";
+import Mesh from "./mesh.js";
+import Vertex from "./vertex.js";
+import { OBJ } from "./objmtl.js";
+
+export default class Model {
+    constructor(gl, fileName, shader) {
+        this.gl = gl;
         this.meshes = [];
         this.selectedMesh = -1;
         this.kSelectedMesh = -1;
@@ -7,9 +14,9 @@ class Model {
         this.parseFile(fileName, this.meshes, shader);
     }
 
-    draw(shader, camera) {
+    draw(hader, camera) {
         for (var i = 0; i < this.meshes.length; i++) {
-            this.meshes[i].draw(shader, camera);
+            this.meshes[i].draw(this.gl, shader, camera);
         }
     }
 
@@ -112,7 +119,7 @@ class Model {
             var b = diffuseColor[2];
             var u = uvs[i * 2 + 0];
             var v = uvs[i * 2 + 1];
-            var vertex = new Vertex(vec3(x, y, z), vec3(nx, ny, nz), vec3(r, g, b), vec2(u, v));
+            var vertex = new Vertex(WebGL.vec3(x, y, z), WebGL.vec3(nx, ny, nz), WebGL.vec3(r, g, b), WebGL.vec2(u, v));
             vertexList.push(vertex);
         }
 
@@ -138,17 +145,11 @@ class Model {
     }
 
     async parseFile(fileName, meshList, shader) {
-        // initialize matrix dimensions
-        // var indexOf_ = fileName.indexOf("_");
-        // var indexOfX = fileName.indexOf("x");
-        // this.n = parseInt(fileName.substring(indexOf_ + 1, indexOfX));
-        // this.m = parseInt(fileName.substring(indexOfX + 1, fileName.length - 4));
-        
         // get renderable objects
         var obj = new OBJ();
 
         // get obj file contents
-        const objResponse = await fetch("https://statistics-of-subsequences.github.io/res/models/" + fileName);
+        const objResponse = await fetch("../../res/models/" + fileName);
         obj.objFile = await objResponse.text();
 
         // Split and sanitize OBJ file input

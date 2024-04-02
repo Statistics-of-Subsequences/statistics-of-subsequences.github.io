@@ -1,4 +1,10 @@
-class Mesh {
+
+import VAO from "./vao.js";
+import VBO from "./vbo.js";
+import EBO from "./ebo.js";
+import { Material } from "./objmtl.js";
+
+export default class Mesh {
     constructor(vertices, indices, material, textures, shader) {
         this.vertices = vertices;
         this.indices = indices;
@@ -42,7 +48,7 @@ class Mesh {
         this.isSelected = 0;
     }
 
-    draw(shader, camera) {
+    draw(gl, shader, camera) {
         gl.useProgram(shader);
 
         // bind textures
@@ -75,18 +81,18 @@ class Mesh {
         this.material.vertexCount = this.vertices.length;
 
         // bind VAO
-        var vbo = new VBO(this.vertices);
-        var materialVBO = new VBO(this.material);
-        var ebo = new EBO(this.indices);
+        var vbo = new VBO(gl, this.vertices);
+        var materialVBO = new VBO(gl, this.material);
+        var ebo = new EBO(gl, this.indices);
 
         // link VBO attributes to VAO
-        this.vao.linkAttribute(vbo, vertexPosition, 3, gl.FLOAT, 8 * 4, 0 * 4);
-        this.vao.linkAttribute(vbo, vertexNormal, 3, gl.FLOAT, 8 * 4, 3 * 4);
-        this.vao.linkAttribute(vbo, vertexUV, 2, gl.FLOAT, 8 * 4, 6 * 4);
-        this.vao.linkAttribute(materialVBO, vertexAmbient, 3, gl.FLOAT, 10 * 4, 0 * 4);
-        this.vao.linkAttribute(materialVBO, vertexColor, 3, gl.FLOAT, 10 * 4, 3 * 4);
-        this.vao.linkAttribute(materialVBO, vertexSpecular, 3, gl.FLOAT, 10 * 4, 6 * 4);
-        this.vao.linkAttribute(materialVBO, vertexShininess, 1, gl.FLOAT, 10 * 4, 9 * 4);
+        this.vao.linkAttribute(gl, vbo, vertexPosition, 3, gl.FLOAT, 8 * 4, 0 * 4);
+        this.vao.linkAttribute(gl, vbo, vertexNormal, 3, gl.FLOAT, 8 * 4, 3 * 4);
+        this.vao.linkAttribute(gl, vbo, vertexUV, 2, gl.FLOAT, 8 * 4, 6 * 4);
+        this.vao.linkAttribute(gl, materialVBO, vertexAmbient, 3, gl.FLOAT, 10 * 4, 0 * 4);
+        this.vao.linkAttribute(gl, materialVBO, vertexColor, 3, gl.FLOAT, 10 * 4, 3 * 4);
+        this.vao.linkAttribute(gl, materialVBO, vertexSpecular, 3, gl.FLOAT, 10 * 4, 6 * 4);
+        this.vao.linkAttribute(gl, materialVBO, vertexShininess, 1, gl.FLOAT, 10 * 4, 9 * 4);
 
         // bind EBO
         ebo.bind();

@@ -1,5 +1,10 @@
-class VBO {
-    constructor(data) {
+import { flatten } from "./util/webgl-utils.js";
+import { Material } from "./objmtl.js";
+import Vertex from "./vertex.js";
+
+export default class VBO {
+    constructor(gl, data) {
+        this.gl = gl;
         this.id = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.id);
 
@@ -14,15 +19,15 @@ class VBO {
     }
 
     bind() {
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.id);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.id);
     }
 
     unbind() {
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     }
 
     delete() {
-        gl.deleteBuffer(this.id);
+        this.gl.deleteBuffer(this.id);
     }
 
     vectorArray(vectors) {

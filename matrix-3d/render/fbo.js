@@ -1,7 +1,8 @@
-class FBO {
-    constructor(width, height) {
+export default class FBO {
+    constructor(gl, width, height) {
         this.width = width;
         this.height = height;
+        this.gl = gl;
 
         // create and bind the framebuffer
         this.fboID = gl.createFramebuffer();

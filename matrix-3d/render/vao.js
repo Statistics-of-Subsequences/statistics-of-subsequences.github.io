@@ -1,5 +1,5 @@
-class VAO {
-    linkAttribute(vbo, layout, numComponents, type, stride, offset) {
+export default class VAO {
+    linkAttribute(gl, vbo, layout, numComponents, type, stride, offset) {
         vbo.bind();
         gl.vertexAttribPointer(layout, numComponents, type, false, stride, offset);
         gl.enableVertexAttribArray(layout);

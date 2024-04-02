@@ -1,0 +1,16 @@
+.content {
+    margin: auto;
+    width: 97.5%;
+    padding: 10px;
+    text-align: center;
+    float: center;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td.disabled {
+    background-color: grey;
+}

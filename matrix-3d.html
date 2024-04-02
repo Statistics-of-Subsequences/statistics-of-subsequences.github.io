@@ -3,284 +3,20 @@
     <head>
         <title>LCS Edit Properties Explorer</title>
         <meta charset="UTF-8">
-        <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
-        <style>
-            body {
-                background-color: #f0f0f0;
-            }
-        </style>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="./common.css">
+        <link rel="stylesheet" type="text/css" href="./matrix-3d/matrix-3d.css">
 
-        <!-- Shaders -->
-        <script id="vertexShader" type="x-shader/x-vertex">
-            attribute vec3 vertexPosition;
-            attribute vec3 vertexNormal;
-            attribute vec3 vertexColor;
-            attribute vec2 vertexUV;
-            attribute vec3 vertexAmbient;
-            attribute vec3 vertexSpecular;
-            attribute float vertexShininess;
-
-            uniform mat4 cameraMatrix;
-            uniform mat4 modelMatrix;
-
-            varying vec3 position;
-            varying vec3 normal;
-            varying vec3 color;
-            varying vec2 textureCoordinates;
-            varying vec3 materialAmbient;
-            varying vec3 materialSpecular;
-            varying float materialShininess;
-            
-            void main() {
-                gl_Position = cameraMatrix * modelMatrix * vec4(vertexPosition, 1.0);
-                normal = vertexNormal;
-                color = vertexColor;
-                textureCoordinates = vertexUV;
-                materialAmbient = vertexAmbient;
-                materialSpecular = vertexSpecular;
-                materialShininess = vertexShininess;
-            }
-        </script>
-        
-        <script id="fragmentShader" type="x-shader/x-fragment">
-            precision mediump float;
-
-            varying vec3 position;
-            varying vec3 normal;
-            varying vec3 color;
-            varying vec2 textureCoordinates;
-            varying vec3 materialAmbient;
-            varying vec3 materialSpecular;
-            varying float materialShininess;
-
-            // materials and viewing
-            uniform vec3 cameraPosition;
-            uniform sampler2D diffuse0;
-            uniform sampler2D specular0;
-            uniform sampler2D normal0;
-            uniform vec3 lightPosition;
-            uniform bool useTexture;
-
-            // lighting
-            uniform int lightCount;
-            uniform int lightType;
-            uniform float lightAmbience;
-            uniform vec4 lightColor;
-
-            // point lights
-            uniform vec3 pointLightAttenuation;
-
-            // directional lights
-            uniform vec3 directionalLightDirection;
-
-            // spot lights
-            uniform vec3 spotLightDirection;
-            uniform vec3 spotLightAttenuation;
-            uniform float spotLightInnerCone;
-            uniform float spotLightOuterCone;
-
-            float map(float value, float min1, float max1, float min2, float max2) {
-                return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
-            }
-
-            vec4 pointLight() {
-                vec3 lightVector = lightPosition - position;
-
-                // calculates intensity of light with respect to distance
-                float dist = length(lightVector);
-                float intensity = pointLightAttenuation.x / (pointLightAttenuation.z * dist * dist + pointLightAttenuation.y * dist + pointLightAttenuation.x);
-
-                // diffuse lighting
-                vec3 normal = normalize(normal); // normalize(texture2D(normal0, textureCoordinates).xyz * 2.0f - 1.0);
-                vec3 lightDirection = normalize(lightVector);
-                float diffuse = max(dot(normal, lightDirection), 0.0);
-
-                // specular lighting
-                float specular = 0.0;
-                if (diffuse != 0.0) {
-                    vec3 viewDirection = normalize(cameraPosition - position);
-                    vec3 halfwayVector = normalize(viewDirection + lightDirection);
-                    specular = pow(max(dot(normal, halfwayVector), 0.0), materialShininess);
-                }
-
-                vec4 ambientColor, diffuseColor, specularColor;
-                if (useTexture) {
-                    ambientColor = texture2D(diffuse0, textureCoordinates) * lightAmbience;
-                    diffuseColor = texture2D(diffuse0, textureCoordinates) * diffuse;
-                    specularColor = texture2D(specular0, textureCoordinates) * specular;
-                } else {
-                    ambientColor = vec4(materialAmbient * lightAmbience, 1.0);
-                    diffuseColor = vec4(color * diffuse, 1.0);
-                    specularColor = vec4(materialSpecular * specular, 1.0);
-                }
-
-                return ambientColor + (diffuseColor * lightColor + specularColor) * intensity;
-            }
-
-            vec4 directionalLight() {
-                // normalize light color
-                float maxChannelColor = max(max(lightColor.r, lightColor.g), lightColor.b);
-                float newRed = map(lightColor.r, 0.0, maxChannelColor, 0.0, 1.0);
-                float newGreen = map(lightColor.g, 0.0, maxChannelColor, 0.0, 1.0);
-                float newBlue = map(lightColor.b, 0.0, maxChannelColor, 0.0, 1.0);
-                float newAlpha = clamp(lightColor.a, 0.0, 1.0);
-                vec4 newLightColor = vec4(newRed, newGreen, newBlue, newAlpha);
-
-                // diffuse lighting
-                vec3 normal = normalize(normal);
-                float diffuse = max(dot(normal, -directionalLightDirection), 0.0);
-
-                // specular lighting
-                float specular = 0.0;
-                if (diffuse != 0.0) {
-                    vec3 viewDirection = normalize(cameraPosition - position);
-                    vec3 halfwayVector = normalize(viewDirection - directionalLightDirection);
-                    specular = pow(max(dot(normal, halfwayVector), 0.0), materialShininess);
-                }
-
-                vec4 ambientColor, diffuseColor, specularColor;
-                if (useTexture) {
-                    ambientColor = texture2D(diffuse0, textureCoordinates) * lightAmbience;
-                    diffuseColor = texture2D(diffuse0, textureCoordinates) * diffuse;
-                    specularColor = texture2D(specular0, textureCoordinates) * specular;
-                } else {
-                    ambientColor = vec4(materialAmbient * lightAmbience, 1.0);
-                    diffuseColor = vec4(color, 1.0) * diffuse;
-                    specularColor = vec4(materialSpecular * specular, 1.0);
-                }
-
-                return ambientColor + diffuseColor * newLightColor + specularColor;
-            }
-
-            vec4 spotLight() {
-                // normalize light color
-                float maxChannelColor = max(max(lightColor.r, lightColor.g), lightColor.b);
-                float newRed = map(lightColor.r, 0.0, maxChannelColor, 0.0, 1.0);
-                float newGreen = map(lightColor.g, 0.0, maxChannelColor, 0.0, 1.0);
-                float newBlue = map(lightColor.b, 0.0, maxChannelColor, 0.0, 1.0);
-                float newAlpha = clamp(lightColor.a, 0.0, 1.0);
-                vec4 newLightColor = vec4(newRed, newGreen, newBlue, newAlpha);
-
-                vec3 lightVector = lightPosition - position;
-
-                // calculates intensity of light with respect to distance
-                float dist = length(lightVector);
-                float attenuationIntensity = spotLightAttenuation.x / (spotLightAttenuation.z * dist * dist + spotLightAttenuation.y * dist + spotLightAttenuation.x);
-
-                // diffuse lighting
-                vec3 normal = normalize(normal); // normalize(texture2D(normal0, textureCoordinates).xyz * 2.0f - 1.0);
-                vec3 lightDirection = normalize(lightVector);
-                float diffuse = max(dot(normal, lightDirection), 0.0);
-
-                // specular lighting
-                float specular = 0.0;
-                if (diffuse != 0.0) {
-                    vec3 viewDirection = normalize(cameraPosition - position);
-                    vec3 halfwayVector = normalize(viewDirection + lightDirection);
-                    specular = pow(max(dot(normal, halfwayVector), 0.0), materialShininess);
-                }
-
-                // calculates intensity of the current position based on its angle to the center of the light cone
-                float angle = dot(spotLightDirection, -lightDirection);
-                float coneIntensity = clamp((cos(angle) - cos(spotLightOuterCone)) / (cos(spotLightInnerCone) - cos(spotLightOuterCone)), 0.0, 1.0);
-
-                // combines the intensity of the light with the intensity of the current position
-                float intensity = attenuationIntensity * (1.0 - attenuationIntensity * attenuationIntensity) + coneIntensity * (attenuationIntensity * attenuationIntensity);
-
-                vec4 ambientColor, diffuseColor, specularColor;
-                if (useTexture) {
-                    ambientColor = texture2D(diffuse0, textureCoordinates) * lightAmbience;
-                    diffuseColor = texture2D(diffuse0, textureCoordinates) * diffuse;
-                    specularColor = texture2D(specular0, textureCoordinates) * specular;
-                } else {
-                    ambientColor = vec4(materialAmbient * lightAmbience, 1.0);
-                    diffuseColor = vec4(color, 1.0) * diffuse;
-                    specularColor = vec4(materialSpecular, 1.0) * specular;
-                }
-
-                return ambientColor + (diffuseColor * newLightColor + specularColor) * intensity;
-            }
-
-            void main() {
-                if (lightType == 0) {
-                    if (useTexture) {
-                        gl_FragColor = texture2D(diffuse0, textureCoordinates);
-                    } else {
-                        gl_FragColor = vec4(color, 1.0);
-                    }
-                    return;
-                } else if (lightType == 1) {
-                    gl_FragColor = pointLight();
-                    return;
-                } else if (lightType == 2) {
-                    gl_FragColor = directionalLight();
-                    return;
-                } else if (lightType == 3) {
-                    gl_FragColor = spotLight();
-                    return;
-                }
-            }
-        </script>
-        
-        <script type="text/javascript" src="./matrix-3d/util/setup.js"></script>
-        <script type="text/javascript" src="./matrix-3d/util/webgl-utils.js"></script>
-        <script type="text/javascript" src="./matrix-3d/util/controller.js"></script>
-        <script type="text/javascript" src="./matrix-3d/util/LCS.js"></script>
-        <!-- <script type="text/javascript" src="util/MV.js"></script> -->
-        
-        <script type="text/javascript" src="./matrix-3d/app.js"></script>
-        <script type="text/javascript" src="./matrix-3d/shader.js"></script>
-        <script type="text/javascript" src="./matrix-3d/vao.js"></script>
-        <script type="text/javascript" src="./matrix-3d/vbo.js"></script>
-        <script type="text/javascript" src="./matrix-3d/ebo.js"></script>
-        <script type="text/javascript" src="./matrix-3d/fbo.js"></script>
-        <script type="text/javascript" src="./matrix-3d/texture.js"></script>
-        <script type="text/javascript" src="./matrix-3d/objmtl.js"></script>
-        <script type="text/javascript" src="./matrix-3d/mesh.js"></script>
-        <script type="text/javascript" src="./matrix-3d/model.js"></script>
-        <script type="text/javascript" src="./matrix-3d/light.js"></script>
-        <script type="text/javascript" src="./matrix-3d/camera.js"></script>
-        <script type="text/javascript" src="./matrix-3d/vertex.js"></script>
-
-        <style>
-            .content {
-                margin: auto;
-                width: 97.5%;
-                padding: 10px;
-                text-align: center;
-                float: center;
-            }
-
-            table {
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            td.disabled {
-                background-color: grey;
-            }
-        </style>
+        <script type="module" src="./matrix-3d/matrix-3d.js"></script>
+        <script src="./light-dark.js"></script>
     </head>
-        
     <body>
-        <div style="float: left;">
-            <button onclick="window.location.href='../index.html'">
-                <!-- Add svg for back -->
-                <svg width="1em" height="1em" viewBox="0 0 38.273 38.273" fill="black" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M20.621,10.484V5.84c0-0.808-0.458-1.548-1.181-1.909c-0.722-0.359-1.589-0.279-2.236,0.206
-                        l-9.486,7.147c-0.677,0.292-1.117,0.67-1.401,1.058l-5.468,4.119C0.312,16.866-0.003,17.501,0,18.173
-                        c0.002,0.673,0.322,1.305,0.862,1.706l16.355,12.133c0.646,0.48,1.51,0.554,2.23,0.191c0.72-0.362,1.174-1.1,1.174-1.905v-5.517
-                        c0.013,0,0.025,0,0.038,0c3.842,0,10.687,1.089,13.366,8.386c0.311,0.846,1.116,1.397,2.001,1.397c0.079,0,0.157-0.004,0.236-0.013
-                        c0.975-0.108,1.751-0.868,1.88-1.84c0.052-0.394,1.208-9.682-4.461-16.23C30.621,12.948,26.235,10.935,20.621,10.484z
-                        M20.659,20.515c-1.443,0-2.379,0.132-2.482,0.146c-1.046,0.154-1.822,1.053-1.822,2.111v3.287l-10.66-7.907l3.555-2.678
-                        c0.136-0.104,0.259-0.222,0.365-0.351c0.155-0.068,0.301-0.152,0.437-0.254l6.303-4.75v2.401c0,1.168,0.939,2.119,2.108,2.134
-                        c5.345,0.063,9.374,1.61,11.975,4.6c1.442,1.658,2.314,3.602,2.835,5.469C28.923,21.038,23.424,20.515,20.659,20.515z"
-                        fill="black"></path>
-                </svg>
-            </button>
-        </div>
-        <div style="float: right;">
+        <script>setTheme();</script>
+        <!-- <div style="float: right;">
             <button id="computer-controls" onclick="showControls()">
                 <svg width="1em" height="1em" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -288,10 +24,11 @@
                     </path>
                 </svg>
             </button>
-        </div>
-
-        <div class="content">
+        </div> -->
+        <header>
             <h1>LCS Edit Properties Explorer</h1>
+        </header>
+        <main class="content">
             <div id="left" style="width: 51%; margin-top: 0.5%; margin-left: 6.25%; float: left;">
                 <canvas id="window" width="800" height="600">
                     Your browser does not support HTML5
@@ -340,10 +77,10 @@
                 <div id="lcsInformation" style="border: 1px solid black; text-align: center;">
                     <h4>Longest Common Subsequence</h4>
                     <label for="x-box">x: </label>
-                    <input type="text" id="x-box" name="x" size="10">
+                    <input type="text" id="x-box" name="x" maxlength="1">
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <label for="y-box">y: </label>
-                    <input type="text" id="y-box" name="y" size="10"> &nbsp;&nbsp;
+                    <input type="text" id="y-box" name="y" maxlength="1"> &nbsp;&nbsp;
                     <br /><br />
                     <button id="lcs-button" onclick="changeLCS()">Update LCS</button>
                     <br /><br />
@@ -398,7 +135,8 @@
                 </div>
                 
                 <div id="slice-concat" style="display: none;">
-                    Concatenation Mode: <select id="slice-concat-mode"></select>
+                    <label for="slice-concat-mode">Concatenation Mode: </label>
+                    <select id="slice-concat-mode"></select>
                     <br /><br />
                     <div id="concat-input">
                     </div>

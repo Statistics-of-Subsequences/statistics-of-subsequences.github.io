@@ -1,6 +1,7 @@
+import * as WebGL from "./render/util/webgl-utils.js";
 import Controller from "./render/util/controller.js";
 
-export function registerController(canvas) {
+export function registerController(canvas, camera) {
     const controller = new Controller();
     controller.keyPress = function (keys) {
         if (keys.indexOf("KeyZ") != -1) {
@@ -14,47 +15,47 @@ export function registerController(canvas) {
         if (!isAnimating) {
             if (isPerspective) {
                 if (keys.indexOf("KeyW") != -1) {
-                    camera.setPosition(add(camera.position, scale(-camera.speed, camera.orientation)));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, camera.orientation)));
                 }
                 if (keys.indexOf("KeyA") != -1) {
-                    camera.setPosition(add(camera.position, scale(camera.speed, normalize(cross(camera.orientation, camera.worldUp)))));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)))));
                 }
                 if (keys.indexOf("KeyS") != -1) {
-                    camera.setPosition(add(camera.position, scale(camera.speed, camera.orientation)));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, camera.orientation)));
                 }
                 if (keys.indexOf("KeyD") != -1) {
-                    camera.setPosition(add(camera.position, scale(-camera.speed, normalize(cross(camera.orientation, camera.worldUp)))));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)))));
                 }
                 if (keys.indexOf("Space") != -1) {
-                    camera.setPosition(add(camera.position, scale(camera.speed, camera.worldUp)));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, camera.worldUp)));
                 }
                 if (keys.indexOf("ShiftLeft") != -1) {
-                    camera.setPosition(add(camera.position, scale(-camera.speed, camera.worldUp)));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, camera.worldUp)));
                 }
             } else {
                 if (keys.indexOf("KeyW") != -1) {
-                    camera.setPosition(add(camera.position, scale(camera.speed, vec3(0.0, 0.0, 1.0))));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, WebGL.vec3(0.0, 0.0, 1.0))));
                 }
                 if (keys.indexOf("KeyA") != -1) {
-                    camera.setPosition(add(camera.position, scale(camera.speed, vec3(1.0, 0.0, 0.0))));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, WebGL.vec3(1.0, 0.0, 0.0))));
                 }
                 if (keys.indexOf("KeyS") != -1) {
-                    camera.setPosition(add(camera.position, scale(-camera.speed, vec3(0.0, 0.0, 1.0))));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, WebGL.vec3(0.0, 0.0, 1.0))));
                 }
                 if (keys.indexOf("KeyD") != -1) {
-                    camera.setPosition(add(camera.position, scale(-camera.speed, vec3(1.0, 0.0, 0.0))));
+                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, WebGL.vec3(1.0, 0.0, 0.0))));
                 }
                 if (keys.indexOf("Space") != -1) {
                     orthoSize += 0.1 * Math.min(n, m);
-                    orthoEye = vec3(camera.position[0], orthoSize, camera.position[2]);
-                    orthoMatrix = ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
+                    orthoEye = WebGL.vec3(camera.position[0], orthoSize, camera.position[2]);
+                    orthoMatrix = WebGL.ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
                     camera.projectionMatrix = orthoMatrix;
                     camera.setPosition(orthoEye);
                 }
                 if (keys.indexOf("ShiftLeft") != -1) {
                     orthoSize -= 0.1 * Math.min(n, m);
-                    orthoEye = vec3(camera.position[0], orthoSize, camera.position[2]);
-                    orthoMatrix = ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
+                    orthoEye = WebGL.vec3(camera.position[0], orthoSize, camera.position[2]);
+                    orthoMatrix = WebGL.ortho(2 * orthoSize * aspectRatio, 2 * orthoSize, 0.1, 100.0);
                     camera.projectionMatrix = orthoMatrix;
                     camera.setPosition(orthoEye);
                 }
@@ -82,49 +83,58 @@ export function registerController(canvas) {
     controller.registerForCanvas(canvas);
 }
 
-function rotateCamera(deltaX, deltaY) {
+export function rotateCamera(camera, deltaX, deltaY) {
     if (!isAnimating && isPerspective) {
         var rotX = camera.sensitivity * deltaX / 100;
         var rotY = camera.sensitivity * deltaY / 100;
 
-        camera.setOrientation(rotate(camera.orientation, vec3(0.0, 1.0, 0.0), radians(-rotX)));
-        camera.setOrientation(rotate(camera.orientation, normalize(cross(camera.orientation, camera.worldUp)), radians(rotY)));
+        camera.setOrientation(rotate(camera.orientation, WebGL.vec3(0.0, 1.0, 0.0), radians(-rotX)));
+        camera.setOrientation(rotate(camera.orientation, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)), radians(rotY)));
     }
 }
 
-function panCamera(deltaX, deltaY) {
+export function panCamera(camera, deltaX, deltaY) {
     if (!isAnimating) {
         var panX = -camera.sensitivity * deltaX / 1000;
         var panY = -camera.sensitivity * deltaY / 1000;
 
         if (isPerspective) {
-            var newPosition = add(camera.position, add(scale(panX, normalize(cross(camera.orientation, camera.worldUp))), scale(panY, camera.worldUp)));
+            var newPosition = WebGL.add(camera.position, WebGL.add(WebGL.scale(panX, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp))), WebGL.scale(panY, camera.worldUp)));
             camera.setPosition(newPosition);
         } else {
-            var newPosition = add(camera.position, add(scale(panX, vec3(1.0, 0.0, 0.0)), scale(panY, vec3(0.0, 0.0, 1.0))));
+            var newPosition = WebGL.add(camera.position, WebGL.add(WebGL.scale(panX, WebGL.vec3(1.0, 0.0, 0.0)), WebGL.scale(panY, WebGL.vec3(0.0, 0.0, 1.0))));
             camera.setPosition(newPosition);
         }
     }
 }
 
-function zoomCamera(delta) {
+export function zoomCamera(camera, delta) {
     if (!isAnimating) {
         var zoom = camera.sensitivity * delta / 10000;
 
         if (isPerspective) {
-            var newPosition = add(camera.position, scale(zoom, camera.orientation));
+            var newPosition = WebGL.add(camera.position, WebGL.scale(zoom, camera.orientation));
             camera.setPosition(newPosition);
         } else {
             orthoSize += zoom * Math.min(n, m);
-            orthoEye = vec3(camera.position[0], orthoSize, camera.position[2]);
-            orthoMatrix = ortho(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, 0.1, 100.0);
+            orthoEye = WebGL.vec3(camera.position[0], orthoSize, camera.position[2]);
+            orthoMatrix = WebGL.ortho(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, 0.1, 100.0);
             camera.projectionMatrix = orthoMatrix;
             camera.setPosition(orthoEye);
         }
     }
 }
 
-function showControls() {
+function resetCamera(gl, shaderProgram, cameraStatus) {
+    if (!cameraStatus.isAnimating) {
+        initializeMLC(gl, shaderProgram);
+        cameraStatus.isPerspective = true;
+        camera.isPerspective = true;
+        cameraStatus.time = -1.0;
+    }
+}
+
+export function showControls() {
     // create popup
     const popup = document.createElement("div");
     popup.id = "popup";

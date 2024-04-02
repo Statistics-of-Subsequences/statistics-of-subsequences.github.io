@@ -2,8 +2,8 @@ main {
     position: relative;
     display: grid;
     box-sizing: border-box;
-    grid-template-columns: 5fr 2fr 3fr;
-    grid-template-rows: 7fr 7fr 6fr;
+    grid-template-columns: 50fr 20fr 30fr;
+    grid-template-rows: 20fr 45fr 30fr;
     row-gap: 1vh;
     column-gap: 1vh;
     width: 100%;
@@ -12,48 +12,49 @@ main {
 
 #computer-controls {
     position: absolute;
-    top: 0.5vh;
-    right: 0.5vh;
+    top: 2vh;
+    right: 2vh;
     width: 4vh;
     height: 4vh;
-    border-radius: 0.5vh;
+    border-radius: 100%;
     border: none;
-    background-image: linear-gradient(var(--body-background), var(--accent));
+    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
+    filter: brightness(100%) opacity(80%);
+    transition: 0.2s filter linear;
+    cursor: pointer;
 }
 #computer-controls:hover {
-    filter: brightness(80%);
-}
-.night-mode #computer-controls {
-    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
-}
-.night-mode #computer-controls:hover {
-    filter: brightness(130%);
+    filter: brightness(130%) opacity(80%);
 }
 
 #info-icon {
     width: 100%;
     height: 100%;
-    fill: var(--body-text);
-}
-.night-mode #info-icon {
     fill: var(--dark-body-text);
 }
 
 #window-wrapper {
     grid-column: span 2;
     grid-row: span 2;
+    padding: 1vw;
 }
 
 #window {
     width: 100%;
     height: 100%;
-    max-width: 800px;
-    max-height: 600px;
 }
 
-#matrix-dimensions, #legend, #lcs-information, #edit-operations {
-    border: 1px solid var(--accent);
+#icon-wrapper {
+    position: relative;
+    width: max-content;
+    height: max-content;
+}
+
+#window, #matrix-dimensions, #legend, #lcs-information, #edit-operations {
+    border: 3px solid var(--accent);
     text-align: center;
+    border-radius: 2vw;
+    box-sizing: border-box;
 }
 .night-mode :is(#matrix-dimensions, #legend, #lcs-information, #edit-operations) {
     border-color: var(--dark-accent);
@@ -64,15 +65,16 @@ main {
     justify-content: space-evenly;
 }
 
-#matrix-dimensions, #lcs-information, #legend {
+#matrix-dimensions, #legend, #lcs-information, #edit-operations {
     display: flex;
     flex-direction: column;
-    margin: auto;
-    width: 90%;
-    height: fit-content;
-    max-height: 100%;
+    margin: 1vw;
+    width: auto;
+    height: auto;
+    box-sizing: border-box;
 }
-#dimension-button, #lcs-button {
+#dimension-button, #lcs-button, #operation-button {
+    cursor: pointer;
     border: none;
     margin: 1vh auto;
     width: 20ch;
@@ -80,21 +82,114 @@ main {
     padding-bottom: 1vh;
     background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
 }
-.night-mode #dimension-button, .night-mode #lcs-button {
+.night-mode :is(#dimension-button, #lcs-button, #operation-button) {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
 }
 
-#legend {
+#edit-operations {
     grid-column: span 2;
 }
 
-#lcs-information div {
+#lcs-information div, #edit-results div {
     display: flex;
     flex-direction: row;
     justify-content: right;
     align-items: center;
     width: min-content;
 }
-#lcs-information div label {
+#lcs-information div label, #edit-results div label {
     padding-right: 0.5vw;
+}
+#lcs-information div input, #edit-results div input {
+    width: 20ch;
+}
+
+.two-margin {
+    margin-right: 1vh;
+}
+
+#legend p {
+    padding: 0;
+    margin: 0;
+}
+
+#gradient-colors {
+    display: block;
+    width: 90%;
+    height: 4vh;
+}
+
+#gradient-ticks > span {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#gradient-ticks > span:nth-child(2n + 2) {
+    border-left: 3px solid var(--body-text);
+}
+.night-mode #gradient-ticks > span:nth-child(2n + 2) {
+    border-left: 3px solid var(--dark-body-text);
+}
+
+#gradient-ticks, #gradient-labels {
+    width: 100%;
+    height: 2vh;
+    margin-bottom: 0.6vh;
+}
+#gradient-labels p {
+    width: 100%;
+}
+#gradient-labels {
+    margin-bottom: 3vh;
+}
+
+#select-color span, #edit-color span {
+    margin-top: 1vh;
+    display: block;
+    width: 80%;
+    height: 80%;
+    max-width: 80px;
+    max-height: 80px;
+    aspect-ratio: 1/1;
+}
+#select-color span {
+    background-color: #8e3f29;
+}
+#edit-color span {
+    background-color: #d18952;
+}
+
+#legend h5 {
+    margin-top: 2vh;
+    width: 90%;
+}
+
+#mobile-controls {
+    position: absolute;
+    bottom: 2vh;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: min-content;
+}
+
+#mobile-controls button {
+    width: 20vw;
+    height: 5vh;
+    border: none;
+    color: var(--dark-body-text);
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+    transition: 0.2s linear filter;
+}
+#mobile-controls button:hover {
+    filter: brightness(130%);
+}
+
+input:not(:disabled, :read-only) {
+    cursor: pointer;
+}
+select {
+    cursor: pointer;
 }

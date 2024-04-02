@@ -1,0 +1,39 @@
+.gradient-2 {
+    background-image: linear-gradient(to right,
+        #fde724, #fde724 50%,
+        #440154 50%, #440154);
+}
+
+.gradient-3 {
+    background-image: linear-gradient(to right,
+        #fde724, #fde724 33.33%,
+        #29788e 33.33%, #29788e 66.66%,
+        #440154 66.66%, #440154);
+}
+
+.gradient-4 {
+    background-image: linear-gradient(to right,
+        #fde724, #fde724 25%,
+        #5eb365 25%, #5eb365 50%,
+        #385489 50%, #385489 75%,
+        #440154 75%, #440154);
+}
+
+.gradient-5 {
+    background-image: linear-gradient(to right,
+        #fde724, #fde724 20%,
+        #79d151 20%, #79d151 40%,
+        #29788e 40%, #29788e 60%,
+        #404387 60%, #404387 80%,
+        #440154 80%, #440154);
+}
+
+.gradient-6 {
+    background-image: linear-gradient(to right,
+        #fde724, #fde724 16.66%,
+        #93d548 16.66%, #93d548 33.33%,
+        #499b75 33.33%, #499b75 50%,
+        #32628b 50%, #32628b 66.66%,
+        #40357c 66.66%, #40357c 83.33%,
+        #440154 83.33%, #440154);
+}

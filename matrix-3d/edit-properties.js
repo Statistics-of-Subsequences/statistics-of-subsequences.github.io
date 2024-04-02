@@ -1,4 +1,3 @@
-import { setLegend } from "./legend.js";
 import { generateLCSMemo } from "../LCS.js";
 
 let lcsGenerated = false;
@@ -6,7 +5,7 @@ export function isInProgress() {
     return !lcsGenerated;
 }
 
-export function changeMatrix(onMobile) {
+export function changeMatrix() {
     const lcsButton = document.querySelector("#lcs-button");
     const operationRadio = document.getElementsByName("operation");
     const operationButton = document.querySelector("#operation-button");
@@ -19,18 +18,24 @@ export function changeMatrix(onMobile) {
 
     // check if n and m are valid
     if (n > 5 || m > 5) {
-        let answer = confirm("Larger models may take longer than usual to render.\nWould you like to continue?");
-        if (!answer) {
-            return;
-        }
+        console.log("Maximum allowed matrix size is 5x5");
+        return;
     }
 
     // set the legend
-    setLegend(onMobile);
+    document.querySelector("#gradient-colors").className = "gradient-" + (Math.min(n, m) + 1);
+    document.querySelector("#gradient-ticks").innerHTML = '';
+    document.querySelector("#gradient-labels").innerHTML = '';
+
+    for(let k = 0; k < Math.min(n, m) + 1; k++) {
+        document.querySelector("#gradient-ticks").appendChild(document.createElement("span"));
+        document.querySelector("#gradient-ticks").appendChild(document.createElement("span"));
+        const index = document.createElement("p");
+        index.textContent = k;
+        document.querySelector("#gradient-labels").appendChild(index);
+    }
 
     // clear previous LCS information
-    document.querySelector("#x-box").value = "";
-    document.querySelector("#y-box").value = "";
     document.getElementById("lcs-length").innerHTML = "Length of Longest Common Subsequence: 0";
     document.getElementById("lcs-set").innerHTML = "Set of Longest Common Subsequences: {}";
     lcsButton.disabled = true;
@@ -279,7 +284,7 @@ export function permuteChars(str, perm) {
     return parseInt(newStr, 2);
 }
 
-function performOperation(objectModel) {
+export function performOperation(objectModel) {
     const xBox = document.querySelector("#x-box");
     const yBox = document.querySelector("#y-box");
 

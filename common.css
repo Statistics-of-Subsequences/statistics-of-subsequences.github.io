@@ -64,14 +64,14 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--dark-body-text);
 }
 
-p, a, label, td, th, b, button {
+p, a, label, td, th, b, button, caption {
     font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
     font-weight: 400;
     color: var(--body-text);
     text-decoration: none;
     transition: 0.2s filter linear;
 }
-.night-mode :is(p, a, label, td, th, b, button) {
+.night-mode :is(p, a, label, td, th, b, button, caption) {
     color: var(--dark-body-text);
 }
 

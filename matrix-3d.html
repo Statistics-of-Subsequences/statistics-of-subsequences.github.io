@@ -10,6 +10,7 @@
     <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
     <link rel="stylesheet" type="text/css" href="./common.css">
     <link rel="stylesheet" type="text/css" href="./matrix-3d/matrix-3d.css">
+    <link rel="stylesheet" type="text/css" href="./matrix-3d/gradient-colors.css">
 
     <script type="module" src="./matrix-3d/matrix-3d.js"></script>
     <script src="./light-dark.js"></script>
@@ -20,22 +21,28 @@
         <h1>LCS Edit Properties Explorer</h1>
     </header>
     <main>
-        <button title="info" type="button" id="computer-controls" class="center" onclick="showControls()">
-            <svg id="info-icon" viewBox="0 0 24 24">
-                <g>
-                    <path d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 12 7 C 11.45 7 11 7.45 11 8 C 11 8.55 11.45 9 12 9 C 12.55 9 13 8.55 13 8 C 13 7.45 12.55 7 12 7 Z M 13 17 L 11 17 L 11 11 L 13 11 L 13 17 Z" />
-                </g>
-            </svg>
-        </button>
         <div id="window-wrapper" class="center">
-            <canvas id="window">
-                Your browser does not support HTML5.
-            </canvas>
+            <div id="icon-wrapper">
+                <canvas id="window">
+                    Your browser does not support HTML5.
+                </canvas>
+                <button title="info" type="button" id="computer-controls" class="center">
+                    <svg id="info-icon" viewBox="0 0 24 24">
+                        <g>
+                            <path d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 12 7 C 11.45 7 11 7.45 11 8 C 11 8.55 11.45 9 12 9 C 12.55 9 13 8.55 13 8 C 13 7.45 12.55 7 12 7 Z M 13 17 L 11 17 L 11 11 L 13 11 L 13 17 Z" />
+                        </g>
+                    </svg>
+                </button>
+                <div id="mobile-controls" class="center hidden">
+                    <button id="reset" type="button" class="two-margin">Reset</button>
+                    <button id="perspective" type="button">Toggle Perspective</button>
+                </div>
+            </div>
         </div>
         <div id="matrix-dimensions">
             <h4>Matrix Dimensions:</h4>
-            <div id="nm-spacer">
-                <div>
+            <div class="center">
+                <div class="two-margin">
                     <label for="n">n: </label>
                     <select id="n">
                         <option value="1" selected>1</option>
@@ -56,7 +63,25 @@
                     </select>
                 </div>
             </div>
-            <button id="dimension-button" type="button" onclick="changeMatrix()">Update Matrix</button>
+            <button id="dimension-button" type="button">Update Matrix</button>
+        </div>
+        <div id="legend" class="center">
+            <h4 id="legend-title">Legend:</h4>
+            <p>Longest Common Subsequence Length</p>
+            <span id="gradient-colors"></span>
+            <span id="gradient-ticks" class="center"></span>
+            <span id="gradient-labels" class="center"></span>
+            <div class="center">
+                <div id="select-color" class="v-center">
+                    <p>Selected Pair of Binary Strings</p>
+                    <span></span>
+                </div>
+                <div id="edit-color" class="v-center">
+                    <p>Edited Pair of Binary Strings</p>
+                    <span></span>
+                </div>
+            </div>
+            <h5>If the edited pair of binary strings is the same as the selected pair,  the edited pair will not be displayed.</h5>
         </div>
         <div id="lcs-information" class="center">
             <h4>Longest Common Subsequence</h4>
@@ -68,59 +93,69 @@
                 <label for="y-box">y:</label>
                 <input type="text" id="y-box" name="y" maxlength="1">
             </div>
-            <button id="lcs-button" type="button" onclick="changeLCS()">Update LCS</button>
+            <button id="lcs-button" type="button">Update LCS</button>
             <p id="lcs-length">Length of Longest Common Subsequence: 0</p>
             <p id="lcs-set">Set of Longest Common Subsequences: {}</p>
-        </div>
-        <div id="mobile-controls">
-            <button id="reset" onclick="resetCamera()">Reset</button>
-            <button id="perspective" onclick="togglePerspective()">Toggle Perspective</button>
         </div>
 
         <div id="edit-operations">
             <h4>Edit Operations</h4>
-            <label for="substitute">Substitute</label>
-            <input type="radio" id="substitute" name="operation" value="substitute" checked onclick="setOperation()">
-            <label for="permute">Permute</label>
-            <input type="radio" id="permute" name="operation" value="permute" onclick="setOperation()">
-            <label for="slice-n-concat">Slice and Concatenate</label>
-            <input type="radio" id="slice-n-concat" name="operation" value="slice-n-concat" disabled="true" onclick="setOperation()">
-            <label for="complement">Complement</label>
-            <input type="radio" id="complement" name="operation" value="complement" onclick="setOperation()">
-            <label for="reverse">Reverse</label>
-            <input type="radio" id="reverse" name="operation" value="reverse" onclick="setOperation()">
+            <div id="edit-selection" class="center">
+                <div>
+                    <label for="substitute">Substitute:</label>
+                    <input type="radio" id="substitute" name="operation" value="substitute" checked>
+                </div>
+                <div>
+                    <label for="permute">Permute:</label>
+                    <input type="radio" id="permute" name="operation" value="permute">
+                </div>
+                <div>
+                    <label for="slice-n-concat">Slice and Concatenate:</label>
+                    <input type="radio" id="slice-n-concat" name="operation" value="slice-n-concat" disabled="true">
+                </div>
+                <div>
+                    <label for="complement">Complement:</label>
+                    <input type="radio" id="complement" name="operation" value="complement">
+                </div>
+                <div>
+                    <label for="reverse">Reverse:</label>
+                    <input type="radio" id="reverse" name="operation" value="reverse">
+                </div>
+            </div>
 
             <div id="substitution" style="display: block;">
-                <label for="substitution-k-box">Index: </label>
+                <label for="substitution-k-box">Index:</label>
                 <select id="substitution-k-box">
                     <option value="0">0</option>
                 </select>
             </div>
 
             <div id="permutation" style="display: none;">
-                <caption for="permutation-box">Permutation: </caption>
+                <caption for="permutation-box">Permutation:</caption>
                 <table id="permutation-box"></table>
             </div>
 
             <div id="slice-concat" style="display: none;">
-                <label for="slice-concat-mode">Concatenation Mode: </label>
+                <label for="slice-concat-mode">Concatenation Mode:</label>
                 <select id="slice-concat-mode"></select>
                 <div id="concat-input">
                 </div>
             </div>
 
-            <button id="operation-button" onclick="performOperation()">Perform Operation</button>
-            <label for="new-x">new x:</label>
-            <input type="text" id="new-x" name="new-x" size="5" disabled>
-            <label for="new-y">new y:</label>
-            <input type="text" id="new-y" name="new-y" size="5" disabled>
+            <button id="operation-button">Perform Operation</button>
+            <div id="edit-results" class="v-center">
+                <div class="two-margin">
+                    <label for="new-x">New x:</label>
+                    <input type="text" id="new-x" name="new-x" size="5" readonly>
+                </div>
+                <div>
+                    <label for="new-y">New y:</label>
+                    <input type="text" id="new-y" name="new-y" size="5" readonly>
+                </div>
+            </div>
             <p id="new-length">Length of Longest Common Subsequence: 0</p>
             <p id="new-set">Set of Longest Common Subsequences: {}</p>
         </div>
-        </div>
-        <div id="legend">
-            <h4 id="legend-title">Legend:</h4>
-            <svg id="legend-svg"></svg>
         </div>
 </body>
 </html>

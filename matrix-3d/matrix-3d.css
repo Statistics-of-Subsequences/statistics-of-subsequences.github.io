@@ -1,16 +1,100 @@
-.content {
-    margin: auto;
-    width: 97.5%;
-    padding: 10px;
+main {
+    position: relative;
+    display: grid;
+    box-sizing: border-box;
+    grid-template-columns: 5fr 2fr 3fr;
+    grid-template-rows: 7fr 7fr 6fr;
+    row-gap: 1vh;
+    column-gap: 1vh;
+    width: 100%;
+    height: 100%;
+}
+
+#computer-controls {
+    position: absolute;
+    top: 0.5vh;
+    right: 0.5vh;
+    width: 4vh;
+    height: 4vh;
+    border-radius: 0.5vh;
+    border: none;
+    background-image: linear-gradient(var(--body-background), var(--accent));
+}
+#computer-controls:hover {
+    filter: brightness(80%);
+}
+.night-mode #computer-controls {
+    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
+}
+.night-mode #computer-controls:hover {
+    filter: brightness(130%);
+}
+
+#info-icon {
+    width: 100%;
+    height: 100%;
+    fill: var(--body-text);
+}
+.night-mode #info-icon {
+    fill: var(--dark-body-text);
+}
+
+#window-wrapper {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+#window {
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    max-height: 600px;
+}
+
+#matrix-dimensions, #legend, #lcs-information, #edit-operations {
+    border: 1px solid var(--accent);
     text-align: center;
-    float: center;
+}
+.night-mode :is(#matrix-dimensions, #legend, #lcs-information, #edit-operations) {
+    border-color: var(--dark-accent);
 }
 
-table {
-    margin-left: auto;
-    margin-right: auto;
+#nm-spacer {
+    display: flex;
+    justify-content: space-evenly;
 }
 
-td.disabled {
-    background-color: grey;
+#matrix-dimensions, #lcs-information, #legend {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 90%;
+    height: fit-content;
+    max-height: 100%;
+}
+#dimension-button, #lcs-button {
+    border: none;
+    margin: 1vh auto;
+    width: 20ch;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+}
+.night-mode #dimension-button, .night-mode #lcs-button {
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}
+
+#legend {
+    grid-column: span 2;
+}
+
+#lcs-information div {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
+    width: min-content;
+}
+#lcs-information div label {
+    padding-right: 0.5vw;
 }

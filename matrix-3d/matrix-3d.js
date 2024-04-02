@@ -45,14 +45,8 @@ function setup(onMobile, canvas) {
 
         // hide mobile controls div
         let mobileControls = document.getElementById("mobile-controls");
-        let break0 = document.getElementById("break0");
         mobileControls.style.display = "none";
-        break0.style.display = "none";
-
     }
-    document.getElementById("break1").style.height = canvas.height * 0.0536 + "px";
-    document.getElementById("legend").style.height = (canvas.height - (canvas.height * 0.0536) - document.getElementById("matrixDimensions").clientHeight) + "px";
-    document.getElementById("break2").style.height = canvas.height * 0.0536 + "px";
 
     registerController(canvas);
 }

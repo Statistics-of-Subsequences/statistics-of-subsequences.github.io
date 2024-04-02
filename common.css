@@ -41,6 +41,7 @@ header {
     border: 1px solid var(--accent);
     width: 100%;
     padding-left: 2vw;
+    box-sizing: border-box;
 }
 .night-mode header {
     background-color: var(--dark-header-background);
@@ -63,14 +64,14 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--dark-body-text);
 }
 
-p, a, label, td, th, b {
+p, a, label, td, th, b, button {
     font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
     font-weight: 400;
     color: var(--body-text);
     text-decoration: none;
     transition: 0.2s filter linear;
 }
-.night-mode :is(p, a, label, td, th, b) {
+.night-mode :is(p, a, label, td, th, b, button) {
     color: var(--dark-body-text);
 }
 
@@ -135,3 +136,4 @@ p, a, label, td, th, b {
 .night-mode .sub-text {
     color: var(--dark-sub-text);
 }
+

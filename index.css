@@ -1,5 +1,4 @@
 header {
-    box-sizing: border-box;
     display: grid;
     grid-template-columns: 90% 10%;
 }

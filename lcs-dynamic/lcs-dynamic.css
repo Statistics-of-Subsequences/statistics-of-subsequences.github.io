@@ -8,10 +8,6 @@ h1 {
     margin-bottom: 3vh;
 }
 
-header {
-    box-sizing: border-box;
-}
-
 main {
     flex-grow: 1;
     position: relative;

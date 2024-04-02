@@ -28,12 +28,12 @@ function getPercent(stops, percent) {
 }
 
 export function setLegend(onMobile) {
-    const legend = document.getElementById("legendSVG");
+    const legend = document.getElementById("legend-svg");
     while (legend.firstChild) {
         legend.removeChild(legend.firstChild);
     }
 
-    const legendTitle = document.getElementById("legendTitle");
+    const legendTitle = document.getElementById("legend-title");
     if (onMobile) {
         legendTitle.style.marginTop = "1.5%";
         legendTitle.style.marginBottom = "1.5%";

@@ -2,8 +2,8 @@ import { FRAGMENT_SHADER } from "../fragment-shader.js";
 import { VERTEX_SHADER } from "../vertex-shader.js";
 
 export function createShaderProgram(gl) {
-    var vertexShader;
-    var fragmentShader;
+    let vertexShader;
+    let fragmentShader;
 
     // console.log(vertexElement);
     vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -22,7 +22,7 @@ export function createShaderProgram(gl) {
         return -1;
     }
     
-    var program = gl.createProgram();
+    let program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
@@ -37,16 +37,16 @@ export function createShaderProgram(gl) {
 
 // Get a file as a string using AJAX
 export function loadFileAJAX(name) {
-    var xhr = new XMLHttpRequest(),
+    let xhr = new XMLHttpRequest(),
         okStatus = document.location.protocol === "file:" ? 0 : 200;
     xhr.open('GET', name, false);
     xhr.send(null);
     return xhr.status == okStatus ? xhr.responseText : null;
-};
+}
 
 export function initShadersFromFiles(gl, vShaderName, fShaderName) {
     function getShader(gl, shaderName, type) {
-        var shader = gl.createShader(type),
+        let shader = gl.createShader(type),
             shaderScript = loadFileAJAX(shaderName);
         if (!shaderScript) {
             console.log("Could not find shader source: " + shaderName);
@@ -60,7 +60,7 @@ export function initShadersFromFiles(gl, vShaderName, fShaderName) {
         }
         return shader;
     }
-    var vertexShader = getShader(gl, vShaderName, gl.VERTEX_SHADER),
+    let vertexShader = getShader(gl, vShaderName, gl.VERTEX_SHADER),
         fragmentShader = getShader(gl, fShaderName, gl.FRAGMENT_SHADER),
         program = gl.createProgram();
 
@@ -73,4 +73,4 @@ export function initShadersFromFiles(gl, vShaderName, fShaderName) {
         return null;
     }
     return program;
-};
+}

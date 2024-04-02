@@ -1,4 +1,5 @@
 
+import { flatten, vec3 } from "./util/webgl-utils.js";
 import VAO from "./vao.js";
 import VBO from "./vbo.js";
 import EBO from "./ebo.js";
@@ -18,7 +19,7 @@ export default class Mesh {
     select() {
         this.material = this.backupMaterial;
 
-        var selectedMaterial = new Material("selectedMaterial");
+        let selectedMaterial = new Material("selectedMaterial");
         selectedMaterial.ambient = vec3(0.5568, 0.2470, 0.1607);
         selectedMaterial.diffuse = vec3(0.5568, 0.2470, 0.1607);
         selectedMaterial.specular = vec3(0.5568, 0.2470, 0.1607);
@@ -32,7 +33,7 @@ export default class Mesh {
     selectK() {
         this.material = this.backupMaterial;
 
-        var selectedMaterial = new Material("selectedMaterial");
+        let selectedMaterial = new Material("selectedMaterial");
         selectedMaterial.ambient = vec3(0.8196, 0.5333, 0.3215);
         selectedMaterial.diffuse = vec3(0.8196, 0.5333, 0.3215);
         selectedMaterial.specular = vec3(0.8196, 0.5333, 0.3215);
@@ -52,12 +53,12 @@ export default class Mesh {
         gl.useProgram(shader);
 
         // bind textures
-        var numDiffuse = 0;
-        var numSpecular = 0;
-        var numNormal = 0;
-        for (var i = 0; i < this.textures.length; i++) {
-            var num = "";
-            var type = this.textures[i].type;
+        let numDiffuse = 0;
+        let numSpecular = 0;
+        let numNormal = 0;
+        for (let i = 0; i < this.textures.length; i++) {
+            let num = "";
+            let type = this.textures[i].type;
             if (type == "diffuse") {
                 num = numDiffuse++;
             } else if (type == "specular") {
@@ -69,21 +70,21 @@ export default class Mesh {
         }
 
         // define attribute layouts
-        var vertexPosition = gl.getAttribLocation(shader, "vertexPosition");
-        var vertexNormal = gl.getAttribLocation(shader, "vertexNormal");
-        var vertexColor = gl.getAttribLocation(shader, "vertexColor");
-        var vertexUV = gl.getAttribLocation(shader, "vertexUV");
-        var vertexAmbient = gl.getAttribLocation(shader, "vertexAmbient");
-        var vertexSpecular = gl.getAttribLocation(shader, "vertexSpecular");
-        var vertexShininess = gl.getAttribLocation(shader, "vertexShininess");
+        let vertexPosition = gl.getAttribLocation(shader, "vertexPosition");
+        let vertexNormal = gl.getAttribLocation(shader, "vertexNormal");
+        let vertexColor = gl.getAttribLocation(shader, "vertexColor");
+        let vertexUV = gl.getAttribLocation(shader, "vertexUV");
+        let vertexAmbient = gl.getAttribLocation(shader, "vertexAmbient");
+        let vertexSpecular = gl.getAttribLocation(shader, "vertexSpecular");
+        let vertexShininess = gl.getAttribLocation(shader, "vertexShininess");
 
         // duplicate material for each vertex
         this.material.vertexCount = this.vertices.length;
 
         // bind VAO
-        var vbo = new VBO(gl, this.vertices);
-        var materialVBO = new VBO(gl, this.material);
-        var ebo = new EBO(gl, this.indices);
+        let vbo = new VBO(gl, this.vertices);
+        let materialVBO = new VBO(gl, this.material);
+        let ebo = new EBO(gl, this.indices);
 
         // link VBO attributes to VAO
         this.vao.linkAttribute(gl, vbo, vertexPosition, 3, gl.FLOAT, 8 * 4, 0 * 4);

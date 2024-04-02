@@ -14,8 +14,8 @@ export default class Model {
         this.parseFile(fileName, this.meshes, shader);
     }
 
-    draw(hader, camera) {
-        for (var i = 0; i < this.meshes.length; i++) {
+    draw(shader, camera) {
+        for (let i = 0; i < this.meshes.length; i++) {
             this.meshes[i].draw(this.gl, shader, camera);
         }
     }
@@ -59,31 +59,31 @@ export default class Model {
 
     static constructMesh(objectGroup, material, shader) {
         // extract material properties
-        var diffuseColor = material.getKd();
-        var textureMap = material.getMapKd();
-        var specularMap = material.getMapKs();
-        var bumpMap = material.getBump();
+        let diffuseColor = material.getKd();
+        let textureMap = material.getMapKd();
+        let specularMap = material.getMapKs();
+        let bumpMap = material.getBump();
 
         // extract geometry data
-        var vertices = [];
-        var normals = [];
-        var uvs = [];
-        var indices = [];
+        let vertices = [];
+        let normals = [];
+        let uvs = [];
+        let indices = [];
 
-        var meshVertices = objectGroup.vertices;
-        var meshNormals = objectGroup.normals;
-        var meshUVs = objectGroup.uvs;
+        let meshVertices = objectGroup.vertices;
+        let meshNormals = objectGroup.normals;
+        let meshUVs = objectGroup.uvs;
 
-        for (var i = 0; i < objectGroup.faces.length; i++) {
-            var face = objectGroup.faces[i];
-            var faceVertices = face.vertexIndices;
-            var faceNormals = face.normalIndices;
-            var faceUVs = face.uvIndices;
+        for (let i = 0; i < objectGroup.faces.length; i++) {
+            let face = objectGroup.faces[i];
+            let faceVertices = face.vertexIndices;
+            let faceNormals = face.normalIndices;
+            let faceUVs = face.uvIndices;
 
-            for (var j = 0; j < faceVertices.length; j++) {
-                var vertex = meshVertices[faceVertices[j]];
-                var normal = meshNormals[faceNormals[j]];
-                var uv = meshUVs[faceUVs[j]];
+            for (let j = 0; j < faceVertices.length; j++) {
+                let vertex = meshVertices[faceVertices[j]];
+                let normal = meshNormals[faceNormals[j]];
+                let uv = meshUVs[faceUVs[j]];
 
                 vertices.push(vertex[0]);
                 vertices.push(vertex[1]);
@@ -101,25 +101,25 @@ export default class Model {
         }
 
         // create mesh
-        var vertexList = [];
-        var indexList = [];
-        var textureList = [];
+        let vertexList = [];
+        let indexList = [];
+        let textureList = [];
 
         // add vertices and indices to mesh
-        var i;
+        let i;
         for (i = 0; i < vertices.length / 3; i++) {
-            var x = vertices[i * 3 + 0];
-            var y = vertices[i * 3 + 1];
-            var z = vertices[i * 3 + 2];
-            var nx = normals[i * 3 + 0];
-            var ny = normals[i * 3 + 1];
-            var nz = normals[i * 3 + 2];
-            var r = diffuseColor[0];
-            var g = diffuseColor[1];
-            var b = diffuseColor[2];
-            var u = uvs[i * 2 + 0];
-            var v = uvs[i * 2 + 1];
-            var vertex = new Vertex(WebGL.vec3(x, y, z), WebGL.vec3(nx, ny, nz), WebGL.vec3(r, g, b), WebGL.vec2(u, v));
+            let x = vertices[i * 3 + 0];
+            let y = vertices[i * 3 + 1];
+            let z = vertices[i * 3 + 2];
+            let nx = normals[i * 3 + 0];
+            let ny = normals[i * 3 + 1];
+            let nz = normals[i * 3 + 2];
+            let r = diffuseColor[0];
+            let g = diffuseColor[1];
+            let b = diffuseColor[2];
+            let u = uvs[i * 2 + 0];
+            let v = uvs[i * 2 + 1];
+            let vertex = new Vertex(WebGL.vec3(x, y, z), WebGL.vec3(nx, ny, nz), WebGL.vec3(r, g, b), WebGL.vec2(u, v));
             vertexList.push(vertex);
         }
 
@@ -129,15 +129,15 @@ export default class Model {
 
         // create textures
         if (textureMap != null) {
-            var texture = new Texture(textureMap, "diffuse", 0);
+            let texture = new Texture(textureMap, "diffuse", 0);
             textureList.push(texture);
         }
         if (specularMap != null) {
-            var texture = new Texture(specularMap, "specular", 1);
+            let texture = new Texture(specularMap, "specular", 1);
             textureList.push(texture);
         }
         if (bumpMap != null) {
-            var texture = new Texture(bumpMap, "normal", 2);
+            let texture = new Texture(bumpMap, "normal", 2);
             textureList.push(texture);
         }
 
@@ -146,14 +146,14 @@ export default class Model {
 
     async parseFile(fileName, meshList, shader) {
         // get renderable objects
-        var obj = new OBJ();
+        let obj = new OBJ();
 
         // get obj file contents
         const objResponse = await fetch("../../res/models/" + fileName);
         obj.objFile = await objResponse.text();
 
         // Split and sanitize OBJ file input
-        var objLines = obj.objFile.split('\n');
+        let objLines = obj.objFile.split('\n');
         objLines = objLines.filter(line => {
             return (line.search(/\S/) !== -1);
         });
@@ -162,17 +162,17 @@ export default class Model {
         });
 
         // Get lines in OBJ file until material library definition
-        var currLine = 0;
-        var line = objLines[currLine];
+        let currLine = 0;
+        let line = objLines[currLine];
         while (!line.startsWith("mtllib")) { // Material library definition
             line = objLines[++currLine];
         }
 
-        var materialLibraryName = line.split(" ")[1];
+        let materialLibraryName = line.split(" ")[1];
 
         // get MTL file contents
         const mtlResponse = await fetch("https://statistics-of-subsequences.github.io/res/models/" + materialLibraryName);
-        var mtlFile = await mtlResponse.text();
+        let mtlFile = await mtlResponse.text();
 
         // parse MTL file
         obj.parseMTLFile(mtlFile);
@@ -181,14 +181,14 @@ export default class Model {
         obj.parseOBJFile(objLines, currLine + 1);
 
         // get object groups
-        var objectGroups = obj.getObjectGroups();
+        let objectGroups = obj.getObjectGroups();
 
         // construct meshes
-        for (var i = 0; i < objectGroups.length; i++) {
-            var objectGroup = objectGroups[i];
+        for (let i = 0; i < objectGroups.length; i++) {
+            let objectGroup = objectGroups[i];
             objectGroup.triangulate();
-            var material = objectGroups[i].material;
-            var mesh = Model.constructMesh(objectGroup, material, shader);
+            let material = objectGroups[i].material;
+            let mesh = Model.constructMesh(objectGroup, material, shader);
             meshList.push(mesh);
         }
 

@@ -20,7 +20,7 @@ export default class GenericCamera {
 
     setTarget(target) {
         this.target = target;
-        this.orientation = WebGL.normalize(sub(this.position, this.target));
+        this.orientation = WebGL.normalize(WebGL.sub(this.position, this.target));
     }
 
     setOrientation(orientation) {
@@ -33,9 +33,9 @@ export default class GenericCamera {
     }
 
     update(shader, uniform) {
-        var viewMatrix = WebGL.lookAt(this.position, this.target, this.worldUp);
+        let viewMatrix = WebGL.lookAt(this.position, this.target, this.worldUp);
 
-        var cameraMatrix = WebGL.mult(this.projectionMatrix, viewMatrix);
+        let cameraMatrix = WebGL.mult(this.projectionMatrix, viewMatrix);
         this.gl.uniformMatrix4fv(this.gl.getUniformLocation(shader, uniform), false, WebGL.flatten(cameraMatrix));
     }
 }

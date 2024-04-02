@@ -17,10 +17,10 @@ export class Light {
 
     static updateAll(gl, shader, lights) {
         gl.uniform1i(gl.getUniformLocation(shader, "lightCount"), lights.length);
-        for (var i = 0; i < lights.length; i++) {
-            var light = lights[i];
-            // var indexString = "[" + lights.indexOf(light) + "]";
-            var indexString = "";
+        for (let i = 0; i < lights.length; i++) {
+            let light = lights[i];
+            // let indexString = "[" + lights.indexOf(light) + "]";
+            let indexString = "";
             light.update(shader, indexString);
         }
     }
@@ -57,8 +57,8 @@ export class SpotLight extends Light {
         this.position = position;
         this.direction = direction;
         this.attenuation = attenuation;
-        this.innerConeAnthis.gle = innerConeAnthis.gle;
-        this.outerConeAnthis.gle = outerConeAnthis.gle;
+        this.innerConeAngle = innerConeAngle;
+        this.outerConeAngle = outerConeAngle;
     }
 
     update(shader, indexString) {

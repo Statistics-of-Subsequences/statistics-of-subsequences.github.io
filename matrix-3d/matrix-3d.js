@@ -55,23 +55,23 @@ function setup(onMobile, canvas) {
     registerController(canvas);
 }
 
-function render(gl, camera, objectModel, lights) {
+function render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus) {
     // clear the screen
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // if the model is loaded
     if (objectModel.modelLoaded) {
         // update camera matrix
-        if (!isAnimating) {
-            if (isPerspective) {
-                perspectiveEye = camera.position;
-                perspectiveOrientation = camera.orientation;
+        if (!cameraStatus.isAnimating) {
+            if (cameraStatus.isPerspective) {
+                viewport.perspectiveEye = camera.position;
+                viewport.perspectiveOrientation = camera.orientation;
             } else {
-                orthoEye = camera.position;
-                orthoOrientation = camera.orientation;
+                viewport.orthoEye = camera.position;
+                viewport.orthoOrientation = camera.orientation;
             }
         } else {
-            toggleCameraType();
+            toggleCameraType(viewport, cameraStatus);
         }
 
         // update camera
@@ -88,47 +88,47 @@ function render(gl, camera, objectModel, lights) {
     }
 
     // request new frame
-    requestAnimFrame(() => render(gl, camera, objectModel, lights));
+    requestAnimFrame(() => render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus));
 }
 
-function toggleCameraType() {
-    let mixAmount = Math.sin(time * Math.PI / 2.0) * 0.5 + 0.5;
-    let projectionMatrix = mat4();
+function toggleCameraType(viewport, cameraStatus) {
+    let mixAmount = Math.sin(cameraStatus.time * Math.PI / 2.0) * 0.5 + 0.5;
+    let projectionMatrix = WebGL.mat4();
 
-    projectionMatrix[0] = WebGL.mix(perspectiveMatrix[0], orthoMatrix[0], mixAmount);
-    projectionMatrix[1] = WebGL.mix(perspectiveMatrix[1], orthoMatrix[1], mixAmount);
-    projectionMatrix[2] = WebGL.mix(perspectiveMatrix[2], orthoMatrix[2], mixAmount);
-    projectionMatrix[3] = WebGL.mix(perspectiveMatrix[3], orthoMatrix[3], mixAmount);
+    projectionMatrix[0] = WebGL.mix(viewport.perspectiveMatrix[0], viewport.orthoMatrix[0], mixAmount);
+    projectionMatrix[1] = WebGL.mix(viewport.perspectiveMatrix[1], viewport.orthoMatrix[1], mixAmount);
+    projectionMatrix[2] = WebGL.mix(viewport.perspectiveMatrix[2], viewport.orthoMatrix[2], mixAmount);
+    projectionMatrix[3] = WebGL.mix(viewport.perspectiveMatrix[3], viewport.orthoMatrix[3], mixAmount);
 
     camera.projectionMatrix = projectionMatrix;
 
-    let eye = WebGL.mix(perspectiveEye, orthoEye, mixAmount);
-    let orientation = WebGL.mix(perspectiveOrientation, orthoOrientation, mixAmount);
-    let up = WebGL.mix(perspectiveUp, orthoUp, mixAmount);
+    let eye = WebGL.mix(viewport.perspectiveEye, viewport.orthoEye, mixAmount);
+    let orientation = WebGL.mix(viewport.perspectiveOrientation, viewport.orthoOrientation, mixAmount);
+    let up = WebGL.mix(viewport.perspectiveUp, viewport.orthoUp, mixAmount);
 
     camera.setPosition(eye);
     camera.setOrientation(orientation);
     camera.setWorldUp(up);
 
     // update time
-    if (isPerspective) {
-        time += alpha;
+    if (cameraStatus.isPerspective) {
+        cameraStatus.time += alpha;
     } else {
-        time -= alpha;
+        cameraStatus.time -= alpha;
     }
 
     // round time to 4 decimal places
-    time = Math.round(time * 10000.0) / 10000.0;
+    cameraStatus.time = Math.round(time * 10000.0) / 10000.0;
 
     // update isPerspective
-    if (time >= 1.0) {
-        isPerspective = false;
+    if (cameraStatus.time >= 1.0) {
+        cameraStatus.isPerspective = false;
         camera.isPerspective = false;
-        isAnimating = false;
-    } else if (time <= -1.0) {
-        isPerspective = true;
+        cameraStatus.isAnimating = false;
+    } else if (cameraStatus.time <= -1.0) {
+        cameraStatus.isPerspective = true;
         camera.isPerspective = true;
-        isAnimating = false;
+        cameraStatus.isAnimating = false;
     }
 }
 
@@ -247,21 +247,6 @@ function performOperation() {
 
     let newSetLabel = document.getElementById("new-set");
     newSetLabel.innerHTML = "Set of Longest Common Subsequences: {" + setOfLCSs + "}";
-}
-
-function togglePerspective() {
-    if (!isAnimating) {
-        isAnimating = true;
-    }
-}
-
-function resetCamera() {
-    if (!isAnimating) {
-        initializeMLC(gl, shaderProgram);
-        isPerspective = true;
-        camera.isPerspective = true;
-        time = -1.0;
-    }
 }
 
 function toggleDivs(divIds) {
@@ -483,8 +468,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Initialize models, lighting, and camera
     changeMatrix(onMobile);
-    let { camera, modelMatrix, lights } = initializeMLC(gl, shaderProgram, width, height, aspectRatio);
-    camera.isPerspective = true;
+    let { camera, objectModel, modelMatrix, lights, viewport } = initializeMLC(gl, shaderProgram, width, height, aspectRatio);
 
     // initialize uniforms
     if (n <= 0 || m <= 0) {
@@ -494,5 +478,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     // render the scene
-    render(gl, camera, modelMatrix, lights);
+    const cameraStatus = { isAnimating: false, isPerspective: true, time: -1 }
+    render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus);
 });

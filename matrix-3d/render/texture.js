@@ -1,12 +1,13 @@
 export default class Texture {
-    constructor(filePath, textureType, slot) {
+    constructor(gl, filePath, textureType, slot) {
+        this.gl = gl;
         this.type = textureType;
-
         this.image = new Image();
         this.image.crossOrigin = "";
         this.image.src = "/res/textures/" + filePath;
+
         this.image.onload = function () {
-            this.numColorChannels = this.image
+            this.numColorChannels = this.image;
 
             this.id = gl.createTexture();
 
@@ -25,7 +26,7 @@ export default class Texture {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
             // extra lines for if gl.CLAMP_TO_BORDER is used for texture mapping
-            // var flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+            // let flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
             // gl.texParameterfv(gl.TEXTURE_2D, gl.TEXTURE_BORDER_COLOR, flatColor);
 
             // assign image to texture
@@ -41,26 +42,26 @@ export default class Texture {
     }
 
     textureUnit(shader, uniform, unit) {
-        var textureUnit = gl.getUniformLocation(shader, uniform);
-        gl.useProgram(shader);
-        gl.uniform1i(textureUnit, unit);
+        let textureUnit = this.gl.getUniformLocation(shader, uniform);
+        this.gl.useProgram(shader);
+        this.gl.uniform1i(textureUnit, unit);
     }
 
     bind() {
-        gl.activeTexture(gl.TEXTURE0 + this.unit);
-        gl.bindTexture(gl.TEXTURE_2D, this.id);
+        this.gl.activeTexture(this.gl.TEXTURE0 + this.unit);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
     }
 
     unbind() {
-        gl.bindTexture(gl.TEXTURE_2D, null);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
     }
 
     delete() {
-        gl.deleteTexture(this.id);
+        this.gl.deleteTexture(this.id);
     }
 
     loadTexture(filePath) {
-        var image = new Image();
+        let image = new Image();
 
         // load image from file
         image.src = filePath;

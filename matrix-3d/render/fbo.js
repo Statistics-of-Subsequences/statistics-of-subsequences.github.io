@@ -1,8 +1,8 @@
 export default class FBO {
     constructor(gl, width, height) {
+        this.gl = gl;
         this.width = width;
         this.height = height;
-        this.gl = gl;
 
         // create and bind the framebuffer
         this.fboID = gl.createFramebuffer();
@@ -37,18 +37,18 @@ export default class FBO {
     }
 
     bind() {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.fboID);
-        gl.viewport(0, 0, this.width, this.height);
+        this.glbindFramebuffer(this.glFRAMEBUFFER, this.fboID);
+        this.glviewport(0, 0, this.width, this.height);
     }
 
     unbind() {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        this.glbindFramebuffer(this.glFRAMEBUFFER, null);
+        this.glviewport(0, 0, this.glcanvas.width, this.glcanvas.height);
     }
 
     delete() {
-        gl.deleteFramebuffer(this.fboID);
-        gl.deleteTexture(this.textureID);
-        gl.deleteRenderbuffer(this.renderbufferID);
+        this.gldeleteFramebuffer(this.fboID);
+        this.gldeleteTexture(this.textureID);
+        this.gldeleteRenderbuffer(this.renderbufferID);
     }
 }

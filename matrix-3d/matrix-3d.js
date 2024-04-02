@@ -5,19 +5,21 @@ import Model from "./render/model.js";
 import { Light, PointLight } from "./render/light.js";
 import GenericCamera from "./render/camera.js";
 
-import { generateLCSMemo, findOccurences } from "../LCS.js";
 import { registerController } from "./controls.js";
-import { changeMatrix } from "./input.js";
+import { changeMatrix, findFix, isInProgress } from "./edit-properties.js";
 
 // =================
 // ==== PROGRAM ====
 // =================
-window.mobileAndTabletCheck = function () {
+function mobileAndTabletCheck() {
     let check = false;
     (function (a) {
-        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) ||
+            /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
+        check = true;
+    })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
-};
+}
 
 function setup(onMobile, canvas) {
     if (onMobile) { // if on a mobile device
@@ -71,7 +73,7 @@ function render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, vie
                 viewport.orthoOrientation = camera.orientation;
             }
         } else {
-            toggleCameraType(viewport, cameraStatus);
+            toggleCameraType(camera, viewport, cameraStatus);
         }
 
         // update camera
@@ -88,10 +90,10 @@ function render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, vie
     }
 
     // request new frame
-    requestAnimFrame(() => render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus));
+    window.requestAnimFrame(() => render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus));
 }
 
-function toggleCameraType(viewport, cameraStatus) {
+function toggleCameraType(camera, viewport, cameraStatus) {
     let mixAmount = Math.sin(cameraStatus.time * Math.PI / 2.0) * 0.5 + 0.5;
     let projectionMatrix = WebGL.mat4();
 
@@ -112,13 +114,13 @@ function toggleCameraType(viewport, cameraStatus) {
 
     // update time
     if (cameraStatus.isPerspective) {
-        cameraStatus.time += alpha;
+        cameraStatus.time += cameraStatus.alpha;
     } else {
-        cameraStatus.time -= alpha;
+        cameraStatus.time -= cameraStatus.alpha;
     }
 
     // round time to 4 decimal places
-    cameraStatus.time = Math.round(time * 10000.0) / 10000.0;
+    cameraStatus.time = Math.round(cameraStatus.time * 10000.0) / 10000.0;
 
     // update isPerspective
     if (cameraStatus.time >= 1.0) {
@@ -166,89 +168,6 @@ function initializeMLC(gl, shader, width, height, aspectRatio) {
     } };
 }
 
-function performOperation() {
-    // convert from binary string to int
-    let x = parseInt(xBox.value, 2);
-    let y = parseInt(yBox.value, 2);
-
-    let newX, newY;
-    if (operation == "substitute") {
-        newX = x;
-        newY = y ^ (1 << (yBox.value.length - 1 - parseInt(substitutionKBox.value)));
-    } else if (operation == "permutation") {
-        // convert permutation row to array
-        let perm = [];
-        for (let i = 0; i < m; i++) {
-            let cell = document.getElementById("perm-" + i);
-            perm.push(cell.value);
-        }
-
-        newX = x;
-        newY = permuteChars(yBox.value, perm);
-    } else if (operation == "slice-n-concat") {
-        let xString = xBox.value;
-        let yString = yBox.value;
-        let mode = sliceConcatModeBox.value;
-
-        if (mode == "prefix") {
-            let slicedX = xString.slice(lcPrefix);
-            let slicedY = yString.slice(lcPrefix);
-            let prefix = document.getElementById("prefix-box").value;
-
-            newX = parseInt(prefix + slicedX, 2);
-            newY = parseInt(prefix + slicedY, 2);
-        } else if (mode == "suffix") {
-            let slicedX = xString.slice(0, xString.length - lcSuffix);
-            let slicedY = yString.slice(0, yString.length - lcSuffix);
-            let suffix = document.getElementById("suffix-box").value;
-
-            newX = parseInt(slicedX + suffix, 2);
-            newY = parseInt(slicedY + suffix, 2);
-        } else if (mode == "circumfix") {
-            let prefix = document.getElementById("prefix-box").value;
-            let suffix = document.getElementById("suffix-box").value;
-
-            newX = parseInt(prefix + xString.slice(lcPrefix, xString.length - lcSuffix) + suffix, 2);
-            newY = parseInt(prefix + yString.slice(lcPrefix, yString.length - lcSuffix) + suffix, 2);
-        }
-    } else if (operation == "complement") {
-        newX = x ^ (Math.pow(2, n) - 1);
-        newY = y ^ (Math.pow(2, m) - 1);
-    } else if (operation == "reverse") {
-        newX = parseInt(xBox.value.split("").reverse().join(""), 2);
-        newY = parseInt(yBox.value.split("").reverse().join(""), 2);
-    }
-
-    let newXBox = newX.toString(2);
-    let newYBox = newY.toString(2);
-
-    // pad with zeros
-    while (newXBox.length < n) {
-        newXBox = "0" + newXBox;
-    }
-    while (newYBox.length < m) {
-        newYBox = "0" + newYBox;
-    }
-
-    const lcsMemo = generateLCSMemo(newXBox, newYBox);
-
-    document.getElementById("new-x").value = newXBox;
-    document.getElementById("new-y").value = newYBox;
-
-    // select mesh
-    let index = newX * Math.pow(2, m) + newY;
-    objectModel.selectK(index);
-
-    let lcsLength = objectModel.meshes[index].vertices[0].position[1];
-    let setOfLCSs = Array.from(lcsMemo[newXBox.length - 1][newYBox.length - 1].lcs);
-
-    let newLengthLabel = document.getElementById("new-length");
-    newLengthLabel.innerHTML = "Length of Longest Common Subsequence: " + lcsLength;
-
-    let newSetLabel = document.getElementById("new-set");
-    newSetLabel.innerHTML = "Set of Longest Common Subsequences: {" + setOfLCSs + "}";
-}
-
 function toggleDivs(divIds) {
     for (let i = 0; i < divIds.length; i++) {
         let div = document.getElementById(divIds[i]);
@@ -259,16 +178,6 @@ function toggleDivs(divIds) {
         }
     }
 }
-
-window.onresize = function () {
-    if (!onMobile) {
-        width = canvas.width;
-        height = canvas.height;
-        aspectRatio = width / height;
-        gl.viewport(0, 0, width, height);
-        setup();
-    }
-};
 
 window.addEventListener("DOMContentLoaded", () => {
     // check platform
@@ -289,8 +198,9 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#y-box").onbeforeinput = xBox.onbeforeinput;
 
     const substitutionKBox = document.querySelector("#substitution-k-box");
+    const operationButton = document.querySelector("#operation-button");
     substitutionKBox.onchange = () => {
-        if (substitutionKBox.value.length > 0 && lcsGenerated) {
+        if (substitutionKBox.value.length > 0 && !isInProgress()) {
             operationButton.disabled = false;
         } else {
             operationButton.disabled = true;
@@ -304,6 +214,12 @@ window.addEventListener("DOMContentLoaded", () => {
             concatInputDiv.removeChild(concatInputDiv.firstChild);
         }
         operationButton.disabled = true;
+
+        const n = parseInt(document.querySelector("#n").value);
+        const m = parseInt(document.querySelector("#m").value);
+        const xString = document.querySelector("#x-box").value;
+        const yString = document.querySelector("#y-box").value;
+        let { lcPrefix, lcSuffix, lcCircumfix } = findFix(xString, yString, n, m);
 
         let mode = sliceConcatModeBox.value;
         if (mode == "prefix") {
@@ -357,8 +273,8 @@ window.addEventListener("DOMContentLoaded", () => {
             concatInputDiv.appendChild(document.createElement("br"));
             concatInputDiv.appendChild(document.createElement("br"));
         } else if (mode == "circumfix") {
-            tempLCPrefix = lcPrefix;
-            tempLCSuffix = lcSuffix;
+            const tempLCPrefix = lcPrefix;
+            const tempLCSuffix = lcSuffix;
 
             if (lcCircumfix != 0) {
                 lcPrefix = Math.ceil(lcCircumfix / 2);
@@ -467,17 +383,30 @@ window.addEventListener("DOMContentLoaded", () => {
     gl.useProgram(shaderProgram);
 
     // Initialize models, lighting, and camera
-    changeMatrix(onMobile);
+    let { updatedPerspective, updatedTime, updatedAlpha } = changeMatrix(onMobile);
     let { camera, objectModel, modelMatrix, lights, viewport } = initializeMLC(gl, shaderProgram, width, height, aspectRatio);
 
     // initialize uniforms
+    const n = parseInt(document.querySelector("#n").value);
+    const m = parseInt(document.querySelector("#m").value);
+
     if (n <= 0 || m <= 0) {
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "useTexture"), 1);
     } else {
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "useTexture"), 0);
     }
 
+    // Set up screen scaling
+    window.onresize = () => {
+        if (!onMobile) {
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            setup(onMobile, canvas);
+            let { camera, objectModel, modelMatrix, lights, viewport } = initializeMLC(gl, shaderProgram, canvas.width, canvas.height, canvas.width / canvas.height);
+            render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus);
+        }
+    };
+
     // render the scene
-    const cameraStatus = { isAnimating: false, isPerspective: true, time: -1 }
+    const cameraStatus = { isAnimating: false, isPerspective: updatedPerspective, time: updatedTime, alpha: updatedAlpha };
     render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus);
 });

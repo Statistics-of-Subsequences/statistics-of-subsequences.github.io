@@ -129,15 +129,15 @@ export default class Model {
 
         // create textures
         if (textureMap != null) {
-            let texture = new Texture(textureMap, "diffuse", 0);
+            let texture = new Texture(this.gl, textureMap, "diffuse", 0);
             textureList.push(texture);
         }
         if (specularMap != null) {
-            let texture = new Texture(specularMap, "specular", 1);
+            let texture = new Texture(this.gl, specularMap, "specular", 1);
             textureList.push(texture);
         }
         if (bumpMap != null) {
-            let texture = new Texture(bumpMap, "normal", 2);
+            let texture = new Texture(this.gl, bumpMap, "normal", 2);
             textureList.push(texture);
         }
 

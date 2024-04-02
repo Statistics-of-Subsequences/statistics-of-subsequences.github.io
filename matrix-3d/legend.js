@@ -28,12 +28,12 @@ function getPercent(stops, percent) {
 }
 
 export function setLegend(onMobile) {
-    let legend = document.getElementById("legendSVG");
+    const legend = document.getElementById("legendSVG");
     while (legend.firstChild) {
         legend.removeChild(legend.firstChild);
     }
 
-    let legendTitle = document.getElementById("legendTitle");
+    const legendTitle = document.getElementById("legendTitle");
     if (onMobile) {
         legendTitle.style.marginTop = "1.5%";
         legendTitle.style.marginBottom = "1.5%";
@@ -42,17 +42,19 @@ export function setLegend(onMobile) {
         legendTitle.style.marginBottom = "4.75%";
     }
     
-    let legendTitlePercent = 100 * legendTitle.clientHeight / document.getElementById("legend").clientHeight;
-    let topAndBottomMarginsPercent = parseFloat(legendTitle.style.marginTop) + 2 * parseFloat(legendTitle.style.marginBottom);
-    let heightPercent = 100 - legendTitlePercent - topAndBottomMarginsPercent - 1.75;
+    const legendTitlePercent = 100 * legendTitle.clientHeight / document.getElementById("legend").clientHeight;
+    const topAndBottomMarginsPercent = parseFloat(legendTitle.style.marginTop) + 2 * parseFloat(legendTitle.style.marginBottom);
+    const heightPercent = 100 - legendTitlePercent - topAndBottomMarginsPercent - 1.75;
 
     legend.setAttribute("width", "90%");
     legend.setAttribute("height", heightPercent + "%");
 
+    const n = parseInt(document.getElementById("n").value);
+    const m = parseInt(document.getElementById("m").value);
     let gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(n, m) + 1);
 
-    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    let linearGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    const linearGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
     linearGradient.setAttribute("id", "legendGradient");
     linearGradient.setAttribute("x1", "0%");
     linearGradient.setAttribute("y1", "0%");
@@ -61,13 +63,13 @@ export function setLegend(onMobile) {
     defs.appendChild(linearGradient);
 
     for (let i = 0; i < gradientMap.length; i++) {
-        let stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         stop.setAttribute("offset", 100 * i / gradientMap.length + "%");
         stop.setAttribute("style", "stop-color: #" + gradientMap[i].toString(16) + "; stop-opacity: 1");
         linearGradient.appendChild(stop);
 
         if (i < gradientMap.length - 1) {
-            let stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+            const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
             stop.setAttribute("offset", 100 * (i + 1) / gradientMap.length + "%");
             stop.setAttribute("style", "stop-color: #" + gradientMap[i].toString(16) + "; stop-opacity: 1");
             linearGradient.appendChild(stop);
@@ -75,15 +77,15 @@ export function setLegend(onMobile) {
     }
     legend.appendChild(defs);
 
-    let gradientTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const gradientTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
     gradientTitle.setAttribute("x", "0%");
     gradientTitle.setAttribute("y", "5%");
     gradientTitle.setAttribute("font-size", "100%");
-    let gradientTitleNode = document.createTextNode("Longest Common Subsequence Length");
+    const gradientTitleNode = document.createTextNode("Longest Common Subsequence Length");
     gradientTitle.appendChild(gradientTitleNode);
     legend.appendChild(gradientTitle);
     
-    let gradientBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const gradientBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     gradientBox.setAttribute("x", "0%");
     gradientBox.setAttribute("y", "7.5%");
     gradientBox.setAttribute("width", "100%");
@@ -92,11 +94,11 @@ export function setLegend(onMobile) {
     legend.appendChild(gradientBox);
 
     for (let i = 0; i < gradientMap.length; i++) {
-        let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute("x", (100 * (i + 0.5) / gradientMap.length - 0.75) + "%");
         text.setAttribute("y", "25%");
 
-        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute("x1", 100 * (i + 0.5) / gradientMap.length + "%");
         line.setAttribute("y1", "15%");
         line.setAttribute("x2", 100 * (i + 0.5) / gradientMap.length + "%");
@@ -104,32 +106,32 @@ export function setLegend(onMobile) {
         line.setAttribute("stroke", "black");
         line.setAttribute("stroke-width", 1);
 
-        let textNode = document.createTextNode(i);
+        const textNode = document.createTextNode(i);
         text.appendChild(textNode);
         legend.appendChild(text);
         legend.appendChild(line);
     }
 
-    let aspectRatio = legend.clientWidth / legend.clientHeight;
+    const aspectRatio = legend.clientWidth / legend.clientHeight;
 
-    let lcsText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const lcsText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
     lcsText1.setAttribute("x", "31%");
     lcsText1.setAttribute("y", "37.5%");
     lcsText1.setAttribute("font-size", "100%");
     lcsText1.setAttribute("text-anchor", "middle");
-    let lcsTextNode1 = document.createTextNode("Selected Pair of");
+    const lcsTextNode1 = document.createTextNode("Selected Pair of");
     lcsText1.appendChild(lcsTextNode1);
-    let lcsText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const lcsText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
     lcsText2.setAttribute("x", "31%");
     lcsText2.setAttribute("y", "42.5%");
     lcsText2.setAttribute("font-size", "100%");
     lcsText2.setAttribute("text-anchor", "middle");
-    let lcsTextNode2 = document.createTextNode("Binary Strings");
+    const lcsTextNode2 = document.createTextNode("Binary Strings");
     lcsText2.appendChild(lcsTextNode2);
     legend.appendChild(lcsText1);
     legend.appendChild(lcsText2);
 
-    let lcsBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const lcsBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     lcsBox.setAttribute("x", "18.5%");
     lcsBox.setAttribute("y", "45%");
     lcsBox.setAttribute("width", "25%");
@@ -137,24 +139,24 @@ export function setLegend(onMobile) {
     lcsBox.setAttribute("fill", "#8e3f29");
     legend.appendChild(lcsBox);
 
-    let editText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const editText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
     editText1.setAttribute("x", "69%");
     editText1.setAttribute("y", "37.5%");
     editText1.setAttribute("font-size", "100%");
     editText1.setAttribute("text-anchor", "middle");
-    let editTextNode1 = document.createTextNode("Edited Pair of");
+    const editTextNode1 = document.createTextNode("Edited Pair of");
     editText1.appendChild(editTextNode1);
-    let editText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const editText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
     editText2.setAttribute("x", "69%");
     editText2.setAttribute("y", "42.5%");
     editText2.setAttribute("font-size", "100%");
     editText2.setAttribute("text-anchor", "middle");
-    let editTextNode2 = document.createTextNode("Binary Strings");
+    const editTextNode2 = document.createTextNode("Binary Strings");
     editText2.appendChild(editTextNode2);
     legend.appendChild(editText1);
     legend.appendChild(editText2);
 
-    let editBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const editBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     editBox.setAttribute("x", "56.5%");
     editBox.setAttribute("y", "45%");
     editBox.setAttribute("width", "25%");
@@ -162,7 +164,7 @@ export function setLegend(onMobile) {
     editBox.setAttribute("fill", "#d18952");
     legend.appendChild(editBox);
 
-    let disclaimerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const disclaimerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
     disclaimerText.setAttribute("x", "50%");
     
     if (onMobile) {
@@ -173,7 +175,7 @@ export function setLegend(onMobile) {
 
     disclaimerText.setAttribute("font-size", "60%");
     disclaimerText.setAttribute("text-anchor", "middle");
-    let disclaimerTextNode = document.createTextNode("If the edited pair of binary strings is the same as the selected pair,  the edited pair will not be displayed.");
+    const disclaimerTextNode = document.createTextNode("If the edited pair of binary strings is the same as the selected pair,  the edited pair will not be displayed.");
     disclaimerText.appendChild(disclaimerTextNode);
     legend.appendChild(disclaimerText);
 }

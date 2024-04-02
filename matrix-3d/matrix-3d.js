@@ -24,13 +24,13 @@ function setup(onMobile, canvas) {
         canvas.width = window.innerWidth * 0.875;
         canvas.height = canvas.width * 0.6667;
 
-        var panel = document.getElementById("right");
+        let panel = document.getElementById("right");
         panel.parentNode.removeChild(panel); // remove div from main div
         document.body.appendChild(panel); // add div to body
         panel.style.width = canvas.width + "px";
 
         // clear style on left div
-        var left = document.getElementById("left");
+        let left = document.getElementById("left");
         left.style.width = "100%";
         left.style.marginTop = "0";
         left.style.marginLeft = "0";
@@ -42,8 +42,8 @@ function setup(onMobile, canvas) {
         canvas.height = canvas.width * 0.6667;
 
         // hide mobile controls div
-        var mobileControls = document.getElementById("mobile-controls");
-        var break0 = document.getElementById("break0");
+        let mobileControls = document.getElementById("mobile-controls");
+        let break0 = document.getElementById("break0");
         mobileControls.style.display = "none";
         break0.style.display = "none";
 
@@ -92,8 +92,8 @@ function render(gl, camera, objectModel, lights) {
 }
 
 function toggleCameraType() {
-    var mixAmount = Math.sin(time * Math.PI / 2.0) * 0.5 + 0.5;
-    var projectionMatrix = mat4();
+    let mixAmount = Math.sin(time * Math.PI / 2.0) * 0.5 + 0.5;
+    let projectionMatrix = mat4();
 
     projectionMatrix[0] = WebGL.mix(perspectiveMatrix[0], orthoMatrix[0], mixAmount);
     projectionMatrix[1] = WebGL.mix(perspectiveMatrix[1], orthoMatrix[1], mixAmount);
@@ -102,9 +102,9 @@ function toggleCameraType() {
 
     camera.projectionMatrix = projectionMatrix;
 
-    var eye = WebGL.mix(perspectiveEye, orthoEye, mixAmount);
-    var orientation = WebGL.mix(perspectiveOrientation, orthoOrientation, mixAmount);
-    var up = WebGL.mix(perspectiveUp, orthoUp, mixAmount);
+    let eye = WebGL.mix(perspectiveEye, orthoEye, mixAmount);
+    let orientation = WebGL.mix(perspectiveOrientation, orthoOrientation, mixAmount);
+    let up = WebGL.mix(perspectiveUp, orthoUp, mixAmount);
 
     camera.setPosition(eye);
     camera.setOrientation(orientation);
@@ -140,7 +140,7 @@ function initializeMLC(gl, shader, width, height, aspectRatio) {
     let lights = [];
 
     // Generate model matrix
-    var reflectionPlane = WebGL.vec4(1.0, 0.0, 0.0, 0.0);
+    let reflectionPlane = WebGL.vec4(1.0, 0.0, 0.0, 0.0);
     const modelMatrix = WebGL.mult(WebGL.reflectionMatrix(reflectionPlane), WebGL.translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1)));
 
     // lighting initialization
@@ -168,45 +168,45 @@ function initializeMLC(gl, shader, width, height, aspectRatio) {
 
 function performOperation() {
     // convert from binary string to int
-    var x = parseInt(xBox.value, 2);
-    var y = parseInt(yBox.value, 2);
+    let x = parseInt(xBox.value, 2);
+    let y = parseInt(yBox.value, 2);
 
-    var newX, newY;
+    let newX, newY;
     if (operation == "substitute") {
         newX = x;
         newY = y ^ (1 << (yBox.value.length - 1 - parseInt(substitutionKBox.value)));
     } else if (operation == "permutation") {
         // convert permutation row to array
-        var perm = [];
-        for (var i = 0; i < m; i++) {
-            var cell = document.getElementById("perm-" + i);
+        let perm = [];
+        for (let i = 0; i < m; i++) {
+            let cell = document.getElementById("perm-" + i);
             perm.push(cell.value);
         }
 
         newX = x;
         newY = permuteChars(yBox.value, perm);
     } else if (operation == "slice-n-concat") {
-        var xString = xBox.value;
-        var yString = yBox.value;
-        var mode = sliceConcatModeBox.value;
+        let xString = xBox.value;
+        let yString = yBox.value;
+        let mode = sliceConcatModeBox.value;
 
         if (mode == "prefix") {
-            var slicedX = xString.slice(lcPrefix);
-            var slicedY = yString.slice(lcPrefix);
-            var prefix = document.getElementById("prefix-box").value;
+            let slicedX = xString.slice(lcPrefix);
+            let slicedY = yString.slice(lcPrefix);
+            let prefix = document.getElementById("prefix-box").value;
 
             newX = parseInt(prefix + slicedX, 2);
             newY = parseInt(prefix + slicedY, 2);
         } else if (mode == "suffix") {
-            var slicedX = xString.slice(0, xString.length - lcSuffix);
-            var slicedY = yString.slice(0, yString.length - lcSuffix);
-            var suffix = document.getElementById("suffix-box").value;
+            let slicedX = xString.slice(0, xString.length - lcSuffix);
+            let slicedY = yString.slice(0, yString.length - lcSuffix);
+            let suffix = document.getElementById("suffix-box").value;
 
             newX = parseInt(slicedX + suffix, 2);
             newY = parseInt(slicedY + suffix, 2);
         } else if (mode == "circumfix") {
-            var prefix = document.getElementById("prefix-box").value;
-            var suffix = document.getElementById("suffix-box").value;
+            let prefix = document.getElementById("prefix-box").value;
+            let suffix = document.getElementById("suffix-box").value;
 
             newX = parseInt(prefix + xString.slice(lcPrefix, xString.length - lcSuffix) + suffix, 2);
             newY = parseInt(prefix + yString.slice(lcPrefix, yString.length - lcSuffix) + suffix, 2);
@@ -219,8 +219,8 @@ function performOperation() {
         newY = parseInt(yBox.value.split("").reverse().join(""), 2);
     }
 
-    var newXBox = newX.toString(2);
-    var newYBox = newY.toString(2);
+    let newXBox = newX.toString(2);
+    let newYBox = newY.toString(2);
 
     // pad with zeros
     while (newXBox.length < n) {
@@ -236,16 +236,16 @@ function performOperation() {
     document.getElementById("new-y").value = newYBox;
 
     // select mesh
-    var index = newX * Math.pow(2, m) + newY;
+    let index = newX * Math.pow(2, m) + newY;
     objectModel.selectK(index);
 
-    var lcsLength = objectModel.meshes[index].vertices[0].position[1];
-    var setOfLCSs = Array.from(lcsMemo[newXBox.length - 1][newYBox.length - 1].lcs);
+    let lcsLength = objectModel.meshes[index].vertices[0].position[1];
+    let setOfLCSs = Array.from(lcsMemo[newXBox.length - 1][newYBox.length - 1].lcs);
 
-    var newLengthLabel = document.getElementById("new-length");
+    let newLengthLabel = document.getElementById("new-length");
     newLengthLabel.innerHTML = "Length of Longest Common Subsequence: " + lcsLength;
 
-    var newSetLabel = document.getElementById("new-set");
+    let newSetLabel = document.getElementById("new-set");
     newSetLabel.innerHTML = "Set of Longest Common Subsequences: {" + setOfLCSs + "}";
 }
 
@@ -265,8 +265,8 @@ function resetCamera() {
 }
 
 function toggleDivs(divIds) {
-    for (var i = 0; i < divIds.length; i++) {
-        var div = document.getElementById(divIds[i]);
+    for (let i = 0; i < divIds.length; i++) {
+        let div = document.getElementById(divIds[i]);
         if (div.style.display === "none") {
             div.style.display = "block";
         } else {
@@ -293,24 +293,24 @@ window.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('window');
     setup(onMobile, canvas);
 
-    const xBox = document.querySelector("#x-box")
+    const xBox = document.querySelector("#x-box");
     xBox.onbeforeinput = e => {
         // clear if not a binary string
         if(!e.data.match("[01]+")) {
             e.preventDefault();
             return;
         }
-    }
+    };
     document.querySelector("#y-box").onbeforeinput = xBox.onbeforeinput;
 
     const substitutionKBox = document.querySelector("#substitution-k-box");
-    substitutionKBox.onchange = function () {
+    substitutionKBox.onchange = () => {
         if (substitutionKBox.value.length > 0 && lcsGenerated) {
             operationButton.disabled = false;
         } else {
             operationButton.disabled = true;
         }
-    }
+    };
 
     const sliceConcatModeBox = document.querySelector("#slice-concat-mode");
     sliceConcatModeBox.onchange = function () {
@@ -320,17 +320,17 @@ window.addEventListener("DOMContentLoaded", () => {
         }
         operationButton.disabled = true;
 
-        var mode = sliceConcatModeBox.value;
+        let mode = sliceConcatModeBox.value;
         if (mode == "prefix") {
-            var prefixLabel = document.createElement("label");
+            let prefixLabel = document.createElement("label");
             prefixLabel.innerHTML = "Prefix: ";
             prefixLabel.for = "prefix-box";
             prefixLabel.style.display = "inline";
 
-            var prefixBox = document.createElement("select");
+            let prefixBox = document.createElement("select");
             prefixBox.id = "prefix-box";
             prefixBox.style.display = "inline";
-            for (var i = 0; i < Math.pow(2, lcPrefix); i++) {
+            for (let i = 0; i < Math.pow(2, lcPrefix); i++) {
                 prefixBox.options[prefixBox.options.length] = new Option(i.toString(2).padStart(lcPrefix, "0"), i.toString(2).padStart(lcPrefix, "0"));
             }
             prefixBox.selectedIndex = -1;
@@ -340,26 +340,22 @@ window.addEventListener("DOMContentLoaded", () => {
                 } else {
                     operationButton.disabled = true;
                 }
-            }
-
-            // create two breaks
-            var br1 = document.createElement("br");
-            var br2 = document.createElement("br");
+            };
 
             concatInputDiv.appendChild(prefixLabel);
             concatInputDiv.appendChild(prefixBox);
-            concatInputDiv.appendChild(br1);
-            concatInputDiv.appendChild(br2);
+            concatInputDiv.appendChild(document.createElement("br"));
+            concatInputDiv.appendChild(document.createElement("br"));
         } else if (mode == "suffix") {
-            var suffixLabel = document.createElement("label");
+            let suffixLabel = document.createElement("label");
             suffixLabel.innerHTML = "Suffix: ";
             suffixLabel.for = "suffix-box";
             suffixLabel.style.display = "inline";
 
-            var suffixBox = document.createElement("select");
+            let suffixBox = document.createElement("select");
             suffixBox.id = "suffix-box";
             suffixBox.style.display = "inline";
-            for (var i = 0; i < Math.pow(2, lcSuffix); i++) {
+            for (let i = 0; i < Math.pow(2, lcSuffix); i++) {
                 suffixBox.options[suffixBox.options.length] = new Option(i.toString(2).padStart(lcSuffix, "0"), i.toString(2).padStart(lcSuffix, "0"));
             }
             suffixBox.selectedIndex = -1;
@@ -369,16 +365,12 @@ window.addEventListener("DOMContentLoaded", () => {
                 } else {
                     operationButton.disabled = true;
                 }
-            }
-
-            // create two breaks
-            var br1 = document.createElement("br");
-            var br2 = document.createElement("br");
+            };
 
             concatInputDiv.appendChild(suffixLabel);
             concatInputDiv.appendChild(suffixBox);
-            concatInputDiv.appendChild(br1);
-            concatInputDiv.appendChild(br2);
+            concatInputDiv.appendChild(document.createElement("br"));
+            concatInputDiv.appendChild(document.createElement("br"));
         } else if (mode == "circumfix") {
             tempLCPrefix = lcPrefix;
             tempLCSuffix = lcSuffix;
@@ -388,32 +380,32 @@ window.addEventListener("DOMContentLoaded", () => {
                 lcSuffix = lcCircumfix - lcPrefix;
             }
 
-            var prefixLabel = document.createElement("label");
+            let prefixLabel = document.createElement("label");
             prefixLabel.innerHTML = "Prefix: ";
             prefixLabel.for = "prefix-box";
             prefixLabel.style.display = "inline";
 
-            var prefixBox = document.createElement("select");
+            let prefixBox = document.createElement("select");
             prefixBox.id = "prefix-box";
             prefixBox.style.display = "inline";
-            for (var i = 0; i < Math.pow(2, lcPrefix); i++) {
+            for (let i = 0; i < Math.pow(2, lcPrefix); i++) {
                 prefixBox.options[prefixBox.options.length] = new Option(i.toString(2).padStart(lcPrefix, "0"), i.toString(2).padStart(lcPrefix, "0"));
             }
             prefixBox.selectedIndex = -1;
             
-            var nbsp = document.createElement("p");
+            let nbsp = document.createElement("p");
             nbsp.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             nbsp.style.display = "inline";
 
-            var suffixLabel = document.createElement("label");
+            let suffixLabel = document.createElement("label");
             suffixLabel.innerHTML = "Suffix: ";
             suffixLabel.for = "suffix-box";
             suffixLabel.style.display = "inline";
 
-            var suffixBox = document.createElement("select");
+            let suffixBox = document.createElement("select");
             suffixBox.id = "suffix-box";
             suffixBox.style.display = "inline";
-            for (var i = 0; i < Math.pow(2, lcSuffix); i++) {
+            for (let i = 0; i < Math.pow(2, lcSuffix); i++) {
                 suffixBox.options[suffixBox.options.length] = new Option(i.toString(2).padStart(lcSuffix, "0"), i.toString(2).padStart(lcSuffix, "0"));
             }
             suffixBox.selectedIndex = -1;
@@ -424,7 +416,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 } else {
                     operationButton.disabled = true;
                 }
-            }
+            };
 
             suffixBox.onchange = function () {
                 if (prefixBox.selectedIndex != -1 && suffixBox.selectedIndex != -1) {
@@ -432,11 +424,11 @@ window.addEventListener("DOMContentLoaded", () => {
                 } else {
                     operationButton.disabled = true;
                 }
-            }
+            };
 
             // create two breaks
-            var br1 = document.createElement("br");
-            var br2 = document.createElement("br");
+            let br1 = document.createElement("br");
+            let br2 = document.createElement("br");
 
             concatInputDiv.appendChild(prefixLabel);
             concatInputDiv.appendChild(prefixBox);
@@ -449,7 +441,7 @@ window.addEventListener("DOMContentLoaded", () => {
             lcPrefix = tempLCPrefix;
             lcSuffix = tempLCSuffix;
         }
-    }
+    };
 
     // specify the viewport in the window
     const gl = WebGLUtils.setupWebGL(canvas);
@@ -483,7 +475,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // ====================================================
 
     // create framebuffer object
-    //var fbo = new FBO(gl, width, height);
+    //let fbo = new FBO(gl, width, height);
 
     // initialize and activate shader program
     const shaderProgram = createShaderProgram(gl);

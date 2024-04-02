@@ -28,7 +28,7 @@ function createLCSButtons(string1, string2, memo) {
     lcsSet.innerHTML = "";
     lcsConfigurations.classList.add("hidden");
     
-    if(string1.length > 0 && string2.length > 0 && memo[string1.length - 1][string2.length - 1].lcs.length > 0) {
+    if(string1.length > 0 && string2.length > 0 && memo[string1.length - 1][string2.length - 1].len > 0) {
         for (let lcs of memo[string1.length - 1][string2.length - 1].lcs) {
             const button = document.createElement("button");
             button.textContent = lcs;

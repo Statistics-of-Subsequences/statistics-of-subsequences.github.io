@@ -380,7 +380,8 @@ export function performOperation() {
     newLengthLabel.innerHTML = lcsLength;
 
     let newSetLabel = document.getElementById("new-set");
-    for(let lcs in setOfLCSs) {
+    newSetLabel.innerHTML = '';
+    for(let lcs of setOfLCSs) {
         const lcsString = document.createElement("p");
         lcsString.textContent = lcs;
         newSetLabel.appendChild(lcsString);

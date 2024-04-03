@@ -8,16 +8,16 @@ import GenericCamera from "./render/camera.js";
 import { registerController, resetCamera } from "./controls.js";
 import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from "./edit-properties.js";
 
+const BG_COLOR = { R: 220, G: 220, B: 220 } // Color out of 255
+
 export let gl, shaderProgram, objectModel, modelMatrix, lights, viewport, cameraStatus, camera;
 
 // =================
 // ==== PROGRAM ====
 // =================
 function render() {
-    // clear the screen
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // if the model is loaded
     if (objectModel.modelLoaded) {
         // update camera matrix
         if (!cameraStatus.isAnimating) {
@@ -32,20 +32,12 @@ function render() {
             toggleCameraType();
         }
 
-        // update camera
         camera.update(shaderProgram, "cameraMatrix");
-
-        // update lighting
         Light.updateAll(gl, shaderProgram, lights);
-
-        // update model matrix
         gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "modelMatrix"), false, WebGL.flatten(modelMatrix));
-
-        // draw mesh
         objectModel.draw(shaderProgram, camera);
     }
 
-    // request new frame
     window.requestAnimFrame(render);
 }
 
@@ -68,17 +60,14 @@ function toggleCameraType() {
     camera.setOrientation(orientation);
     camera.setWorldUp(up);
 
-    // update time
     if (cameraStatus.isPerspective) {
         cameraStatus.time += cameraStatus.alpha;
     } else {
         cameraStatus.time -= cameraStatus.alpha;
     }
 
-    // round time to 4 decimal places
     cameraStatus.time = Math.round(cameraStatus.time * 10000.0) / 10000.0;
 
-    // update isPerspective
     if (cameraStatus.time >= 1.0) {
         cameraStatus.isPerspective = false;
         camera.isPerspective = false;
@@ -123,7 +112,6 @@ export function initializeMLC(width, height, aspectRatio) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // Create the window
     const canvas = document.getElementById('window');
     registerController(canvas);
 
@@ -153,7 +141,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const sliceConcatModeBox = document.querySelector("#slice-concat-mode");
     sliceConcatModeBox.onchange = function () {
-        const concatInputDiv = sliceConcatModeBox.querySelector("#concat-input");
+        const concatInputDiv = document.querySelector("#concat-input");
         while (concatInputDiv.firstChild) {
             concatInputDiv.removeChild(concatInputDiv.firstChild);
         }
@@ -288,16 +276,12 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // specify the viewport in the window
     gl = WebGLUtils.setupWebGL(canvas);
-
-    // Check that the return value is not null.
     if (!gl) {
         console.log('Failed to get the rendering context for WebGL');
         return;
     }
 
-    // set viewport
     const wrapper = document.querySelector("#window-wrapper");
     const wrapperRect = wrapper.getBoundingClientRect();
     canvas.width = wrapperRect.width
@@ -311,14 +295,12 @@ window.addEventListener("DOMContentLoaded", () => {
     const aspectRatio = width / height;
     gl.viewport(0, 0, width, height);
 
-    // enable the depth buffer and backface culling
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     gl.frontFace(gl.CCW);
 
-    // set background color
-    gl.clearColor(0.9, 0.9, 0.9, 1.0);
+    gl.clearColor(BG_COLOR.R / 255, BG_COLOR.G / 255, BG_COLOR.B / 255, 1.0);
 
     // ====================================================
     // ======= NOTE: No post-processing effects are =======
@@ -380,7 +362,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#lcs-button").onclick = changeLCS;
     document.querySelector("#reset").onclick = resetCamera;
     document.querySelector("#perspective").onclick = () => cameraStatus.isAnimating = !cameraStatus.isAnimating;
-    document.querySelector("#operation-button").onclick = performOperation();
+    document.querySelector("#operation-button").onclick = performOperation;
 
     // render the scene
     cameraStatus = { isAnimating: false, isPerspective: updatedPerspective, time: updatedTime, alpha: updatedAlpha };

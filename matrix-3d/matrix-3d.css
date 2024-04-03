@@ -73,6 +73,7 @@ main {
     width: auto;
     height: auto;
     box-sizing: border-box;
+    padding: 1vh;
 }
 #dimension-button, #lcs-button, #operation-button {
     cursor: pointer;
@@ -249,7 +250,7 @@ select {
     border: 2px solid var(--dark-accent);
 }
 
-main .center>:first-child:not(span, svg) {
+main .center>:first-child:not(span, svg, h4, #icon-wrapper, #new-set p, #lcs-set p, #gradient-labels p) {
     padding-right: 0.5vw;
     width: max-content;
 }
@@ -273,15 +274,20 @@ main .center>:first-child:not(span, svg) {
     justify-content: flex-start;
 }
 
-#lcs-set.center {
+#lcs-set.center, #new-set.center {
     justify-content: space-around;
     width: 90%;
 }
 
-#lcs-set p {
+#lcs-set p, #new-set p {
     padding: 1vw;
     background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
 }
-.night-mode #lcs-set p {
+.night-mode #lcs-set p, .night-mode #new-set p {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}
+
+.no-padding {
+    padding: 0;
+    margin: 0;
 }

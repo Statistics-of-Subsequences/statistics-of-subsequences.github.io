@@ -42,7 +42,7 @@
         <div id="matrix-dimensions">
             <h4>Matrix Dimensions:</h4>
             <div class="center">
-                <div class="two-margin">
+                <div class="center two-margin">
                     <label for="n">n: </label>
                     <select id="n">
                         <option value="1" selected>1</option>
@@ -52,7 +52,7 @@
                         <option value="5">5</option>
                     </select>
                 </div>
-                <div>
+                <div class="center">
                     <label for="m">m: </label>
                     <select id="m">
                         <option value="1" selected>1</option>
@@ -85,17 +85,18 @@
         </div>
         <div id="lcs-information" class="center">
             <h4>Longest Common Subsequence</h4>
-            <div>
+            <div class="center">
                 <label for="x-box">x:</label>
                 <input type="text" id="x-box" name="x" maxlength="1">
             </div>
-            <div>
+            <div class="center">
                 <label for="y-box">y:</label>
                 <input type="text" id="y-box" name="y" maxlength="1">
             </div>
             <button id="lcs-button" type="button">Update LCS</button>
-            <p id="lcs-length">Length of Longest Common Subsequence: 0</p>
-            <p id="lcs-set">Set of Longest Common Subsequences: {}</p>
+            <div class="center"><p>LCS Length:</p><p id="lcs-length">0</p></div>
+            <p>All Possible LCS:</p>
+            <div id="lcs-set"></div>
         </div>
 
         <div id="edit-operations">
@@ -144,17 +145,18 @@
 
             <button id="operation-button">Perform Operation</button>
             <div id="edit-results" class="v-center">
-                <div>
+                <div class="center">
                     <label for="new-x">New x:</label>
                     <input type="text" id="new-x" name="new-x" readonly>
                 </div>
-                <div>
+                <div class="center">
                     <label for="new-y">New y:</label>
                     <input type="text" id="new-y" name="new-y" readonly>
                 </div>
             </div>
-            <p id="new-length">Length of Longest Common Subsequence: 0</p>
-            <p id="new-set">Set of Longest Common Subsequences: {}</p>
+            <div class="center"><p>LCS Length:</p><p id="new-length">0</p></div>
+            <p>All Possible LCS:</p>
+            <div id="new-set"></div>
         </div>
     </div>
     <div id="control-overlay" class="center hidden">

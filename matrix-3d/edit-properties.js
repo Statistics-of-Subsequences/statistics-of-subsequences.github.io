@@ -36,16 +36,16 @@ export function changeMatrix() {
     }
 
     // clear previous LCS information
-    document.getElementById("lcs-length").innerHTML = "Length of Longest Common Subsequence: 0";
-    document.getElementById("lcs-set").innerHTML = "Set of Longest Common Subsequences: {}";
+    document.getElementById("lcs-length").innerHTML = 0;
+    document.getElementById("lcs-set").innerHTML = "";
     lcsButton.disabled = true;
     lcsGenerated = false;
 
     // clear previous operation information
     document.getElementById("new-x").value = "";
     document.getElementById("new-y").value = "";
-    document.getElementById("new-length").innerHTML = "Length of Longest Common Subsequence: 0";
-    document.getElementById("new-set").innerHTML = "Set of Longest Common Subsequences: {}";
+    document.getElementById("new-length").innerHTML = 0;
+    document.getElementById("new-set").innerHTML = "";
     operationRadio[0].checked = true;
     operationRadio[2].disabled = true;
     document.querySelector("#operation-button").disabled = true;
@@ -172,10 +172,14 @@ export function changeLCS(objectModel) {
     let setOfLCSs = lcsMemo[xBox.value.length - 1][yBox.value.length - 1].lcs;
 
     let lcsLengthLabel = document.getElementById("lcs-length");
-    lcsLengthLabel.innerHTML = "Length of Longest Common Subsequence: " + lcsLength;
+    lcsLengthLabel.innerHTML = lcsLength;
 
     let lcsSetLabel = document.getElementById("lcs-set");
-    lcsSetLabel.innerHTML = "Set of Longest Common Subsequences: {" + setOfLCSs + "}";
+    for(let lcs in setOfLCSs) {
+        const lcsString = document.createElement("p");
+        lcsString.textContent = lcs;
+        lcsSetLabel.appendChild(lcsString);
+    }
 
     lcsGenerated = true;
 
@@ -199,8 +203,8 @@ export function changeLCS(objectModel) {
 
     document.getElementById("new-x").value = "";
     document.getElementById("new-y").value = "";
-    document.getElementById("new-length").innerHTML = "Length of Longest Common Subsequence: 0";
-    document.getElementById("new-set").innerHTML = "Set of Longest Common Subsequences: {}";
+    document.getElementById("new-length").innerHTML = 0;
+    document.getElementById("new-set").innerHTML = "";
     operationButton.disabled = true;
 
     const{ lcPrefix, lcSuffix } = findFix(xBox.value, yBox.value, n, m);
@@ -272,8 +276,8 @@ export function setOperation() {
 
     document.getElementById("new-x").value = "";
     document.getElementById("new-y").value = "";
-    document.getElementById("new-length").innerHTML = "Length of Longest Common Subsequence: 0";
-    document.getElementById("new-set").innerHTML = "Set of Longest Common Subsequences: {}";
+    document.getElementById("new-length").innerHTML = 0;
+    document.getElementById("new-set").innerHTML = "";
 }
 
 export function permuteChars(str, perm) {
@@ -369,8 +373,12 @@ export function performOperation(objectModel) {
     let setOfLCSs = Array.from(lcsMemo[newXBox.length - 1][newYBox.length - 1].lcs);
 
     let newLengthLabel = document.getElementById("new-length");
-    newLengthLabel.innerHTML = "Length of Longest Common Subsequence: " + lcsLength;
+    newLengthLabel.innerHTML = lcsLength;
 
     let newSetLabel = document.getElementById("new-set");
-    newSetLabel.innerHTML = "Set of Longest Common Subsequences: {" + setOfLCSs + "}";
+    for(let lcs in setOfLCSs) {
+        const lcsString = document.createElement("p");
+        lcsString.textContent = lcs;
+        newSetLabel.appendChild(lcsString);
+    }
 }

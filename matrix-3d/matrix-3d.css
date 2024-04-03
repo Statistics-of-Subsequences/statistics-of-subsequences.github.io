@@ -272,3 +272,16 @@ main .center>:first-child:not(span, svg) {
 #lcs-information, #edit-operations {
     justify-content: flex-start;
 }
+
+#lcs-set.center {
+    justify-content: space-around;
+    width: 90%;
+}
+
+#lcs-set p {
+    padding: 1vw;
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+}
+.night-mode #lcs-set p {
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}

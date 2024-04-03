@@ -169,14 +169,15 @@ export function changeLCS() {
     let index = x * Math.pow(2, m) + y;
     objectModel.select(index);
 
-    let lcsLength = objectModel.meshes[index].vertices[0].position[1];
+    let lcsLength = lcsMemo[xBox.value.length - 1][yBox.value.length - 1].len;
     let setOfLCSs = lcsMemo[xBox.value.length - 1][yBox.value.length - 1].lcs;
 
     let lcsLengthLabel = document.getElementById("lcs-length");
     lcsLengthLabel.innerHTML = lcsLength;
 
     let lcsSetLabel = document.getElementById("lcs-set");
-    for(let lcs in setOfLCSs) {
+    lcsSetLabel.innerHTML = '';
+    for(let lcs of setOfLCSs) {
         const lcsString = document.createElement("p");
         lcsString.textContent = lcs;
         lcsSetLabel.appendChild(lcsString);
@@ -185,7 +186,7 @@ export function changeLCS() {
     lcsGenerated = true;
 
     const sliceConcatModeBox = document.querySelector("#slice-concat-mode");
-    const operationRadio = document.querySelector("#operator");
+    const operationRadio = document.getElementsByName("operation");
     const operationButton = document.querySelector("#operation-button");
     const substitutionKBox = document.querySelector("#substitution-k-box");
     substitutionKBox.value = "";
@@ -215,12 +216,10 @@ export function changeLCS() {
             // add prefix as an option to sliceConcatModeBox
             sliceConcatModeBox.appendChild(new Option("Prefix", "prefix"));
         }
-
         if (lcSuffix > 0) {
             // add suffix as an option to sliceConcatModeBox
             sliceConcatModeBox.appendChild(new Option("Suffix", "suffix"));
         }
-
         if (lcPrefix > 0 && lcSuffix > 0) {
             // add circumfix as an option to sliceConcatModeBox
             sliceConcatModeBox.appendChild(new Option("Circumfix", "circumfix"));
@@ -239,7 +238,7 @@ export function changeLCS() {
 }
 
 export function setOperation() {
-    const operationRadio = document.querySelector("#operator");
+    const operationRadio = document.getElementsByName("operation");
     const operationButton = document.querySelector("#operation-button");
     const permutationBox = document.querySelector("#permutation-box");
     const substitutionKBox = document.querySelector("#substitution-k-box");

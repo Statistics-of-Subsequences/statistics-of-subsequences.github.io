@@ -129,12 +129,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const xBox = document.querySelector("#x-box");
     const yBox = document.querySelector("#y-box");
+    const lcsButton = document.querySelector("#lcs-button");
     xBox.onbeforeinput = e => {
         // clear if not a binary string
         if(e.data && !e.data.match("[01]+")) {
             e.preventDefault();
             return;
         }
+        
+        lcsButton.disabled = xBox.value.length === xBox.style.maxLength && yBox.value.length === yBox.style.maxLength;
     };
     yBox.onbeforeinput = xBox.onbeforeinput;
 

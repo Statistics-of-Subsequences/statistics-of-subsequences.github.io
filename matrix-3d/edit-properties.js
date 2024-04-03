@@ -1,3 +1,4 @@
+import { objectModel } from "./matrix-3d.js";
 import { generateLCSMemo } from "../LCS.js";
 
 let lcsGenerated = false;
@@ -152,7 +153,7 @@ export function findFix(xString, yString, n, m) {
     return {lcPrefix: lcPrefix, lcCircumfix: lcCircumfix, lcSuffix: lcSuffix };
 }
 
-export function changeLCS(objectModel) {
+export function changeLCS() {
     const xBox = document.querySelector("#x-box");
     const yBox = document.querySelector("#y-box");
     const lcsMemo = generateLCSMemo(xBox.value, yBox.value);
@@ -288,13 +289,17 @@ export function permuteChars(str, perm) {
     return parseInt(newStr, 2);
 }
 
-export function performOperation(objectModel) {
+export function performOperation() {
     const xBox = document.querySelector("#x-box");
     const yBox = document.querySelector("#y-box");
 
     // convert from binary string to int
     let x = parseInt(xBox.value, 2);
     let y = parseInt(yBox.value, 2);
+
+    if(Number.isNaN(x) || Number.isNaN(y)) {
+        return;
+    }
 
     const n = parseInt(document.querySelector("#n").value);
     const m = parseInt(document.querySelector("#m").value);

@@ -5,15 +5,15 @@ import Model from "./render/model.js";
 import { Light, PointLight } from "./render/light.js";
 import GenericCamera from "./render/camera.js";
 
-import { registerController } from "./controls.js";
+import { registerController, resetCamera } from "./controls.js";
 import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from "./edit-properties.js";
 
-export let viewport, cameraStatus, camera;
+export let gl, shaderProgram, objectModel, modelMatrix, lights, viewport, cameraStatus, camera;
 
 // =================
 // ==== PROGRAM ====
 // =================
-function render(gl, shaderProgram, objectModel, modelMatrix, lights) {
+function render() {
     // clear the screen
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -46,7 +46,7 @@ function render(gl, shaderProgram, objectModel, modelMatrix, lights) {
     }
 
     // request new frame
-    window.requestAnimFrame(() => render(gl, shaderProgram, objectModel, modelMatrix, lights));
+    window.requestAnimFrame(render);
 }
 
 function toggleCameraType() {
@@ -90,16 +90,16 @@ function toggleCameraType() {
     }
 }
 
-export function initializeMLC(gl, shader, width, height, aspectRatio) {
+export function initializeMLC(width, height, aspectRatio) {
     // model initialization
     const n = document.querySelector("#n").value;
     const m = document.querySelector("#m").value;
-    const objectModel = new Model(gl, "model_" + n + "x" + m + ".obj", shader);
-    let lights = [];
+    objectModel = new Model(gl, "model_" + n + "x" + m + ".obj", shaderProgram);
+    lights = [];
 
     // Generate model matrix
     let reflectionPlane = WebGL.vec4(1.0, 0.0, 0.0, 0.0);
-    const modelMatrix = WebGL.mult(WebGL.reflectionMatrix(reflectionPlane), WebGL.translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1)));
+    modelMatrix = WebGL.mult(WebGL.reflectionMatrix(reflectionPlane), WebGL.translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1)));
 
     // lighting initialization
     lights.push(new PointLight(gl, WebGL.vec3(0.0, Math.min(n, m) + 1.0, 0.0), WebGL.vec3(2.0, 1.5, 0.5), 0.5, WebGL.vec4(1.0, 0.98, 1.0, 1.0)));
@@ -120,7 +120,6 @@ export function initializeMLC(gl, shader, width, height, aspectRatio) {
     camera = new GenericCamera(gl, width, height, perspectiveEye, perspectiveOrientation, perspectiveMatrix); // custom camera
     camera.speed = 0.1 * Math.min(n, m);
     viewport = { orthoSize, perspectiveStart, perspectiveMatrix, perspectiveEye, perspectiveOrientation, perspectiveUp, orthoMatrix, orthoEye, orthoOrientation, orthoUp };
-    return { objectModel: objectModel, modelMatrix: modelMatrix, lights: lights };
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -132,7 +131,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const yBox = document.querySelector("#y-box");
     xBox.onbeforeinput = e => {
         // clear if not a binary string
-        if(!e.data.match("[01]+")) {
+        if(e.data && !e.data.match("[01]+")) {
             e.preventDefault();
             return;
         }
@@ -287,7 +286,7 @@ window.addEventListener("DOMContentLoaded", () => {
     };
 
     // specify the viewport in the window
-    const gl = WebGLUtils.setupWebGL(canvas);
+    gl = WebGLUtils.setupWebGL(canvas);
 
     // Check that the return value is not null.
     if (!gl) {
@@ -329,12 +328,12 @@ window.addEventListener("DOMContentLoaded", () => {
     //let fbo = new FBO(gl, width, height);
 
     // initialize and activate shader program
-    const shaderProgram = createShaderProgram(gl);
+    shaderProgram = createShaderProgram(gl);
     gl.useProgram(shaderProgram);
 
     // Initialize models, lighting, and camera
     let { updatedPerspective, updatedTime, updatedAlpha } = changeMatrix();
-    let { objectModel, modelMatrix, lights } = initializeMLC(gl, shaderProgram, width, height, aspectRatio);
+    initializeMLC(width, height, aspectRatio);
 
     // initialize uniforms
     const n = parseInt(document.querySelector("#n").value);
@@ -353,8 +352,8 @@ window.addEventListener("DOMContentLoaded", () => {
         canvas.height = wrapper.height;
         gl.viewport(0, 0, canvas.width, canvas.height);
         registerController(canvas);
-        let { objectModel, modelMatrix, lights } = initializeMLC(gl, shaderProgram, canvas.width, canvas.height, canvas.width / canvas.height);
-        render(gl, shaderProgram, objectModel, modelMatrix, lights);
+        initializeMLC(canvas.width, canvas.height, canvas.width / canvas.height);
+        render();
     };
 
     const controlDisplay = document.querySelector("#control-overlay");
@@ -373,13 +372,14 @@ window.addEventListener("DOMContentLoaded", () => {
             yBox.value = yBox.value.slice(0, newMaxY);
         }
         changeMatrix();
+        initializeMLC(width, height, aspectRatio);
     }
-    document.querySelector("#lcs-button").onclick = () => changeLCS(objectModel);
-    document.querySelector("#reset").onclick = () => resetCamera(gl, shaderProgram);
+    document.querySelector("#lcs-button").onclick = changeLCS;
+    document.querySelector("#reset").onclick = resetCamera;
     document.querySelector("#perspective").onclick = () => cameraStatus.isAnimating = !cameraStatus.isAnimating;
-    document.querySelector("#operation-button").onclick = () => performOperation(objectModel);
+    document.querySelector("#operation-button").onclick = performOperation();
 
     // render the scene
     cameraStatus = { isAnimating: false, isPerspective: updatedPerspective, time: updatedTime, alpha: updatedAlpha };
-    render(gl, shaderProgram, objectModel, modelMatrix, lights);
+    render();
 });

@@ -138,6 +138,7 @@ main {
 }
 #gradient-labels p {
     width: 100%;
+    text-align: center;
 }
 #gradient-labels {
     margin-bottom: 3vh;
@@ -248,7 +249,7 @@ select {
     border: 2px solid var(--dark-accent);
 }
 
-main .center>:first-child {
+main .center>:first-child:not(span, svg) {
     padding-right: 0.5vw;
     width: max-content;
 }
@@ -266,4 +267,8 @@ main .center>:first-child {
     border-radius: 100vw;
     border: 3px solid transparent;
     background-clip: content-box;
+}
+
+#lcs-information, #edit-operations {
+    justify-content: flex-start;
 }

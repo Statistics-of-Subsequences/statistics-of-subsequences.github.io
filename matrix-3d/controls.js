@@ -1,6 +1,6 @@
 import * as WebGL from "./render/util/webgl-utils.js";
 import Controller from "./render/util/controller.js";
-import { viewport, camera, cameraStatus, initializeMLC } from "./matrix-3d.js";
+import { viewport, camera, cameraStatus, initializeMLC, gl, shaderProgram } from "./matrix-3d.js";
 
 export function registerController(canvas) {
     const controller = new Controller();
@@ -141,7 +141,7 @@ export function zoomCamera(delta, aspectRatio) {
     }
 }
 
-function resetCamera(gl, shaderProgram) {
+export function resetCamera() {
     if (!cameraStatus.cameraStatus.isAnimating) {
         initializeMLC(gl, shaderProgram);
         cameraStatus.cameraStatus.isPerspective = true;

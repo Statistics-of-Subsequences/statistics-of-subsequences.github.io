@@ -256,6 +256,9 @@ main .center>:first-child:not(span, svg, h4, #icon-wrapper, #new-set p, #lcs-set
 }
 
 ::-webkit-scrollbar {
+    background-color: var(--body-background);
+}
+.night-mode ::-webkit-scrollbar {
     background-color: var(--dark-body-background);
 }
 ::-webkit-scrollbar-button:increment,
@@ -264,10 +267,13 @@ main .center>:first-child:not(span, svg, h4, #icon-wrapper, #new-set p, #lcs-set
     height: 0;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: var(--dark-body-text);
+    background-color: var(--accent);
     border-radius: 100vw;
     border: 3px solid transparent;
     background-clip: content-box;
+}
+.night-mode ::-webkit-scrollbar-thumb {
+    background-color: var(--dark-accent);
 }
 
 #lcs-information, #edit-operations {

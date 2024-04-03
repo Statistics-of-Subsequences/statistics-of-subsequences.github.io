@@ -195,3 +195,58 @@ input:not(:disabled, :read-only) {
 select {
     cursor: pointer;
 }
+
+#control-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background-color: #000000CC;
+}
+
+#control-box {
+    width: max-content;
+    height: max-content;
+    padding-bottom: 2vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    background-color: var(--body-background);
+    border-radius: 10vh;
+    position: relative;
+}
+.night-mode #control-box {
+    background-color: var(--dark-body-background);
+}
+
+#close-x {
+    width: 2vw;
+    height: 2vw;
+    position: absolute;
+    top: -2vw;
+    right: -2vw;
+    fill: var(--body-text);
+    cursor: pointer;
+}
+
+.night-mode #close-x {
+    fill: var(--dark-body-text);
+}
+
+#control-text-mobile {
+    display: none;
+}
+
+#control-text-mobile *:not(h2), #control-text-pc *:not(h2) {
+    text-align: center;
+    border: 2px solid var(--accent);
+}
+
+#control-text-mobile td, #control-text-pc td {
+    padding: 1vh;
+}
+
+.night-mode #control-text-mobile *:not(h2), .night-mode #control-text-pc *:not(h2) {
+    border: 2px solid var(--dark-accent);
+}

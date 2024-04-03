@@ -5,7 +5,7 @@ import Model from "./render/model.js";
 import { Light, PointLight } from "./render/light.js";
 import GenericCamera from "./render/camera.js";
 
-import { registerController, showControls } from "./controls.js";
+import { registerController } from "./controls.js";
 import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from "./edit-properties.js";
 
 export let viewport, cameraStatus, camera;
@@ -357,7 +357,10 @@ window.addEventListener("DOMContentLoaded", () => {
         render(gl, shaderProgram, objectModel, modelMatrix, lights);
     };
 
-    document.querySelector("#computer-controls").onclick = showControls;
+    const controlDisplay = document.querySelector("#control-overlay");
+    document.querySelector("#computer-controls").onclick = () => controlDisplay.classList.remove("hidden");
+    document.querySelector("#close-x").onclick = () => controlDisplay.classList.add("hidden");
+
     document.querySelector("#dimension-button").onclick = () => {
         const newMaxX = parseInt(document.querySelector("#n").value);
         const newMaxY = parseInt(document.querySelector("#m").value);

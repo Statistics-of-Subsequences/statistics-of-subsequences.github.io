@@ -8,12 +8,12 @@ import GenericCamera from "./render/camera.js";
 import { registerController, showControls } from "./controls.js";
 import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from "./edit-properties.js";
 
-export let viewport;
+export let viewport, cameraStatus, camera;
 
 // =================
 // ==== PROGRAM ====
 // =================
-function render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, cameraStatus) {
+function render(gl, shaderProgram, objectModel, modelMatrix, lights) {
     // clear the screen
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -29,7 +29,7 @@ function render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, cam
                 viewport.orthoOrientation = camera.orientation;
             }
         } else {
-            toggleCameraType(camera, cameraStatus);
+            toggleCameraType();
         }
 
         // update camera
@@ -46,10 +46,10 @@ function render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, cam
     }
 
     // request new frame
-    window.requestAnimFrame(() => render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus));
+    window.requestAnimFrame(() => render(gl, shaderProgram, objectModel, modelMatrix, lights));
 }
 
-function toggleCameraType(camera, cameraStatus) {
+function toggleCameraType() {
     let mixAmount = Math.sin(cameraStatus.time * Math.PI / 2.0) * 0.5 + 0.5;
     let projectionMatrix = WebGL.mat4();
 
@@ -90,7 +90,7 @@ function toggleCameraType(camera, cameraStatus) {
     }
 }
 
-function initializeMLC(gl, shader, width, height, aspectRatio) {
+export function initializeMLC(gl, shader, width, height, aspectRatio) {
     // model initialization
     const n = document.querySelector("#n").value;
     const m = document.querySelector("#m").value;
@@ -117,10 +117,10 @@ function initializeMLC(gl, shader, width, height, aspectRatio) {
     const orthoOrientation = WebGL.vec3(0.0, 1.0, 0.0);
     const orthoUp = WebGL.vec3(0.0, 0.0, 1.0);
 
-    const camera = new GenericCamera(gl, width, height, perspectiveEye, perspectiveOrientation, perspectiveMatrix); // custom camera
+    camera = new GenericCamera(gl, width, height, perspectiveEye, perspectiveOrientation, perspectiveMatrix); // custom camera
     camera.speed = 0.1 * Math.min(n, m);
     viewport = { orthoSize, perspectiveStart, perspectiveMatrix, perspectiveEye, perspectiveOrientation, perspectiveUp, orthoMatrix, orthoEye, orthoOrientation, orthoUp };
-    return {camera: camera, objectModel: objectModel, modelMatrix: modelMatrix, lights: lights };
+    return { objectModel: objectModel, modelMatrix: modelMatrix, lights: lights };
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -334,7 +334,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Initialize models, lighting, and camera
     let { updatedPerspective, updatedTime, updatedAlpha } = changeMatrix();
-    let { camera, objectModel, modelMatrix, lights, viewport } = initializeMLC(gl, shaderProgram, width, height, aspectRatio);
+    let { objectModel, modelMatrix, lights } = initializeMLC(gl, shaderProgram, width, height, aspectRatio);
 
     // initialize uniforms
     const n = parseInt(document.querySelector("#n").value);
@@ -353,8 +353,8 @@ window.addEventListener("DOMContentLoaded", () => {
         canvas.height = wrapper.height;
         gl.viewport(0, 0, canvas.width, canvas.height);
         registerController(canvas);
-        let { camera, objectModel, modelMatrix, lights, viewport } = initializeMLC(gl, shaderProgram, canvas.width, canvas.height, canvas.width / canvas.height);
-        render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus);
+        let { objectModel, modelMatrix, lights } = initializeMLC(gl, shaderProgram, canvas.width, canvas.height, canvas.width / canvas.height);
+        render(gl, shaderProgram, objectModel, modelMatrix, lights);
     };
 
     document.querySelector("#computer-controls").onclick = showControls;
@@ -372,11 +372,11 @@ window.addEventListener("DOMContentLoaded", () => {
         changeMatrix();
     }
     document.querySelector("#lcs-button").onclick = () => changeLCS(objectModel);
-    document.querySelector("#reset").onclick = () => resetCamera(gl, shaderProgram, cameraStatus);
+    document.querySelector("#reset").onclick = () => resetCamera(gl, shaderProgram);
     document.querySelector("#perspective").onclick = () => cameraStatus.isAnimating = !cameraStatus.isAnimating;
     document.querySelector("#operation-button").onclick = () => performOperation(objectModel);
 
     // render the scene
-    const cameraStatus = { isAnimating: false, isPerspective: updatedPerspective, time: updatedTime, alpha: updatedAlpha };
-    render(gl, shaderProgram, camera, objectModel, modelMatrix, lights, viewport, cameraStatus);
+    cameraStatus = { isAnimating: false, isPerspective: updatedPerspective, time: updatedTime, alpha: updatedAlpha };
+    render(gl, shaderProgram, objectModel, modelMatrix, lights);
 });

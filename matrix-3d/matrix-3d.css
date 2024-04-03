@@ -97,8 +97,10 @@ main {
     align-items: center;
     width: min-content;
 }
+
 #lcs-information div label, #edit-results div label {
     padding-right: 0.5vw;
+    width: max-content;
 }
 #lcs-information div input, #edit-results div input {
     width: 20ch;

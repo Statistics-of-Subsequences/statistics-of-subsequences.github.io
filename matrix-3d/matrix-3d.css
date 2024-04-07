@@ -66,7 +66,7 @@ main {
     justify-content: space-evenly;
 }
 
-#matrix-dimensions, #legend, #lcs-information, #edit-operations {
+#matrix-dimensions, #legend, #lcs-information {
     display: flex;
     flex-direction: column;
     margin: 1vw;
@@ -90,6 +90,14 @@ main {
 
 #edit-operations {
     grid-column: span 2;
+    display: grid;
+    margin: 1vw;
+    width: auto;
+    height: auto;
+    box-sizing: border-box;
+    padding: 1vh;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: max-content max-content max-content;
 }
 
 #lcs-information div, #edit-results div {
@@ -188,10 +196,7 @@ main {
     filter: brightness(130%);
 }
 
-input:not(:disabled, :read-only) {
-    cursor: pointer;
-}
-select {
+input:not(:disabled, :read-only), select {
     cursor: pointer;
 }
 
@@ -212,7 +217,7 @@ select {
     padding-left: 5vw;
     padding-right: 5vw;
     background-color: var(--body-background);
-    border-radius: 10vh;
+    border-radius: 3vh;
     position: relative;
 }
 .night-mode #control-box {
@@ -250,7 +255,7 @@ select {
     border: 2px solid var(--dark-accent);
 }
 
-main .center>:first-child:not(span, svg, h4, #icon-wrapper, #new-set p, #lcs-set p, #gradient-labels p) {
+.text-spacing>* {
     padding-right: 0.5vw;
     width: max-content;
 }
@@ -282,7 +287,7 @@ main .center>:first-child:not(span, svg, h4, #icon-wrapper, #new-set p, #lcs-set
 
 #lcs-set.center, #new-set.center {
     justify-content: space-around;
-    width: 90%;
+    width: 100%;
 }
 
 #lcs-set p, #new-set p {
@@ -296,4 +301,14 @@ main .center>:first-child:not(span, svg, h4, #icon-wrapper, #new-set p, #lcs-set
 .no-padding {
     padding: 0;
     margin: 0;
+}
+
+#edit-label {
+    grid-column: span 2;
+}
+#edit-selection {
+    align-items: end;
+}
+#edit-operation-results {
+    grid-column: span 2;
 }

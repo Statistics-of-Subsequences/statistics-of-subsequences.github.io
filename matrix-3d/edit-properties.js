@@ -178,6 +178,10 @@ export function changeLCS() {
     let lcsSetLabel = document.getElementById("lcs-set");
     lcsSetLabel.innerHTML = '';
     for(let lcs of setOfLCSs) {
+        if(lcs === "") {
+            continue;
+        }
+        
         const lcsString = document.createElement("p");
         lcsString.textContent = lcs;
         lcsSetLabel.appendChild(lcsString);
@@ -382,6 +386,10 @@ export function performOperation() {
     let newSetLabel = document.getElementById("new-set");
     newSetLabel.innerHTML = '';
     for(let lcs of setOfLCSs) {
+        if(lcs === "") {
+            continue;
+        }
+
         const lcsString = document.createElement("p");
         lcsString.textContent = lcs;
         newSetLabel.appendChild(lcsString);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-US">
+
 <head>
     <title>LCS Edit Properties Explorer</title>
     <meta charset="UTF-8">
@@ -15,6 +16,7 @@
     <script type="module" src="./matrix-3d/matrix-3d.js"></script>
     <script src="./light-dark.js"></script>
 </head>
+
 <body>
     <script>setTheme();</script>
     <header>
@@ -29,7 +31,8 @@
                 <button title="info" type="button" id="computer-controls" class="center">
                     <svg id="info-icon" viewBox="0 0 24 24">
                         <g>
-                            <path d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 12 7 C 11.45 7 11 7.45 11 8 C 11 8.55 11.45 9 12 9 C 12.55 9 13 8.55 13 8 C 13 7.45 12.55 7 12 7 Z M 13 17 L 11 17 L 11 11 L 13 11 L 13 17 Z" />
+                            <path
+                                d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 12 7 C 11.45 7 11 7.45 11 8 C 11 8.55 11.45 9 12 9 C 12.55 9 13 8.55 13 8 C 13 7.45 12.55 7 12 7 Z M 13 17 L 11 17 L 11 11 L 13 11 L 13 17 Z" />
                         </g>
                     </svg>
                 </button>
@@ -39,29 +42,27 @@
                 </div>
             </div>
         </div>
-        <div id="matrix-dimensions">
+        <div id="matrix-dimensions" class="center">
             <h4>Matrix Dimensions:</h4>
-            <div class="center">
-                <div class="center two-margin">
-                    <label for="n">n: </label>
-                    <select id="n">
-                        <option value="1" selected>1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="center">
-                    <label for="m">m: </label>
-                    <select id="m">
-                        <option value="1" selected>1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
+            <div class="center text-spacing">
+                <label for="n">n: </label>
+                <select id="n">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="center text-spacing">
+                <label for="m">m: </label>
+                <select id="m">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
             </div>
             <button id="dimension-button" type="button">Update Matrix</button>
         </div>
@@ -81,27 +82,31 @@
                     <span></span>
                 </div>
             </div>
-            <h5>If the edited pair of binary strings is the same as the selected pair,  the edited pair will not be displayed.</h5>
+            <h5>If the edited pair of binary strings is the same as the selected pair, the edited pair will not be
+                displayed.</h5>
         </div>
         <div id="lcs-information" class="center">
             <h4>Longest Common Subsequence</h4>
-            <div class="center">
+            <div class="center text-spacing">
                 <label for="x-box">x:</label>
                 <input type="text" id="x-box" name="x" maxlength="1">
             </div>
-            <div class="center">
+            <div class="center text-spacing">
                 <label for="y-box">y:</label>
                 <input type="text" id="y-box" name="y" maxlength="1">
             </div>
             <button id="lcs-button" type="button">Update LCS</button>
-            <div class="center"><p>LCS Length:</p><p id="lcs-length">0</p></div>
+            <div class="center text-spacing">
+                <p>LCS Length:</p>
+                <p id="lcs-length">0</p>
+            </div>
             <p class="no-padding">All Possible LCS:</p>
             <div id="lcs-set" class="center"></div>
         </div>
 
         <div id="edit-operations" class="center">
-            <h4>Edit Operations</h4>
-            <div id="edit-selection" class="center">
+            <h4 id="edit-label">Edit Operations</h4>
+            <div id="edit-selection" class="v-center">
                 <div>
                     <label for="substitute">Substitute:</label>
                     <input type="radio" id="substitute" name="operation" value="substitute" checked>
@@ -123,116 +128,120 @@
                     <input type="radio" id="reverse" name="operation" value="reverse">
                 </div>
             </div>
-
-            <div id="substitution" style="display: block;">
-                <label for="substitution-k-box">Index:</label>
-                <select id="substitution-k-box">
-                    <option value="0">0</option>
-                </select>
-            </div>
-
-            <div id="permutation" style="display: none;">
-                <caption for="permutation-box">Permutation:</caption>
-                <table id="permutation-box"></table>
-            </div>
-
-            <div id="slice-concat" style="display: none;">
-                <label for="slice-concat-mode">Concatenation Mode:</label>
-                <select id="slice-concat-mode"></select>
-                <div id="concat-input">
+            <div id="edit-parameters">
+                <div id="substitution">
+                    <label for="substitution-k-box">Index:</label>
+                    <select id="substitution-k-box">
+                        <option value="0">0</option>
+                    </select>
+                </div>
+                <div id="permutation" class="hidden">
+                    <caption for="permutation-box">Permutation:</caption>
+                    <table id="permutation-box"></table>
+                </div>
+                <div id="slice-concat" class="hidden">
+                    <label for="slice-concat-mode">Concatenation Mode:</label>
+                    <select id="slice-concat-mode"></select>
+                    <div id="concat-input"></div>
+                </div>
+                <button id="operation-button" type="button">Perform Operation</button>
+                <div id="edit-results" class="v-center">
+                    <div class="center text-spacing">
+                        <label for="new-x">New x:</label>
+                        <input type="text" id="new-x" name="new-x" readonly>
+                    </div>
+                    <div class="center text-spacing">
+                        <label for="new-y">New y:</label>
+                        <input type="text" id="new-y" name="new-y" readonly>
+                    </div>
                 </div>
             </div>
-
-            <button id="operation-button" type="button">Perform Operation</button>
-            <div id="edit-results" class="v-center">
-                <div class="center">
-                    <label for="new-x">New x:</label>
-                    <input type="text" id="new-x" name="new-x" readonly>
+            <div id="edit-operation-results">
+                <div class="center text-spacing">
+                    <p>LCS Length:</p>
+                    <p id="new-length">0</p>
                 </div>
-                <div class="center">
-                    <label for="new-y">New y:</label>
-                    <input type="text" id="new-y" name="new-y" readonly>
-                </div>
-            </div>
-            <div class="center"><p>LCS Length:</p><p id="new-length">0</p></div>
-            <p class="no-padding">All Possible LCS:</p>
-            <div id="new-set" class="center"></div>
-        </div>
-    </div>
-    <div id="control-overlay" class="center hidden">
-        <div id="control-box">
-            <svg id="close-x" viewBox="0 0 460.775 460.775">
-                <g>
-                    <path d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
-                </g>
-            </svg>
-            <div id="control-text-mobile" class="v-center">
-                <h2>Controls (Mobile)</h2>
-                <table>
-                    <tr>
-                        <th>Action</th>
-                        <th>Control</th>
-                    </tr>
-                    <tr>
-                        <td>Pan Camera</td>
-                        <td>Two Finger Drag</td>
-                    </tr>
-                    <tr>
-                        <td>Rotate Camera</td>
-                        <td>One Finger Drag</td>
-                    </tr>
-                    <tr>
-                        <td>Toggle Elevation/Orthographic Mode</td>
-                        <td>Tap</td>
-                    </tr>
-                    <tr>
-                        <td>Reset Camera</td>
-                        <td>Double Tap</td>
-                    </tr>
-                </table>
-            </div>
-            <div id="control-text-pc" class="v-center">
-                <h2>Controls (Computer)</h2>
-                <table>
-                    <tr>
-                        <th>Action</th>
-                        <th>Control</th>
-                    </tr>
-                    <tr>
-                        <td>Move Forward</td>
-                        <td>W</td>
-                    </tr>
-                    <tr>
-                        <td>Move Left</td>
-                        <td>A</td>
-                    </tr>
-                    <tr>
-                        <td>Move Backwards</td>
-                        <td>S</td>
-                    </tr>
-                    <tr>
-                        <td>Move Right</td>
-                        <td>D</td>
-                    </tr>
-                    <tr>
-                        <td>Move Up</td>
-                        <td>Space</td>
-                    </tr>
-                    <tr>
-                        <td>Move Down</td>
-                        <td>Left Shift</td>
-                    </tr>
-                    <tr>
-                        <td>Toggle Elevation/Orthographic Mode</td>
-                        <td>Z</td>
-                    </tr>
-                    <tr>
-                        <td>Reset Camera</td>
-                        <td>R</td>
-                    </tr>
-                </table>
+                <p class="no-padding">All Possible LCS:</p>
+                <div id="new-set" class="center"></div>
             </div>
         </div>
-    </div>
+        </div>
+        <div id="control-overlay" class="center hidden">
+            <div id="control-box" class="center">
+                <svg id="close-x" viewBox="0 0 460.775 460.775">
+                    <g>
+                        <path
+                            d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
+                    </g>
+                </svg>
+                <div id="control-text-mobile" class="v-center">
+                    <h2>Controls (Mobile)</h2>
+                    <table>
+                        <tr>
+                            <th>Action</th>
+                            <th>Control</th>
+                        </tr>
+                        <tr>
+                            <td>Pan Camera</td>
+                            <td>Two Finger Drag</td>
+                        </tr>
+                        <tr>
+                            <td>Rotate Camera</td>
+                            <td>One Finger Drag</td>
+                        </tr>
+                        <tr>
+                            <td>Toggle Elevation/Orthographic Mode</td>
+                            <td>Tap</td>
+                        </tr>
+                        <tr>
+                            <td>Reset Camera</td>
+                            <td>Double Tap</td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="control-text-pc" class="v-center">
+                    <h2>Controls (Computer)</h2>
+                    <table>
+                        <tr>
+                            <th>Action</th>
+                            <th>Control</th>
+                        </tr>
+                        <tr>
+                            <td>Move Forward</td>
+                            <td>W</td>
+                        </tr>
+                        <tr>
+                            <td>Move Left</td>
+                            <td>A</td>
+                        </tr>
+                        <tr>
+                            <td>Move Backwards</td>
+                            <td>S</td>
+                        </tr>
+                        <tr>
+                            <td>Move Right</td>
+                            <td>D</td>
+                        </tr>
+                        <tr>
+                            <td>Move Up</td>
+                            <td>Space</td>
+                        </tr>
+                        <tr>
+                            <td>Move Down</td>
+                            <td>Left Shift</td>
+                        </tr>
+                        <tr>
+                            <td>Toggle Elevation/Orthographic Mode</td>
+                            <td>Z</td>
+                        </tr>
+                        <tr>
+                            <td>Reset Camera</td>
+                            <td>R</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
 </body>
+
 </html>

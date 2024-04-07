@@ -1,10 +1,14 @@
 import * as WebGL from "./render/util/webgl-utils.js";
 import Controller from "./render/util/controller.js";
-import { viewport, camera, cameraStatus, initializeMLC, gl, shaderProgram } from "./matrix-3d.js";
+import { viewport, camera, cameraStatus, initializeMLC, gl, shaderProgram, objectModel } from "./matrix-3d.js";
 
 export function registerController(canvas) {
     const controller = new Controller();
     controller.keyPress = function (keys) {
+        if (!objectModel.modelLoaded) {
+            return;
+        }
+        
         if (keys.indexOf("KeyZ") != -1) {
             cameraStatus.isAnimating = true;
         }
@@ -16,22 +20,21 @@ export function registerController(canvas) {
         if (!cameraStatus.isAnimating) {
             if (cameraStatus.isPerspective) {
                 if (keys.indexOf("KeyW") != -1) {
-                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, camera.orientation)));
+                    console.log(camera.orientation.map(v => v * 360 / 2 / Math.PI));
+                    camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.vec3(1.0, 0.0, 0.0), objectModel.bounds.middle, WebGL.radians(camera.speed * 50)));
+                    camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
                 }
                 if (keys.indexOf("KeyA") != -1) {
-                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)))));
+                    camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.vec3(0.0, 1.0, 0.0), objectModel.bounds.middle, WebGL.radians(camera.speed * 50)));
+                    camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
                 }
                 if (keys.indexOf("KeyS") != -1) {
-                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, camera.orientation)));
+                    camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.vec3(1.0, 0.0, 0.0), objectModel.bounds.middle, WebGL.radians(-camera.speed * 50)));
+                    camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
                 }
                 if (keys.indexOf("KeyD") != -1) {
-                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)))));
-                }
-                if (keys.indexOf("Space") != -1) {
-                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(camera.speed, camera.worldUp)));
-                }
-                if (keys.indexOf("ShiftLeft") != -1) {
-                    camera.setPosition(WebGL.add(camera.position, WebGL.scale(-camera.speed, camera.worldUp)));
+                    camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.vec3(0.0, 1.0, 0.0), objectModel.bounds.middle, WebGL.radians(-camera.speed * 50)));
+                    camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
                 }
             } else {
                 if (keys.indexOf("KeyW") != -1) {
@@ -75,9 +78,9 @@ export function registerController(canvas) {
     };
 
     controller.mousemove = function(prevMousePos, currMousePos, event) {
-        if (event.buttons == 1) {
+        if (event.buttons == 1 && cameraStatus.isPerspective) {
             rotateCamera(currMousePos[0] - prevMousePos[0], currMousePos[1] - prevMousePos[1]);
-        } else if (event.buttons == 2) {
+        } else if (event.buttons == 2 && !cameraStatus.isPerspective) {
             panCamera(currMousePos[0] - prevMousePos[0], currMousePos[1] - prevMousePos[1]);
         }
     };
@@ -98,12 +101,14 @@ export function registerController(canvas) {
 }
 
 export function rotateCamera(deltaX, deltaY) {
-    if (!cameraStatus.isAnimating && cameraStatus.isPerspective) {
+    if (!cameraStatus.isAnimating && cameraStatus.isPerspective && objectModel.modelLoaded) {
+        console.log(camera.orientation.map(v => 2 * Math.PI / v));
         let rotX = camera.sensitivity * deltaX / 100;
         let rotY = camera.sensitivity * deltaY / 100;
 
-        camera.setOrientation(WebGL.rotate(camera.orientation, WebGL.vec3(0.0, 1.0, 0.0), WebGL.radians(-rotX)));
-        camera.setOrientation(WebGL.rotate(camera.orientation, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)), WebGL.radians(rotY)));
+        camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.vec3(0.0, 1.0, 0.0), objectModel.bounds.middle, WebGL.radians(-rotX)));
+        camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)), objectModel.bounds.middle, WebGL.radians(rotY)));
+        camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
     }
 }
 
@@ -142,9 +147,12 @@ export function zoomCamera(delta, aspectRatio) {
 }
 
 export function resetCamera() {
-    if (!cameraStatus.cameraStatus.isAnimating) {
-        initializeMLC(gl, shaderProgram);
-        cameraStatus.cameraStatus.isPerspective = true;
+    if (!cameraStatus.isAnimating) {
+        const wrapper = document.querySelector("#window-wrapper").getBoundingClientRect();
+        const width = wrapper.width;
+        const height = wrapper.height;
+        initializeMLC(width, height, width / height);
+        cameraStatus.isPerspective = true;
         camera.isPerspective = true;
         cameraStatus.time = -1.0;
     }

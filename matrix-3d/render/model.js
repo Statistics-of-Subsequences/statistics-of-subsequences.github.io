@@ -107,6 +107,7 @@ export default class Model {
 
         // add vertices and indices to mesh
         let i;
+        let minX, maxX, minY, maxY, minZ, maxZ;
         for (i = 0; i < vertices.length / 3; i++) {
             let x = vertices[i * 3 + 0];
             let y = vertices[i * 3 + 1];
@@ -121,6 +122,16 @@ export default class Model {
             let v = uvs[i * 2 + 1];
             let vertex = new Vertex(WebGL.vec3(x, y, z), WebGL.vec3(nx, ny, nz), WebGL.vec3(r, g, b), WebGL.vec2(u, v));
             vertexList.push(vertex);
+
+            // Ignore text, which is all black
+            if(r !== 0 || g !== 0 || b !== 0) {
+                minX = Math.min(minX || x, x);
+                maxX = Math.max(maxX || x, x);
+                minY = Math.min(minY || y, y);
+                maxY = Math.max(maxY || y, y);
+                minZ = Math.min(minZ || z, z);
+                maxZ = Math.max(maxZ || z, z);
+            }
         }
 
         for (i = 0; i < indices.length; i++) {
@@ -141,7 +152,8 @@ export default class Model {
             textureList.push(texture);
         }
 
-        return new Mesh(vertexList, indexList, material, textureList, shader);
+        return { mesh: new Mesh(vertexList, indexList, material, textureList, shader), 
+            bounds: { minX, minY, minZ, maxX, maxY, maxZ } };
     }
 
     async parseFile(fileName, meshList, shader) {
@@ -183,15 +195,30 @@ export default class Model {
         // get object groups
         let objectGroups = obj.getObjectGroups();
 
+        let minX, maxX, minY, maxY, minZ, maxZ;
         // construct meshes
         for (let i = 0; i < objectGroups.length; i++) {
             let objectGroup = objectGroups[i];
             objectGroup.triangulate();
             let material = objectGroups[i].material;
-            let mesh = Model.constructMesh(objectGroup, material, shader);
+            let { mesh, bounds } = Model.constructMesh(objectGroup, material, shader);
             meshList.push(mesh);
+            
+            // Godawful way of preventing null and undefined values from deleting results
+            if(bounds.minX != undefined && bounds.minY != undefined && bounds.minZ != undefined
+                && bounds.maxX != undefined && bounds.maxY != undefined && bounds.maxZ != undefined) {
+                minX = Math.min(minX || bounds.minX, bounds.minX);
+                maxX = Math.max(maxX || bounds.maxX, bounds.maxX);
+                minY = Math.min(minY || bounds.minY, bounds.minY);
+                maxY = Math.max(maxY || bounds.maxY, bounds.maxY);
+                minZ = Math.min(minZ || bounds.minZ, bounds.minZ);
+                maxZ = Math.max(maxZ || bounds.maxZ, bounds.maxZ);
+            }
         }
 
+        this.bounds = { min: WebGL.vec3(minX, minY, minZ),
+            middle: WebGL.vec3((minX + maxX / 2), (minY + maxY) / 2, (minZ + maxZ) / 2),
+            max: WebGL.vec3(maxX, maxY, maxZ) };
         this.modelLoaded = true;
     }
 }

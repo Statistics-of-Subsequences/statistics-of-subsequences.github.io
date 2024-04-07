@@ -109,6 +109,7 @@ export function initializeMLC(width, height, aspectRatio) {
     camera = new GenericCamera(gl, width, height, perspectiveEye, perspectiveOrientation, perspectiveMatrix); // custom camera
     camera.speed = 0.1 * Math.min(n, m);
     viewport = { orthoSize, perspectiveStart, perspectiveMatrix, perspectiveEye, perspectiveOrientation, perspectiveUp, orthoMatrix, orthoEye, orthoOrientation, orthoUp };
+    camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -122,6 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
         // clear if not a binary string
         if(e.data && !e.data.match("[01]+")) {
             e.preventDefault();
+            alert("Strings x and y must only contain the characters '0' and '1'");
             return;
         }
         

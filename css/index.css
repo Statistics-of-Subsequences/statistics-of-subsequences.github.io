@@ -5,6 +5,7 @@ header {
 
 #header-title {
     width: 100%;
+    padding-left: 2vw;
 }
 
 #header-about {
@@ -75,4 +76,9 @@ main {
 main > * {
     border-top: 1px solid var(--accent);
     border-collapse: collapse;
+}
+
+.gradient-overlay {
+    width: 100%;
+    height: 100%;
 }

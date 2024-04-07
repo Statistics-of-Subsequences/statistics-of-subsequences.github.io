@@ -152,7 +152,6 @@ p, a, label, td, th, b, button, caption {
     fill: var(--body-text);
     transition: 0.2s linear background-color, 0.2s linear filter;
     margin-right: 1vw;
-    border-right: 1px solid var(--accent);
 }
 #back-button svg {
     width: 2.5vw;
@@ -164,7 +163,6 @@ p, a, label, td, th, b, button, caption {
 }
 .night-mode #back-button {
     fill: var(--dark-body-text);
-    border-right: 1px solid var(--dark-accent);
 }
 .night-mode #back-button:hover {
     background-color: #77777722;

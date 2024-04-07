@@ -42,6 +42,7 @@ header {
     width: 100%;
     padding-left: 2vw;
     box-sizing: border-box;
+    box-shadow: inset 0 -5vh 2vh #00000077;
 }
 .night-mode header {
     background-color: var(--dark-header-background);

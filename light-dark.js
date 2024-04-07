@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.createElement("div");
     wrapper.classList.add("center");
     wrapper.id = "day-theme";
+    wrapper.tabIndex = "0";         
 
     const daySVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     daySVG.id = "sun-icon";
@@ -36,11 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
     wrapper.appendChild(nightSVG);
     document.body.appendChild(wrapper);
 
-    document.querySelector("#day-theme").onclick = () => {
+    wrapper.onclick = () => {
         if(document.body.classList.contains("night-mode")) {
             document.body.classList.remove("night-mode");
         } else {
             document.body.classList.add("night-mode");
         }
     }
+    wrapper.onkeyup = e => e.key === "Enter" && wrapper.onclick();
 });

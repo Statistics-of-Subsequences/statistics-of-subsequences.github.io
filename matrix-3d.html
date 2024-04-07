@@ -128,21 +128,35 @@
                     <input type="radio" id="reverse" name="operation" value="reverse">
                 </div>
             </div>
-            <div id="edit-parameters">
-                <div id="substitution">
+            <div id="edit-parameters" class="v-center">
+                <div id="substitution" class="hidden">
                     <label for="substitution-k-box">Index:</label>
                     <select id="substitution-k-box">
                         <option value="0">0</option>
                     </select>
                 </div>
-                <div id="permutation" class="hidden">
-                    <caption for="permutation-box">Permutation:</caption>
-                    <table id="permutation-box"></table>
+                <div id="permutation" class="hidden center">
+                    <table id="permutation-box">
+                        <caption>Permutation:</caption>
+                        <tr id="permutation-header"></tr>
+                        <tr id="permutation-body"></tr>
+                    </table>
                 </div>
                 <div id="slice-concat" class="hidden">
-                    <label for="slice-concat-mode">Concatenation Mode:</label>
-                    <select id="slice-concat-mode"></select>
-                    <div id="concat-input"></div>
+                    <div class="center text-spacing">
+                        <label for="slice-concat-mode">Concatenation Mode:</label>
+                        <select id="slice-concat-mode"></select>
+                    </div>
+                    <div id="concat-input">
+                        <div id="concat-prefix-wrapper" class="center text-spacing">
+                            <label for="concat-prefix">Prefix:</label>
+                            <select id="concat-prefix"></select>
+                        </div>
+                        <div id="concat-suffix-wrapper" class="center text-spacing">
+                            <label for="concat-suffix">Suffix:</label>
+                            <select id="concat-suffix"></select>
+                        </div>
+                    </div>
                 </div>
                 <button id="operation-button" type="button">Perform Operation</button>
                 <div id="edit-results" class="v-center">

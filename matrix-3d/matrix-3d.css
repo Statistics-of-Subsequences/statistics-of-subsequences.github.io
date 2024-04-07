@@ -312,3 +312,21 @@ input:not(:disabled, :read-only), select {
 #edit-operation-results {
     grid-column: span 2;
 }
+
+#edit-operations:has(#substitute:checked) #substitution {
+    display: initial;
+}
+#edit-operations:has(#permute:checked) #permutation {
+    display: initial;
+}
+#edit-operations:has(#slice-n-concat:checked) #slice-concat {
+    display: initial;
+}
+
+#edit-parameters {
+    width: 100%;
+}
+.perm-label {
+    width: 6ch;
+    text-align: center;
+}

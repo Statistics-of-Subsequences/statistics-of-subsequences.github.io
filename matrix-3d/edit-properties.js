@@ -47,6 +47,7 @@ export function changeMatrix() {
     document.getElementById("new-length").innerHTML = 0;
     document.getElementById("new-set").innerHTML = "";
     operationRadio[0].checked = true;
+    operationRadio[1].disabled = true;
     operationRadio[2].disabled = true;
     document.querySelector("#operation-button").disabled = true;
 
@@ -171,6 +172,7 @@ export function changeLCS() {
     sliceConcatModeBox.options.length = 0;
     document.querySelector("#concat-prefix-wrapper").classList.add("hidden");
     document.querySelector("#concat-suffix-wrapper").classList.add("hidden");
+    operationRadio[1].disabled = true;
     operationRadio[2].disabled = true;
 
     document.getElementById("new-x").value = "";
@@ -197,6 +199,7 @@ export function changeLCS() {
 
         sliceConcatModeBox.selectedIndex = -1;
 
+        operationRadio[1].disabled = false;
         operationRadio[2].disabled = false;
     } else {
         operationRadio[0].checked = true;

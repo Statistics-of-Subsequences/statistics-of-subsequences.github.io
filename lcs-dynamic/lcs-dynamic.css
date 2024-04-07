@@ -1,17 +1,8 @@
-body {
-    overflow-y: auto;
-}
-
-h1 {
-    font-size: 4vw;
-    margin-top: 1vh;
-    margin-bottom: 3vh;
-}
-
 main {
     flex-grow: 1;
     position: relative;
     padding-top: 1vh;
+    overflow-y: auto;
 }
 
 #input-wrapper {

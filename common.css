@@ -169,3 +169,24 @@ p, a, label, td, th, b, button, caption {
     background-color: #77777722;
     filter: brightness(130%);
 }
+
+::-webkit-scrollbar {
+    background-color: var(--body-background);
+}
+.night-mode ::-webkit-scrollbar {
+    background-color: var(--dark-body-background);
+}
+::-webkit-scrollbar-button:increment,
+::-webkit-scrollbar-button:decrement {
+    width: 0;
+    height: 0;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--accent);
+    border-radius: 100vw;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+.night-mode ::-webkit-scrollbar-thumb {
+    background-color: var(--dark-accent);
+}

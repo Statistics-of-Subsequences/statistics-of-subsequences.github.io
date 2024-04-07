@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en-US">
-    <head>
-        <title> BLISS Playground </title>
-        <meta charset="utf-8">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
-        <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
-        <link rel="stylesheet" type="text/css" href="./css/common.css">
-        <link rel="stylesheet" type="text/css" href="./css/index.css">
-        <link rel="stylesheet" type="text/css" href="./css/tool-customization.css">
-        <script src="./js/light-dark.js"></script>
-        <script src="./js/index.js"></script>
-    </head>
-    <body>
-        <script>setTheme();</script>
-        <header>
-            <div id="header-title">
-                <h1>BLISS Playground</h1>
-            </div>
-            <div id="header-about" class="center">
-                <a href="about-us.html">ABOUT</a>
-            </div>
-        </header>
+
+<head>
+    <title> BLISS Playground </title>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <link rel="stylesheet" type="text/css" href="./css/tool-customization.css">
+    <script src="./js/light-dark.js"></script>
+    <script src="./js/index.js"></script>
+</head>
+
+<body>
+    <script>setTheme();</script>
+    <header>
+        <div id="header-title">
+            <h1>BLISS Playground</h1>
+        </div>
+        <div id="header-about" class="center">
+            <a href="about-us.html">ABOUT</a>
+        </div>
+    </header>
+    <div>
         <main>
             <div class="content-label">
                 <div class="gradient-overlay"></div>
@@ -34,7 +37,7 @@
             </div>
             <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
         </main>
-        <main class="hidden">
+        <main class="right">
             <div class="content-label">
                 <div class="gradient-overlay"></div>
             </div>
@@ -54,7 +57,7 @@
             </div>
             <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
         </main>
-        <main class="hidden">
+        <main class="left">
             <div class="content-label">
                 <div class="gradient-overlay"></div>
             </div>
@@ -64,5 +67,8 @@
             </div>
             <button class="content-nav" type="button" onclick="handleRightClick()">⮞</button>
         </main>
-    </body>
+
+    </div>
+</body>
+
 </html>

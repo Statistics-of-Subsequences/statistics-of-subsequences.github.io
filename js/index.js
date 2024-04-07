@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     handleLeftClick = () => {
         const nextIndex = activeIndex === 0 ? slides.length - 1 : activeIndex - 1;
 
+        slides[nextIndex].classList.add("right");
         slides[nextIndex].classList.remove("hidden");
         slides[activeIndex].classList.add("hidden");
         activeIndex = nextIndex;

@@ -35,6 +35,7 @@ main {
 
 .content-title {
     grid-column: 2;
+    transition: 0.2s linear backdrop-filter;
 }
 
 .content-title > h2 {
@@ -66,10 +67,10 @@ main {
     color: var(--dark-body-text);
 }
 
-#header-about:hover, .content-nav:hover {
+#header-about:hover, .content-nav:hover, .content-title:hover {
     backdrop-filter: brightness(90%);
 }
-.night-mode :is(#header-about, .content-nav):hover {
+.night-mode :is(#header-about, .content-nav, .content-title):hover {
     backdrop-filter: brightness(130%);
 }
 
@@ -81,4 +82,15 @@ main > * {
 .gradient-overlay {
     width: 100%;
     height: 100%;
+}
+
+.content-title h2, .content-title a {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

@@ -268,7 +268,8 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     // Set up DOM Bindings
-    document.querySelector("#window").onresize = () => {
+    const renderer = document.querySelector("#window");
+    renderer.onresize = () => {
         const wrapper = document.querySelector("#window-wrapper").getBoundingClientRect();
         canvas.width = wrapper.width;
         canvas.height = wrapper.height;
@@ -277,6 +278,9 @@ window.addEventListener("DOMContentLoaded", () => {
         initializeMLC(canvas.width, canvas.height, canvas.width / canvas.height);
         render();
     };
+    renderer.addEventListener("mouseover", _ => {
+        renderer.focus();
+    });
 
     const controlDisplay = document.querySelector("#control-overlay");
     document.querySelector("#computer-controls").onclick = () => controlDisplay.classList.remove("hidden");

@@ -255,11 +255,6 @@ input:not(:disabled, :read-only), select {
     border: 2px solid var(--dark-accent);
 }
 
-.text-spacing>* {
-    padding-right: 0.5vw;
-    width: max-content;
-}
-
 #lcs-information, #edit-operations {
     justify-content: flex-start;
 }

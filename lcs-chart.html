@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>LCS Distribution Explorer</title>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/lcs-chart/lcs-chart.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="./js/lcs-chart/lcs-chart.js"></script>
+
+    <script src="./js/light-dark.js"></script>
+    <script src="./js/back-arrow.js"></script>
+</head>
+
+<body>
+    <script>setTheme();</script>
+    <header>
+        <div>
+            <h1>LCS Distribution Explorer</h1>
+            <p class="sub-text">
+                Discover relationships in the distributions of LCS strings
+            </p>
+        </div>
+    </header>
+    <main class="v-center">
+        <div class="text-spacing">
+            <label for="n">n: </label>
+            <select id="n">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <div class="text-spacing">
+            <label for="m">m: </label>
+            <select id="m">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <button id="generate">Generate Distibution</button>
+        <div id="chart-center" class="center">
+            <canvas id="chart"></canvas>
+        </div>
+    </main>
+</body>
+</html>

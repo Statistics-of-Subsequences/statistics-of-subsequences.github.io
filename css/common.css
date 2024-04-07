@@ -52,6 +52,8 @@ header {
 }
 
 main {
+    width: 100%;
+    height: 100%;
     background: linear-gradient(90deg, var(--body-background) 0%, var(--body-background) 75%, var(--header-background) 100%);
 }
 .night-mode main {
@@ -188,4 +190,9 @@ p, a, label, td, th, b, button, caption {
 }
 .night-mode ::-webkit-scrollbar-thumb {
     background-color: var(--dark-accent);
+}
+
+.text-spacing>* {
+    padding-right: 0.5vw;
+    width: max-content;
 }

@@ -397,7 +397,7 @@ export function inverse(m) {
 
     // TODO: Implement this
 
-    return result;
+    return m;
 }
 
 // Vector-Specific Operations

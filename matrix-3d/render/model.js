@@ -3,6 +3,7 @@ import Texture from "./texture.js";
 import Mesh from "./mesh.js";
 import Vertex from "./vertex.js";
 import { OBJ } from "./objmtl.js";
+import { modelMatrix } from "../matrix-3d.js";
 
 export default class Model {
     constructor(gl, fileName, shader) {
@@ -124,13 +125,13 @@ export default class Model {
             vertexList.push(vertex);
 
             // Ignore text, which is all black
-            if(r !== 0 || g !== 0 || b !== 0) {
-                minX = Math.min(minX || x, x);
-                maxX = Math.max(maxX || x, x);
-                minY = Math.min(minY || y, y);
-                maxY = Math.max(maxY || y, y);
-                minZ = Math.min(minZ || z, z);
-                maxZ = Math.max(maxZ || z, z);
+            if (r !== 0 || g !== 0 || b !== 0) {
+                minX = (minX === undefined) ? x : Math.min(minX, x);
+                maxX = (maxX === undefined) ? x : Math.max(maxX, x);
+                minY = (minY === undefined) ? y : Math.min(minY, y);
+                maxY = (maxY === undefined) ? y : Math.max(maxY, y);
+                minZ = (minZ === undefined) ? z : Math.min(minZ, z);
+                maxZ = (maxZ === undefined) ? z : Math.max(maxZ, z);
             }
         }
 
@@ -161,7 +162,7 @@ export default class Model {
         let obj = new OBJ();
 
         // get obj file contents
-        const objResponse = await fetch("../../res/models/" + fileName);
+        const objResponse = await fetch("https://statistics-of-subsequences.github.io/res/models/" + fileName);
         obj.objFile = await objResponse.text();
 
         // Split and sanitize OBJ file input
@@ -205,20 +206,30 @@ export default class Model {
             meshList.push(mesh);
             
             // Godawful way of preventing null and undefined values from deleting results
-            if(bounds.minX != undefined && bounds.minY != undefined && bounds.minZ != undefined
-                && bounds.maxX != undefined && bounds.maxY != undefined && bounds.maxZ != undefined) {
-                minX = Math.min(minX || bounds.minX, bounds.minX);
-                maxX = Math.max(maxX || bounds.maxX, bounds.maxX);
-                minY = Math.min(minY || bounds.minY, bounds.minY);
-                maxY = Math.max(maxY || bounds.maxY, bounds.maxY);
-                minZ = Math.min(minZ || bounds.minZ, bounds.minZ);
-                maxZ = Math.max(maxZ || bounds.maxZ, bounds.maxZ);
+            if(bounds.minX != undefined && bounds.minY != undefined && bounds.minZ != undefined && bounds.maxX != undefined && bounds.maxY != undefined && bounds.maxZ != undefined) {
+                minX = (minX === undefined) ? bounds.minX : Math.min(minX, bounds.minX);
+                maxX = (maxX === undefined) ? bounds.maxX : Math.max(maxX, bounds.maxX);
+                minY = (minY === undefined) ? bounds.minY : Math.min(minY, bounds.minY);
+                maxY = (maxY === undefined) ? bounds.maxY : Math.max(maxY, bounds.maxY);
+                minZ = (minZ === undefined) ? bounds.minZ : Math.min(minZ, bounds.minZ);
+                maxZ = (maxZ === undefined) ? bounds.maxZ : Math.max(maxZ, bounds.maxZ);
             }
         }
 
-        this.bounds = { min: WebGL.vec3(minX, minY, minZ),
-            middle: WebGL.vec3((minX + maxX / 2), (minY + maxY) / 2, (minZ + maxZ) / 2),
-            max: WebGL.vec3(maxX, maxY, maxZ) };
+        this.bounds = {
+            min: WebGL.vec3(minX, minY, minZ),
+            max: WebGL.vec3(maxX, maxY, maxZ),
+            center: WebGL.mix(WebGL.vec3(minX, minY, minZ), WebGL.vec3(maxX, maxY, maxZ), 0.5)
+        };
+
+        // convert bounds from local space to world space
+        let reverseReflectionMatrix = (WebGL.reflectionMatrix(WebGL.vec4(1.0, 0.0, 0.0, 0)));
+        
+
+        this.bounds.min = WebGL.mult(WebGL.mult(reverseReflectionMatrix, modelMatrix), WebGL.vec4(this.bounds.min[0], this.bounds.min[1], this.bounds.min[2], 1.0)).slice(0, 3);
+        this.bounds.max = WebGL.mult(WebGL.mult(reverseReflectionMatrix, modelMatrix), WebGL.vec4(this.bounds.max[0], this.bounds.max[1], this.bounds.max[2], 1.0)).slice(0, 3);
+        this.bounds.center = WebGL.mix(this.bounds.min, this.bounds.max, 0.5);
+
         this.modelLoaded = true;
     }
 }

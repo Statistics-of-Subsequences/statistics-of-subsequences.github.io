@@ -292,11 +292,11 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#dimension-button").onclick = () => {
         const newMaxX = parseInt(document.querySelector("#n").value);
         const newMaxY = parseInt(document.querySelector("#m").value);
-        xBox.maxlength = newMaxX;
+        xBox.maxLength = newMaxX;
         if(xBox.value.length > newMaxX) {
             xBox.value = xBox.value.slice(0, newMaxX);
         }
-        yBox.maxlength = newMaxY;
+        yBox.maxLength = newMaxY;
         if(yBox.value.length > newMaxY) {
             yBox.value = yBox.value.slice(0, newMaxY);
         }

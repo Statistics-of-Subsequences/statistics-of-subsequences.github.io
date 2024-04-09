@@ -12,7 +12,6 @@ export function changeMatrix() {
     const operationButton = document.querySelector("#operation-button");
 
     lcsGenerated = false;
-    let permMap = new Map();
 
     const n = parseInt(document.querySelector("#n").value);
     const m = parseInt(document.querySelector("#m").value);
@@ -48,6 +47,7 @@ export function changeMatrix() {
     document.getElementById("new-length").innerHTML = 0;
     document.getElementById("new-set").innerHTML = "";
     operationRadio[0].checked = true;
+    operationRadio[1].disabled = true;
     operationRadio[2].disabled = true;
     document.querySelector("#operation-button").disabled = true;
 
@@ -59,67 +59,41 @@ export function changeMatrix() {
 
     // update options for substitution box
     for (let i = 0; i < m; i++) {
-        substitutionKBox.options[substitutionKBox.options.length] = new Option(i, i);
+        substitutionKBox.options.add(new Option(i, i));
     }
     substitutionKBox.selectedIndex = -1;
 
-    // clear permutation box
-    const permutationBox = document.getElementById("permutation-box");
-    while (permutationBox.rows.length > 0) {
-        permutationBox.deleteRow(0);
-    }
+    const header = document.querySelector("#permutation-header");
+    header.innerHTML = "";
+    const permRow = document.querySelector("#permutation-body");
+    permRow.innerHTML = "";
 
     // update options for permutation box
-    let header = permutationBox.insertRow();
-    let permRow = permutationBox.insertRow();
-    permRow.id = "perm-row";
     for (let i = 0; i < m; i++) {
-        let headerCell = header.insertCell();
-        let cell = permRow.insertCell();
+        const headerCell = document.createElement("td");
+        const cell = document.createElement("td");
 
-        let headerInput = document.createElement("input");
+        const headerInput = document.createElement("input");
         headerInput.type = "text";
-        headerInput.id = "index-" + i;
-        headerInput.size = 2;
-        headerInput.disabled = true;
+        headerInput.classList.add("perm-label");
+        headerInput.readOnly = true;
         headerInput.value = i;
 
-        let cellInput = document.createElement("select");
-        cellInput.id = "perm-" + i;
-
+        const cellInput = document.createElement("select");
         for (let j = 0; j < m; j++) {
-            cellInput.options[cellInput.options.length] = new Option(j, j);
+            cellInput.add(new Option(j, j));
         }
         cellInput.selectedIndex = -1;
 
         cellInput.onchange = function () {
-            // remove the old value from the map
-            let oldValue = permMap.get(this.id);
-            if (oldValue != undefined) {
-                permMap.delete(oldValue);
-            }
-
-            // if the new value is already in the map, remove the old key-valuepair
-            let values = Array.from(permMap.values());
-            let index = values.indexOf(this.value);
-            if (index != -1) {
-                let key = Array.from(permMap.keys())[index];
-                permMap.delete(key);
-                document.getElementById(key).selectedIndex = -1;
-            }
-
-            // add the new value to the map
-            permMap.set(this.id, this.value);
-
-            if (permMap.size == m) {
-                operationButton.disabled = false;
-            } else {
-                operationButton.disabled = true;
-            }
+            const range = [...permRow.children].map(c => c.firstChild.value).filter((v, i, a) => a.indexOf(v) === i && v !== "");
+            operationButton.disabled = range.length !== m;
         };
 
         headerCell.appendChild(headerInput);
+        header.appendChild(headerCell);
         cell.appendChild(cellInput);
+        permRow.appendChild(cell);
     }
     
     // reset shader program
@@ -203,16 +177,10 @@ export function changeLCS() {
     const substitutionKBox = document.querySelector("#substitution-k-box");
     substitutionKBox.value = "";
 
-    let permRow = document.getElementById("perm-row");
-    for (let i = 0; i < m; i++) {
-        let cell = permRow.cells[i];
-        let cellInput = cell.children[0];
-        cellInput.value = "";
-    }
-
-    while (sliceConcatModeBox.firstChild) {
-        sliceConcatModeBox.removeChild(sliceConcatModeBox.firstChild);
-    }
+    sliceConcatModeBox.options.length = 0;
+    document.querySelector("#concat-prefix-wrapper").classList.add("hidden");
+    document.querySelector("#concat-suffix-wrapper").classList.add("hidden");
+    operationRadio[1].disabled = true;
     operationRadio[2].disabled = true;
 
     document.getElementById("new-x").value = "";
@@ -226,70 +194,24 @@ export function changeLCS() {
     if (lcPrefix > 0 || lcSuffix > 0) {
         if (lcPrefix > 0) {
             // add prefix as an option to sliceConcatModeBox
-            sliceConcatModeBox.appendChild(new Option("Prefix", "prefix"));
+            sliceConcatModeBox.add(new Option("Prefix", "prefix"));
         }
         if (lcSuffix > 0) {
             // add suffix as an option to sliceConcatModeBox
-            sliceConcatModeBox.appendChild(new Option("Suffix", "suffix"));
+            sliceConcatModeBox.add(new Option("Suffix", "suffix"));
         }
         if (lcPrefix > 0 && lcSuffix > 0) {
             // add circumfix as an option to sliceConcatModeBox
-            sliceConcatModeBox.appendChild(new Option("Circumfix", "circumfix"));
+            sliceConcatModeBox.add(new Option("Circumfix", "circumfix"));
         }
 
         sliceConcatModeBox.selectedIndex = -1;
 
-        let event = new Event("change");
-        sliceConcatModeBox.dispatchEvent(event);
-
+        operationRadio[1].disabled = false;
         operationRadio[2].disabled = false;
     } else {
         operationRadio[0].checked = true;
-        setOperation();
     }
-}
-
-export function setOperation() {
-    const operationRadio = document.getElementsByName("operation");
-    const operationButton = document.querySelector("#operation-button");
-    const permutationBox = document.querySelector("#permutation-box");
-    const substitutionKBox = document.querySelector("#substitution-k-box");
-
-    const permutationSection = document.querySelector("#permutation");
-    const substitutionSection = document.querySelector("#substitution");
-    const sliceConcatSection = document.querySelector("#slice-concat");
-
-    substitutionKBox.value = "";
-    permutationBox.value = "";
-    operationButton.disabled = true;
-    if (operationRadio[0].checked) {
-        substitutionSection.style.display = "block";
-        permutationSection.style.display = "none";
-        sliceConcatSection.style.display = "none";
-    } else if (operationRadio[1].checked) {
-        substitutionSection.style.display = "none";
-        permutationSection.style.display = "block";
-        sliceConcatSection.style.display = "none";
-    } else if (operationRadio[2].checked) {
-        substitutionSection.style.display = "none";
-        permutationSection.style.display = "none";
-        sliceConcatSection.style.display = "block";
-    } else if (operationRadio[3].checked) {
-        substitutionSection.style.display = "none";
-        permutationSection.style.display = "none";
-        sliceConcatSection.style.display = "none";
-        operationButton.disabled = false;
-    } else if (operationRadio[4].checked) {
-        substitutionSection.style.display = "none";
-        permutationSection.style.display = "none";
-        sliceConcatSection.style.display = "none";
-        operationButton.disabled = false;
-    }
-
-    document.getElementById("new-x").value = "";
-    document.getElementById("new-y").value = "";
-    document.getElementById("new-length").innerHTML = 0;
-    document.getElementById("new-set").innerHTML = "";
 }
 
 export function permuteChars(str, perm) {
@@ -317,52 +239,63 @@ export function performOperation() {
     const operation = document.querySelector("input[name=operation]:checked").value;
 
     let newX, newY;
-    if (operation == "substitute") {
-        newX = x;
-        newY = y ^ (1 << (yBox.value.length - 1 - parseInt(document.querySelector("#substitution-k-box").value)));
-    } else if (operation == "permutation") {
-        // convert permutation row to array
-        let perm = [];
-        for (let i = 0; i < m; i++) {
-            let cell = document.getElementById("perm-" + i);
-            perm.push(cell.value);
-        }
+    switch(operation) {
+        case "substitute":
+            newX = x;
+            newY = y ^ (1 << (yBox.value.length - 1 - parseInt(document.querySelector("#substitution-k-box").value)));
+            break;
+        case "permute":
+            // convert permutation row to array
+            const permRow = document.querySelector("#permutation-body");
+            const range = [...permRow.children].map(c => c.firstChild.value);
 
-        newX = x;
-        newY = permuteChars(yBox.value, perm);
-    } else if (operation == "slice-n-concat") {
-        let xString = xBox.value;
-        let yString = yBox.value;
-        let mode = document.querySelector("#slice-concat-mode").value;
-        let { lcPrefix, lcSuffix } = findFix(xString, yString, n, m);
+            newX = x;
+            newY = permuteChars(yBox.value, range);
+            break;
+        case "slice-n-concat":
+            let xString = xBox.value;
+            let yString = yBox.value;
+            let mode = document.querySelector("#slice-concat-mode").value;
+            let { lcPrefix, lcSuffix } = findFix(xString, yString, n, m);
+            let slicedX, slicedY;
+            switch (mode) {
+                case "prefix":
+                    slicedX = xString.slice(lcPrefix);
+                    slicedY = yString.slice(lcPrefix);
+                    const prefix = document.getElementById("concat-prefix").value;
 
-        if (mode == "prefix") {
-            let slicedX = xString.slice(lcPrefix);
-            let slicedY = yString.slice(lcPrefix);
-            let prefix = document.getElementById("prefix-box").value;
+                    newX = parseInt(prefix + slicedX, 2);
+                    newY = parseInt(prefix + slicedY, 2);
+                    break;
+                case "suffix":
+                    slicedX = xString.slice(0, xString.length - lcSuffix);
+                    slicedY = yString.slice(0, yString.length - lcSuffix);
+                    const suffix = document.getElementById("concat-suffix").value;
 
-            newX = parseInt(prefix + slicedX, 2);
-            newY = parseInt(prefix + slicedY, 2);
-        } else if (mode == "suffix") {
-            let slicedX = xString.slice(0, xString.length - lcSuffix);
-            let slicedY = yString.slice(0, yString.length - lcSuffix);
-            let suffix = document.getElementById("suffix-box").value;
+                    newX = parseInt(slicedX + suffix, 2);
+                    newY = parseInt(slicedY + suffix, 2);
+                    break;
+                case "circumfix":
+                    const cPrefix = document.getElementById("concat-prefix").value;
+                    const cSuffix = document.getElementById("concat-suffix").value;
 
-            newX = parseInt(slicedX + suffix, 2);
-            newY = parseInt(slicedY + suffix, 2);
-        } else if (mode == "circumfix") {
-            let prefix = document.getElementById("prefix-box").value;
-            let suffix = document.getElementById("suffix-box").value;
-
-            newX = parseInt(prefix + xString.slice(lcPrefix, xString.length - lcSuffix) + suffix, 2);
-            newY = parseInt(prefix + yString.slice(lcPrefix, yString.length - lcSuffix) + suffix, 2);
-        }
-    } else if (operation == "complement") {
-        newX = x ^ (Math.pow(2, n) - 1);
-        newY = y ^ (Math.pow(2, m) - 1);
-    } else if (operation == "reverse") {
-        newX = parseInt(xBox.value.split("").reverse().join(""), 2);
-        newY = parseInt(yBox.value.split("").reverse().join(""), 2);
+                    newX = parseInt(cPrefix + xString.slice(lcPrefix, xString.length - lcSuffix) + cSuffix, 2);
+                    newY = parseInt(cPrefix + yString.slice(lcPrefix, yString.length - lcSuffix) + cSuffix, 2);
+                    break;
+                default:
+                    throw "Unexpected slice-concat mode...";
+            }
+            break;
+        case "complement":
+            newX = x ^ (Math.pow(2, n) - 1);
+            newY = y ^ (Math.pow(2, m) - 1);
+            break;
+        case "reverse":
+            newX = parseInt(xBox.value.split("").reverse().join(""), 2);
+            newY = parseInt(yBox.value.split("").reverse().join(""), 2);
+            break;
+        default:
+            throw "Unexpected operation requested...";
     }
 
     let newXBox = newX.toString(2);

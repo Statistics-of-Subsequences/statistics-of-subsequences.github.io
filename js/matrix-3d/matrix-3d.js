@@ -128,26 +128,42 @@ window.addEventListener("DOMContentLoaded", () => {
             return;
         }
         
-        lcsButton.disabled = !(xBox.value.length === xBox.style.maxLength && yBox.value.length === yBox.style.maxLength);
+        lcsButton.disabled = !(xBox.value.length + 1 === xBox.maxLength && yBox.value.length === yBox.maxLength);
     };
-    yBox.onbeforeinput = xBox.onbeforeinput;
+    yBox.onbeforeinput = e => {
+        // clear if not a binary string
+        if(e.data && !e.data.match("[01]+")) {
+            e.preventDefault();
+            return;
+        }
+        
+        lcsButton.disabled = !(xBox.value.length === xBox.maxLength && yBox.value.length + 1 === yBox.maxLength);
+    };
 
     const substitutionKBox = document.querySelector("#substitution-k-box");
     const operationButton = document.querySelector("#operation-button");
-    substitutionKBox.onchange = () => {
-        if (substitutionKBox.value.length > 0 && !isInProgress()) {
+    substitutionKBox.onchange = () => operationButton.disabled = substitutionKBox.value.length === 0 || isInProgress();
+
+    const sliceConcatModeBox = document.querySelector("#slice-concat-mode");
+    const prefixBox = document.querySelector("#concat-prefix");
+    const suffixBox = document.querySelector("#concat-suffix");
+    const prefixWrapper = document.querySelector("#concat-prefix-wrapper");
+    const suffixWrapper = document.querySelector("#concat-suffix-wrapper");
+    prefixBox.onchange = function () {
+        if (prefixBox.selectedIndex != -1) {
             operationButton.disabled = false;
         } else {
             operationButton.disabled = true;
         }
     };
-
-    const sliceConcatModeBox = document.querySelector("#slice-concat-mode");
-    sliceConcatModeBox.onchange = function () {
-        const concatInputDiv = document.querySelector("#concat-input");
-        while (concatInputDiv.firstChild) {
-            concatInputDiv.removeChild(concatInputDiv.firstChild);
+    suffixBox.onchange = function () {
+        if (suffixBox.selectedIndex != -1) {
+            operationButton.disabled = false;
+        } else {
+            operationButton.disabled = true;
         }
+    };
+    sliceConcatModeBox.onchange = function () {
         operationButton.disabled = true;
 
         const n = parseInt(document.querySelector("#n").value);
@@ -157,125 +173,46 @@ window.addEventListener("DOMContentLoaded", () => {
         let { lcPrefix, lcSuffix, lcCircumfix } = findFix(xString, yString, n, m);
 
         let mode = sliceConcatModeBox.value;
-        if (mode == "prefix") {
-            let prefixLabel = document.createElement("label");
-            prefixLabel.innerHTML = "Prefix: ";
-            prefixLabel.for = "prefix-box";
-            prefixLabel.style.display = "inline";
-
-            let prefixBox = document.createElement("select");
-            prefixBox.id = "prefix-box";
-            prefixBox.style.display = "inline";
+        if (mode === "prefix") {
+            prefixBox.options.length = 0;
             for (let i = 0; i < Math.pow(2, lcPrefix); i++) {
-                prefixBox.options[prefixBox.options.length] = new Option(i.toString(2).padStart(lcPrefix, "0"), i.toString(2).padStart(lcPrefix, "0"));
+                prefixBox.add(new Option(i.toString(2).padStart(lcPrefix, "0"), i.toString(2).padStart(lcPrefix, "0")));
+            }
+
+            prefixBox.selectedIndex = -1;
+            suffixWrapper.classList.add("hidden");
+            prefixWrapper.classList.remove("hidden");
+        } else if (mode === "suffix") {
+            suffixBox.options.length = 0;
+            for (let i = 0; i < Math.pow(2, lcSuffix); i++) {
+                suffixBox.add(new Option(i.toString(2).padStart(lcSuffix, "0"), i.toString(2).padStart(lcSuffix, "0")));
+            }
+
+            suffixBox.selectedIndex = -1;
+            prefixWrapper.classList.add("hidden");
+            suffixWrapper.classList.remove("hidden");
+        } else if (mode === "circumfix") {
+            let tempLCPrefix = lcPrefix;
+            let tempLCSuffix = lcSuffix;
+
+            if (lcCircumfix !== 0) {
+                tempLCPrefix = Math.ceil(lcCircumfix / 2);
+                tempLCSuffix = lcCircumfix - tempLCPrefix;
+            }
+
+            prefixBox.options.length = 0;
+            for (let i = 0; i < Math.pow(2, tempLCPrefix); i++) {
+                prefixBox.add(new Option(i.toString(2).padStart(tempLCPrefix, "0"), i.toString(2).padStart(tempLCPrefix, "0")));
             }
             prefixBox.selectedIndex = -1;
-            prefixBox.onchange = function () {
-                if (prefixBox.selectedIndex != -1) {
-                    operationButton.disabled = false;
-                } else {
-                    operationButton.disabled = true;
-                }
-            };
 
-            concatInputDiv.appendChild(prefixLabel);
-            concatInputDiv.appendChild(prefixBox);
-            concatInputDiv.appendChild(document.createElement("br"));
-            concatInputDiv.appendChild(document.createElement("br"));
-        } else if (mode == "suffix") {
-            let suffixLabel = document.createElement("label");
-            suffixLabel.innerHTML = "Suffix: ";
-            suffixLabel.for = "suffix-box";
-            suffixLabel.style.display = "inline";
-
-            let suffixBox = document.createElement("select");
-            suffixBox.id = "suffix-box";
-            suffixBox.style.display = "inline";
-            for (let i = 0; i < Math.pow(2, lcSuffix); i++) {
-                suffixBox.options[suffixBox.options.length] = new Option(i.toString(2).padStart(lcSuffix, "0"), i.toString(2).padStart(lcSuffix, "0"));
+            suffixBox.options.length = 0;
+            for (let i = 0; i < Math.pow(2, tempLCSuffix); i++) {
+                suffixBox.add(new Option(i.toString(2).padStart(tempLCSuffix, "0"), i.toString(2).padStart(tempLCSuffix, "0")));
             }
             suffixBox.selectedIndex = -1;
-            suffixBox.onchange = function () {
-                if (suffixBox.selectedIndex != -1) {
-                    operationButton.disabled = false;
-                } else {
-                    operationButton.disabled = true;
-                }
-            };
-
-            concatInputDiv.appendChild(suffixLabel);
-            concatInputDiv.appendChild(suffixBox);
-            concatInputDiv.appendChild(document.createElement("br"));
-            concatInputDiv.appendChild(document.createElement("br"));
-        } else if (mode == "circumfix") {
-            const tempLCPrefix = lcPrefix;
-            const tempLCSuffix = lcSuffix;
-
-            if (lcCircumfix != 0) {
-                lcPrefix = Math.ceil(lcCircumfix / 2);
-                lcSuffix = lcCircumfix - lcPrefix;
-            }
-
-            let prefixLabel = document.createElement("label");
-            prefixLabel.innerHTML = "Prefix: ";
-            prefixLabel.for = "prefix-box";
-            prefixLabel.style.display = "inline";
-
-            let prefixBox = document.createElement("select");
-            prefixBox.id = "prefix-box";
-            prefixBox.style.display = "inline";
-            for (let i = 0; i < Math.pow(2, lcPrefix); i++) {
-                prefixBox.options[prefixBox.options.length] = new Option(i.toString(2).padStart(lcPrefix, "0"), i.toString(2).padStart(lcPrefix, "0"));
-            }
-            prefixBox.selectedIndex = -1;
-            
-            let nbsp = document.createElement("p");
-            nbsp.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-            nbsp.style.display = "inline";
-
-            let suffixLabel = document.createElement("label");
-            suffixLabel.innerHTML = "Suffix: ";
-            suffixLabel.for = "suffix-box";
-            suffixLabel.style.display = "inline";
-
-            let suffixBox = document.createElement("select");
-            suffixBox.id = "suffix-box";
-            suffixBox.style.display = "inline";
-            for (let i = 0; i < Math.pow(2, lcSuffix); i++) {
-                suffixBox.options[suffixBox.options.length] = new Option(i.toString(2).padStart(lcSuffix, "0"), i.toString(2).padStart(lcSuffix, "0"));
-            }
-            suffixBox.selectedIndex = -1;
-
-            prefixBox.onchange = function () {
-                if (prefixBox.selectedIndex != -1 && suffixBox.selectedIndex != -1) {
-                    operationButton.disabled = false;
-                } else {
-                    operationButton.disabled = true;
-                }
-            };
-
-            suffixBox.onchange = function () {
-                if (prefixBox.selectedIndex != -1 && suffixBox.selectedIndex != -1) {
-                    operationButton.disabled = false;
-                } else {
-                    operationButton.disabled = true;
-                }
-            };
-
-            // create two breaks
-            let br1 = document.createElement("br");
-            let br2 = document.createElement("br");
-
-            concatInputDiv.appendChild(prefixLabel);
-            concatInputDiv.appendChild(prefixBox);
-            concatInputDiv.appendChild(nbsp);
-            concatInputDiv.appendChild(suffixLabel);
-            concatInputDiv.appendChild(suffixBox);
-            concatInputDiv.appendChild(br1);
-            concatInputDiv.appendChild(br2);
-
-            lcPrefix = tempLCPrefix;
-            lcSuffix = tempLCSuffix;
+            prefixWrapper.classList.remove("hidden");
+            suffixWrapper.classList.remove("hidden");
         }
     };
 
@@ -334,7 +271,8 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     // Set up DOM Bindings
-    document.querySelector("#window").onresize = () => {
+    const renderer = document.querySelector("#window");
+    renderer.onresize = () => {
         const wrapper = document.querySelector("#window-wrapper").getBoundingClientRect();
         canvas.width = wrapper.width;
         canvas.height = wrapper.height;
@@ -343,6 +281,9 @@ window.addEventListener("DOMContentLoaded", () => {
         initializeMLC(canvas.width, canvas.height, canvas.width / canvas.height);
         render();
     };
+    renderer.addEventListener("mouseover", _ => {
+        renderer.focus();
+    });
 
     const controlDisplay = document.querySelector("#control-overlay");
     document.querySelector("#computer-controls").onclick = () => controlDisplay.classList.remove("hidden");

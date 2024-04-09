@@ -113,7 +113,7 @@ main {
 }
 
 .two-margin {
-    margin-right: 1vh;
+    margin-right: 3vh;
 }
 
 #legend p {
@@ -255,32 +255,6 @@ input:not(:disabled, :read-only), select {
     border: 2px solid var(--dark-accent);
 }
 
-.text-spacing>* {
-    padding-right: 0.5vw;
-    width: max-content;
-}
-
-::-webkit-scrollbar {
-    background-color: var(--body-background);
-}
-.night-mode ::-webkit-scrollbar {
-    background-color: var(--dark-body-background);
-}
-::-webkit-scrollbar-button:increment,
-::-webkit-scrollbar-button:decrement {
-    width: 0;
-    height: 0;
-}
-::-webkit-scrollbar-thumb {
-    background-color: var(--accent);
-    border-radius: 100vw;
-    border: 3px solid transparent;
-    background-clip: content-box;
-}
-.night-mode ::-webkit-scrollbar-thumb {
-    background-color: var(--dark-accent);
-}
-
 #lcs-information, #edit-operations {
     justify-content: flex-start;
 }
@@ -311,4 +285,22 @@ input:not(:disabled, :read-only), select {
 }
 #edit-operation-results {
     grid-column: span 2;
+}
+
+#edit-operations:has(#substitute:checked) #substitution {
+    display: initial;
+}
+#edit-operations:has(#permute:checked) #permutation {
+    display: initial;
+}
+#edit-operations:has(#slice-n-concat:checked) #slice-concat {
+    display: initial;
+}
+
+#edit-parameters {
+    width: 100%;
+}
+.perm-label {
+    width: 6ch;
+    text-align: center;
 }

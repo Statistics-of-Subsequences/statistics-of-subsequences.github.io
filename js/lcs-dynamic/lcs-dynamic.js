@@ -52,6 +52,8 @@ function displayLCSInformation(string1, string2, lcs) {
     tableBody.innerHTML = '';
     document.querySelector("#string1-config").textContent = `Configurations in "${string1}"`;
     document.querySelector("#string2-config").textContent = `Configurations in "${string2}"`;
+    selectedX = "";
+    selectedY = "";
 
     const string1Subsequences = findOccurences(string1, lcs).filter(s => s.pop());
     const string2Subsequences = findOccurences(string2, lcs).filter(s => s.pop());
@@ -59,6 +61,7 @@ function displayLCSInformation(string1, string2, lcs) {
                         .fill()
                         .map((_,i) => {return {x: string1Subsequences[i], y: string2Subsequences[i]}});
 
+    let hasSelectedX, hasSelectedY;
     for (let rowData of sequences) {
         const row = document.createElement("tr");
 
@@ -84,7 +87,8 @@ function displayLCSInformation(string1, string2, lcs) {
                     selectedX = xWordWrapper;
                     setString1Path(rowData.x);
                     animateBacktracking();
-                }
+                };
+                hasSelectedX = hasSelectedX || xWordWrapper;
             }
         }
         const xEntry = document.createElement("td");
@@ -113,7 +117,8 @@ function displayLCSInformation(string1, string2, lcs) {
                     selectedY = yWordWrapper;
                     setString2Path(rowData.y);
                     animateBacktracking();
-                }
+                };
+                hasSelectedY = hasSelectedY || yWordWrapper;
             }
         }
         const yEntry = document.createElement("td");
@@ -122,4 +127,7 @@ function displayLCSInformation(string1, string2, lcs) {
 
         tableBody.appendChild(row);
     }
+
+    !hasSelectedX || hasSelectedX.click();
+    !hasSelectedY || hasSelectedY.click();
 }

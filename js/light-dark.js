@@ -1,5 +1,10 @@
 function setTheme() {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    const cookies = document.cookie.split(";");
+    if(cookies.filter(c => c.match("theme=dark")).length > 0) {
+        document.body.classList.add("night-mode");
+    } else if (cookies.filter(c => c.match("theme=light")).length > 0) {
+        document.body.classList.remove("night-mode");
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add("night-mode");
     }
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
@@ -15,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.createElement("div");
     wrapper.classList.add("center");
     wrapper.id = "day-theme";
+    wrapper.tabIndex = "0";         
 
     const daySVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     daySVG.id = "sun-icon";
@@ -36,11 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
     wrapper.appendChild(nightSVG);
     document.body.appendChild(wrapper);
 
-    document.querySelector("#day-theme").onclick = () => {
+    wrapper.addEventListener("click", () => {
         if(document.body.classList.contains("night-mode")) {
             document.body.classList.remove("night-mode");
+            document.cookie = "theme=light;";
         } else {
             document.body.classList.add("night-mode");
+            document.cookie = "theme=dark;";
         }
-    }
+    });
+    wrapper.onkeyup = e => e.key === "Enter" && wrapper.onclick();
 });

@@ -9,18 +9,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="res/img/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="./common.css">
-    <link rel="stylesheet" type="text/css" href="./matrix-3d/matrix-3d.css">
-    <link rel="stylesheet" type="text/css" href="./matrix-3d/gradient-colors.css">
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/matrix-3d/matrix-3d.css">
+    <link rel="stylesheet" type="text/css" href="./css/matrix-3d/gradient-colors.css">
 
-    <script type="module" src="./matrix-3d/matrix-3d.js"></script>
-    <script src="./light-dark.js"></script>
+    <script type="module" src="./js/matrix-3d/matrix-3d.js"></script>
+    <script src="./js/light-dark.js"></script>
+    <script src="./js/back-arrow.js"></script>
 </head>
 
 <body>
     <script>setTheme();</script>
     <header>
-        <h1>LCS Edit Properties Explorer</h1>
+        <div>
+            <h1>LCS Edit Properties Explorer</h1>
+            <p class="sub-text">
+                Look at a 3D representation of all possible string combinations, and investigate the relationship between a pair of strings and their edited version.
+            </p>
+        </div>
     </header>
     <main>
         <div id="window-wrapper" class="center">
@@ -44,25 +50,27 @@
         </div>
         <div id="matrix-dimensions" class="center">
             <h4>Matrix Dimensions:</h4>
-            <div class="center text-spacing">
-                <label for="n">n: </label>
-                <select id="n">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-            <div class="center text-spacing">
-                <label for="m">m: </label>
-                <select id="m">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
+            <div class="center">
+                <div class="center text-spacing two-margin">
+                    <label for="n">n: </label>
+                    <select id="n">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="center text-spacing">
+                    <label for="m">m: </label>
+                    <select id="m">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
             </div>
             <button id="dimension-button" type="button">Update Matrix</button>
         </div>
@@ -128,21 +136,35 @@
                     <input type="radio" id="reverse" name="operation" value="reverse">
                 </div>
             </div>
-            <div id="edit-parameters">
-                <div id="substitution">
+            <div id="edit-parameters" class="v-center">
+                <div id="substitution" class="hidden">
                     <label for="substitution-k-box">Index:</label>
                     <select id="substitution-k-box">
                         <option value="0">0</option>
                     </select>
                 </div>
-                <div id="permutation" class="hidden">
-                    <caption for="permutation-box">Permutation:</caption>
-                    <table id="permutation-box"></table>
+                <div id="permutation" class="hidden center">
+                    <table id="permutation-box">
+                        <caption>Permutation:</caption>
+                        <tr id="permutation-header"></tr>
+                        <tr id="permutation-body"></tr>
+                    </table>
                 </div>
                 <div id="slice-concat" class="hidden">
-                    <label for="slice-concat-mode">Concatenation Mode:</label>
-                    <select id="slice-concat-mode"></select>
-                    <div id="concat-input"></div>
+                    <div class="center text-spacing">
+                        <label for="slice-concat-mode">Concatenation Mode:</label>
+                        <select id="slice-concat-mode"></select>
+                    </div>
+                    <div id="concat-input">
+                        <div id="concat-prefix-wrapper" class="center text-spacing">
+                            <label for="concat-prefix">Prefix:</label>
+                            <select id="concat-prefix"></select>
+                        </div>
+                        <div id="concat-suffix-wrapper" class="center text-spacing">
+                            <label for="concat-suffix">Suffix:</label>
+                            <select id="concat-suffix"></select>
+                        </div>
+                    </div>
                 </div>
                 <button id="operation-button" type="button">Perform Operation</button>
                 <div id="edit-results" class="v-center">

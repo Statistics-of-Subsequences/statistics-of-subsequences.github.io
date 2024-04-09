@@ -1,58 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>LCS Derivation and Configuration Visualizer</title>
-        <meta charset="utf-8">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
-        <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
-        <link rel="stylesheet" type="text/css" href="./common.css">
-        <link rel="stylesheet" type="text/css" href="./lcs-dynamic/lcs-dynamic.css">
-        <script src="./light-dark.js"></script>
-        <script type="module" src="./LCS.js"></script>
-        <script type="module" src="./lcs-dynamic/table-render.js"></script>
-        <script type="module" src="./lcs-dynamic/table-animate.js"></script>
-        <script type="module" src="./lcs-dynamic/lcs-dynamic.js"></script>
-    </head>
-    <body>
-        <script>setTheme();</script>
-        <header>
+
+<head>
+    <title>LCS Derivation and Configuration Visualizer</title>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/lcs-dynamic/lcs-dynamic.css">
+    <script type="module" src="./js/LCS.js"></script>
+    <script type="module" src="./js/lcs-dynamic/table-render.js"></script>
+    <script type="module" src="./js/lcs-dynamic/table-animate.js"></script>
+    <script type="module" src="./js/lcs-dynamic/lcs-dynamic.js"></script>
+
+    <script src="./js/light-dark.js"></script>
+    <script src="./js/back-arrow.js"></script>
+</head>
+
+<body>
+    <script>setTheme();</script>
+    <header>
+        <div>
             <h1>LCS Derivation and Configuration Visualizer</h1>
             <p class="sub-text">
                 Enter two strings to view all possible longest common subsequences for those strings.
             </p>
-        </header>
-        <main class="v-center">
-            <div id="input-wrapper">
-                <span>
-                    <label for="x-box">String 1:</label>
-                    <input type="text" id="x-box" name="x" maxlength="10" spellcheck="false">
-                </span>
-                <span>
-                    <label for="y-box">String 2:</label>
-                    <input type="text" id="y-box" name="y" maxlength="10" spellcheck="false">
-                </span>
+        </div>
+    </header>
+    <main class="v-center">
+        <div id="input-wrapper">
+            <span>
+                <label for="x-box">String 1:</label>
+                <input type="text" id="x-box" name="x" maxlength="10" spellcheck="false">
+            </span>
+            <span>
+                <label for="y-box">String 2:</label>
+                <input type="text" id="y-box" name="y" maxlength="10" spellcheck="false">
+            </span>
+        </div>
+        <svg id="table"></svg>
+        <div id="lcs-results" class="hidden">
+            <p>Click on an LCS to see its derivation and configurations within the strings:</p>
+            <div class="center" id="lcs-buttons"></div>
+            <div class="v-center" id="lcs-configurations">
+                <h3 id="lcs-config-string"></h3>
+                <table id="lcs-config-table">
+                    <thead>
+                        <tr>
+                            <th><b id="string1-config"></b></th>
+                            <th><b id="string2-config"></b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-            <svg id="table"></svg>
-            <div id="lcs-results" class="hidden">
-                <p>Click on an LCS to see its derivation and configurations within the strings:</p>
-                <div class="center" id="lcs-buttons"></div>
-                <div class="v-center" id="lcs-configurations">
-                    <h3 id="lcs-config-string"></h3>
-                    <table id="lcs-config-table">
-                        <thead>
-                            <tr>
-                                <th><b id="string1-config"></b></th>
-                                <th><b id="string2-config"></b></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </body>
+        </div>
+    </main>
+</body>
+
 </html>

@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrapper.appendChild(nightSVG);
     document.body.appendChild(wrapper);
 
-    wrapper.onclick = () => {
+    wrapper.addEventListener("click", () => {
         if(document.body.classList.contains("night-mode")) {
             document.body.classList.remove("night-mode");
             document.cookie = "theme=light;";
@@ -50,6 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.add("night-mode");
             document.cookie = "theme=dark;";
         }
-    }
+    });
     wrapper.onkeyup = e => e.key === "Enter" && wrapper.onclick();
 });

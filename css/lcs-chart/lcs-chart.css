@@ -28,3 +28,24 @@ main.v-center>* {
 .night-mode #chart {
     border: 3px solid var(--dark-accent);
 }
+
+#sort-selection, #filter-options {
+    align-items: end;
+}
+
+#sort-options, #filter-list {
+    margin-right: 2vw;
+}
+
+.two-margin {
+    margin-right: 2vw;
+}
+
+#generate-wrapper>:first-child {
+    margin-bottom: 2vh;
+}
+
+#filter-list {
+    height: 100%;
+    text-align: center;
+}

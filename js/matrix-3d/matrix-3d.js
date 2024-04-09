@@ -80,18 +80,19 @@ function toggleCameraType() {
 }
 
 export function initializeMLC(width, height, aspectRatio) {
-    // model initialization
     const n = document.querySelector("#n").value;
     const m = document.querySelector("#m").value;
-    objectModel = new Model(gl, "model_" + n + "x" + m + ".obj", shaderProgram);
-    lights = [];
 
     // Generate model matrix
-    let reflectionPlane = WebGL.vec4(1.0, 0.0, 0.0, 0.0);
-    modelMatrix = WebGL.mult(WebGL.reflectionMatrix(reflectionPlane), WebGL.translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1)));
+    let reflectionMatrix = WebGL.reflectionMatrix(WebGL.vec4(1.0, 0.0, 0.0, 0));
+    let translationMatrix = WebGL.translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1));
+    modelMatrix = WebGL.mult(reflectionMatrix, translationMatrix);
+
+    // model initialization
+    objectModel = new Model(gl, "model_" + n + "x" + m + ".obj", shaderProgram);
 
     // lighting initialization
-    lights.push(new PointLight(gl, WebGL.vec3(0.0, Math.min(n, m) + 1.0, 0.0), WebGL.vec3(2.0, 1.5, 0.5), 0.5, WebGL.vec4(1.0, 0.98, 1.0, 1.0)));
+    lights = [new PointLight(gl, WebGL.vec3(0.0, Math.min(n, m) + 1.0, 0.0), WebGL.vec3(2.0, 1.5, 0.5), 0.5, WebGL.vec4(1.0, 0.98, 1.0, 1.0))];
 
     // camera initialization
     const orthoSize = Math.pow(2, Math.max(n, m) - 1.0) + 1.0;
@@ -109,6 +110,7 @@ export function initializeMLC(width, height, aspectRatio) {
     camera = new GenericCamera(gl, width, height, perspectiveEye, perspectiveOrientation, perspectiveMatrix); // custom camera
     camera.speed = 0.1 * Math.min(n, m);
     viewport = { orthoSize, perspectiveStart, perspectiveMatrix, perspectiveEye, perspectiveOrientation, perspectiveUp, orthoMatrix, orthoEye, orthoOrientation, orthoUp };
+    camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -122,6 +124,7 @@ window.addEventListener("DOMContentLoaded", () => {
         // clear if not a binary string
         if(e.data && !e.data.match("[01]+")) {
             e.preventDefault();
+            alert("Strings x and y must only contain the characters '0' and '1'");
             return;
         }
         
@@ -289,11 +292,11 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#dimension-button").onclick = () => {
         const newMaxX = parseInt(document.querySelector("#n").value);
         const newMaxY = parseInt(document.querySelector("#m").value);
-        xBox.maxLength = newMaxX;
+        xBox.maxlength = newMaxX;
         if(xBox.value.length > newMaxX) {
             xBox.value = xBox.value.slice(0, newMaxX);
         }
-        yBox.maxLength = newMaxY;
+        yBox.maxlength = newMaxY;
         if(yBox.value.length > newMaxY) {
             yBox.value = yBox.value.slice(0, newMaxY);
         }

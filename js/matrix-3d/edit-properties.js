@@ -97,7 +97,7 @@ export function changeMatrix() {
     }
     
     // reset shader program
-    return { updatedPerspective: true, updatedTime: -1.0, updatedAlpha: 0.01 * Math.min(n, m) };
+    return { updatedPerspective: true, updatedTime: -1.0, updatedAlpha: 0.03 * Math.min(n, m) };
 }
 
 export function findFix(xString, yString, n, m) {
@@ -130,14 +130,22 @@ export function findFix(xString, yString, n, m) {
 export function changeLCS() {
     const xBox = document.querySelector("#x-box");
     const yBox = document.querySelector("#y-box");
+    const n = parseInt(document.querySelector("#n").value);
+    const m = parseInt(document.querySelector("#m").value);
+    if(xBox.value.length !== n) {
+        alert("String x must have the same length as the value in input n");
+        return;
+    } else if(yBox.value.length !== m) {
+        alert("String y must have the same length as the value in input m");
+        return;
+    }
+
     const lcsMemo = generateLCSMemo(xBox.value, yBox.value);
 
     // convert from binary string to int
     let x = parseInt(xBox.value, 2);
     let y = parseInt(yBox.value, 2);
 
-    const n = parseInt(document.querySelector("#n").value);
-    const m = parseInt(document.querySelector("#m").value);
 
     // select mesh
     let index = x * Math.pow(2, m) + y;

@@ -106,13 +106,13 @@ export function rotateCamera(deltaX, deltaY) {
         let rotX = camera.sensitivity * deltaX / 100;
         let rotY = camera.sensitivity * deltaY / 100;
 
+        camera.setPosition(WebGL.rotateOffset(camera.position, camera.worldUp, WebGL.vec3(objectModel.bounds.center[0], 0.0, objectModel.bounds.center[2]), WebGL.radians(-rotX)));
         // don't allow camera to rotate below the model
         let newRotYPosition = WebGL.rotateOffset(camera.position, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)), objectModel.bounds.center, WebGL.radians(rotY));
-        if (newRotYPosition[1] > objectModel.bounds.min[1] && newRotYPosition[2] < objectModel.bounds.center[2]) {
-            camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.vec3(0.0, 1.0, 0.0), objectModel.bounds.center, WebGL.radians(-rotX)));
+        if (newRotYPosition[1] > objectModel.bounds.min[1]) {
             camera.setPosition(WebGL.rotateOffset(camera.position, WebGL.normalize(WebGL.cross(camera.orientation, camera.worldUp)), objectModel.bounds.center, WebGL.radians(rotY)));
-            camera.setTarget(WebGL.vec3(0.0, 0.0, 0.0));
         }
+        camera.setTarget(WebGL.vec3(objectModel.bounds.center[0], 0.0, objectModel.bounds.center[2]));
     }
 }
 

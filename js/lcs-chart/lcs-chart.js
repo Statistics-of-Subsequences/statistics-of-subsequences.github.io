@@ -1,6 +1,7 @@
 import generateGradient from "../gradient.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.cookie = "page=3;";
     document.querySelector("#generate").onclick = generateDistribution;
 
     const chart = document.querySelector("#chart");

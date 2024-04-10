@@ -4,6 +4,7 @@ import generateGradient from "../gradient.js";
 import fillMatrix from "./fill-matrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.cookie = "page=2;";
     const nBox = document.getElementById("n");
     const mBox = document.getElementById("m");
 
@@ -15,6 +16,26 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#download-matrix").onclick = downloadSVG;
+
+    window.onresize = () => {
+        const rows = Math.pow(2, parseInt(mBox.value));
+        const columns = Math.pow(2, parseInt(nBox.value));
+
+        const tableWrapper = document.querySelector("#table-wrapper");
+        const actualHeight = tableWrapper.getBoundingClientRect().height - document.querySelector("#table-caption").getBoundingClientRect().height;
+        const cellSize = Math.min(Math.min(tableWrapper.clientWidth / columns, actualHeight / rows), 50);
+    
+        const tableSVG = document.querySelector("#table-svg");
+        tableSVG.style.height = cellSize * rows;
+        tableSVG.style.width = cellSize * columns;
+    
+        document.querySelectorAll("rect").forEach(e => {
+            e.setAttributeNS(null, "x", cellSize * e.dataset.x);
+            e.setAttributeNS(null, "y", cellSize * (rows - e.dataset.y - 1)); // reverses so that (00..., 00...) is in bottom left instead of top left
+            e.setAttributeNS(null, "width", cellSize);
+            e.setAttributeNS(null, "height", cellSize);
+        });
+    };
 });
 
 function generateMatrixShell(rows, columns) {
@@ -22,8 +43,8 @@ function generateMatrixShell(rows, columns) {
     const yLength = parseInt(document.getElementById("m").value);
 
     const tableWrapper = document.querySelector("#table-wrapper");
-
-    const cellSize = Math.min(Math.min(tableWrapper.clientWidth / columns, tableWrapper.clientHeight / rows), 50);
+    const actualHeight = tableWrapper.getBoundingClientRect().height - document.querySelector("#table-caption").getBoundingClientRect().height;
+    const cellSize = Math.min(Math.min(tableWrapper.clientWidth / columns, actualHeight / rows), 50);
 
     const tableSVG = document.querySelector("#table-svg");
     tableSVG.style.height = cellSize * rows;
@@ -59,6 +80,9 @@ function generateMatrixShell(rows, columns) {
             tableMatrix.appendChild(entry);
         }
     }
+
+    const activeCell = tableMatrix.querySelector("rect:hover");
+    activeCell && showPopup(activeCell);
 }
 
 function selectCell(cell, gradientMap) {

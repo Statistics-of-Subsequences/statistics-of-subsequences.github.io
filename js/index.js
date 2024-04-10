@@ -4,8 +4,33 @@ let handleLeftClick = () => {};
 let handleRightClick = () => {};
 
 document.addEventListener("DOMContentLoaded", () => {
+    let potentialPage = document.cookie.split(";").map(c => c.trim()).filter(c => c.startsWith("page="))[0];
+
     let activeIndex = 0;
+    
     const slides = document.getElementsByTagName("main");
+    if(potentialPage) {
+        potentialPage = parseInt(potentialPage.replace("page=", ""));
+        if(potentialPage) {
+            activeIndex = Math.max(0, Math.min(slides.length, potentialPage));
+            const rightIndex = activeIndex === slides.length - 1 ? 0 : activeIndex + 1;
+            const leftIndex = activeIndex === 0 ? slides.length - 1 : activeIndex - 1;
+            const oppositeIndex = leftIndex === 0 ? slides.length - 1 : leftIndex - 1;
+
+            slides[activeIndex].classList.remove("left");
+            slides[activeIndex].classList.remove("right");
+            slides[activeIndex].classList.remove("hidden");
+            slides[leftIndex].classList.add("left");
+            slides[leftIndex].classList.remove("right");
+            slides[leftIndex].classList.remove("hidden");
+            slides[rightIndex].classList.remove("left");
+            slides[rightIndex].classList.add("right");
+            slides[rightIndex].classList.remove("hidden");
+            slides[oppositeIndex].classList.remove("left");
+            slides[oppositeIndex].classList.remove("right");
+            slides[oppositeIndex].classList.add("hidden");
+        }
+    }
     let canRun = true;
 
     const lrTransition = document.createElement("style");

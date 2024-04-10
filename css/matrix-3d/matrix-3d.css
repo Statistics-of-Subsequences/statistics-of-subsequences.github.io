@@ -83,9 +83,17 @@ main {
     padding-top: 1vh;
     padding-bottom: 1vh;
     background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    transition: 0.2s linear filter;
+}
+:is(#dimension-button, #lcs-button, #operation-button):hover {
+    filter: brightness(70%);
 }
 .night-mode :is(#dimension-button, #lcs-button, #operation-button) {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}
+.night-mode 
+:is(#dimension-button, #lcs-button, #operation-button):hover {
+    filter: brightness(130%);
 }
 
 #edit-operations {

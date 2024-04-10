@@ -10,7 +10,7 @@
 }
 
 main:nth-of-type(1) .content-label {
-    background-image: url("../res/img/matrix-3d.png");
+    background-image: url("../res/img/matrix-3d.PNG");
 }
 main:nth-of-type(1) .gradient-overlay {
     background-image:
@@ -50,7 +50,7 @@ main:nth-of-type(1) .gradient-overlay {
 }
 
 main:nth-of-type(2) .content-label {
-    background-image: url("../res/img/dynamic-lcs.png");
+    background-image: url("../res/img/dynamic-lcs.PNG");
 }
 main:nth-of-type(2) .gradient-overlay {
     background-image:

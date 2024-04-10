@@ -230,12 +230,12 @@ input:not(:disabled, :read-only), select {
     position: absolute;
     top: -2vw;
     right: -2vw;
-    fill: var(--body-text);
+    fill: #FFFFFF;
     cursor: pointer;
 }
 
 .night-mode #close-x {
-    fill: var(--dark-body-text);
+    fill: #FFFFFF;
 }
 
 #control-text-mobile {

@@ -49,3 +49,7 @@ main.v-center>* {
     height: 100%;
     text-align: center;
 }
+
+input:not(:disabled), select, button {
+    cursor: pointer;
+}

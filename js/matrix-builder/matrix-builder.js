@@ -15,19 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
-    document.querySelector("#download-matrix").onclick = downloadSVG;
+    // document.querySelector("#download-matrix").onclick = downloadSVG;
 
     window.onresize = () => {
         const rows = Math.pow(2, parseInt(mBox.value));
         const columns = Math.pow(2, parseInt(nBox.value));
 
-        const tableWrapper = document.querySelector("#table-wrapper");
-        const actualHeight = tableWrapper.getBoundingClientRect().height - document.querySelector("#table-caption").getBoundingClientRect().height;
-        const cellSize = Math.min(Math.min(tableWrapper.clientWidth / columns, actualHeight / rows), 50);
-    
-        const tableSVG = document.querySelector("#table-svg");
-        tableSVG.style.height = cellSize * rows;
-        tableSVG.style.width = cellSize * columns;
+        var cellWidth = -6.75 * n.value + 51.75;
+        var cellHeight = -6.75 * m.value + 51.75;
+        const cellSize = Math.min(cellWidth, cellHeight);
+
+        const tableMatrix = document.querySelector("#table");
+        tableMatrix.setAttributeNS(null, "width", columns * cellWidth);
+        tableMatrix.setAttributeNS(null, "height", rows * cellHeight);
     
         document.querySelectorAll("rect").forEach(e => {
             e.setAttributeNS(null, "x", cellSize * e.dataset.x);
@@ -42,17 +42,15 @@ function generateMatrixShell(rows, columns) {
     const xLength = parseInt(document.getElementById("n").value);
     const yLength = parseInt(document.getElementById("m").value);
 
-    const tableWrapper = document.querySelector("#table-wrapper");
-    const actualHeight = tableWrapper.getBoundingClientRect().height - document.querySelector("#table-caption").getBoundingClientRect().height;
-    const cellSize = Math.min(Math.min(tableWrapper.clientWidth / columns, actualHeight / rows), 50);
-
-    const tableSVG = document.querySelector("#table-svg");
-    tableSVG.style.height = cellSize * rows;
-    tableSVG.style.width = cellSize * columns;
+    var cellWidth = -6.75 * n.value + 51.75;
+    var cellHeight = -6.75 * m.value + 51.75;
+    const cellSize = Math.min(cellWidth, cellHeight);
 
     const popup = document.querySelector("#info-popup");
     const tableMatrix = document.querySelector("#table");
     tableMatrix.innerHTML = "";
+    tableMatrix.setAttributeNS(null, "width", columns * cellWidth);
+    tableMatrix.setAttributeNS(null, "height", rows * cellHeight);
 
     const gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(xLength, yLength) + 1);
 

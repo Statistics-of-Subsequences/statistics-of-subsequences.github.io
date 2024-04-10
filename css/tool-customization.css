@@ -6,6 +6,7 @@
 }
 
 main:nth-of-type(1) .content-label {
+    background-color: rgb(220, 220, 220);
     background-image: url("../res/img/matrix-3d.PNG");
 }
 main:nth-of-type(1) .gradient-overlay {

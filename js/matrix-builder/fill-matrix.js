@@ -3,7 +3,7 @@ export default function fillMatrix(rows, columns) {
     for (let cell of document.querySelector("#table").querySelectorAll("rect[aria-selected=true]")) {
         queue.push(cell);
     }
-
+    
     const applyCommutative = document.querySelector("#commute").checked;
     const applyComplement = document.querySelector("#complement").checked;
     const applyReverse = document.querySelector("#reverse").checked;
@@ -78,6 +78,7 @@ function applyCommutativeProperty(cell, rows, columns) {
         if (commutativeCell.dataset.length === "Unknown") {
             commutativeCell.dataset.length = cell.dataset.length;
             commutativeCell.dataset.derivation = `Commutes with ${cell.dataset.xString} and ${cell.dataset.yString}`;
+            commutativeCell.ariaSelected = "true";
             commutativeCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
             return commutativeCell;
         }
@@ -85,13 +86,14 @@ function applyCommutativeProperty(cell, rows, columns) {
 }
 
 function applyComplementProperty(cell, rows, columns) {
-    const compRow = rows - 1 - cell.dataset.x;
-    const compCol = columns - 1 - cell.dataset.y;
-    const complementCell = document.querySelector(`#table rect[data-x='${compRow}'][data-y='${compCol}']`);
+    const compRow = rows - 1 - cell.dataset.y;
+    const compCol = columns - 1 - cell.dataset.x;
+    const complementCell = document.querySelector(`#table rect[data-x='${compCol}'][data-y='${compRow}']`);
 
     if (complementCell.dataset.length == "Unknown") {
         complementCell.dataset.length = cell.dataset.length;
         complementCell.dataset.derivation = `Complement of ${cell.dataset.xString} and ${cell.dataset.yString}`;
+        complementCell.ariaSelected = "true";
         complementCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
         return complementCell;
     }
@@ -105,6 +107,7 @@ function applyReverseProperty(cell) {
     if (reverseCell.dataset.length == "Unknown") {
         reverseCell.dataset.length = cell.dataset.length;
         reverseCell.dataset.derivation = `Reverse of ${cell.dataset.xString} and ${cell.dataset.yString}`;
+        reverseCell.ariaSelected = "true";
         reverseCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
         return reverseCell;
     }
@@ -123,6 +126,7 @@ function applyPrefixProperty(cell, lcPrefix) {
         if (concatCell.dataset.length == "Unknown") {
             concatCell.dataset.length = cell.dataset.length;
             concatCell.dataset.derivation = `Slices [${lcPrefix}〉 from ${cell.dataset.xString} and ${cell.dataset.yString}<br>Prefixes with ${prefixString}`;
+            concatCell.ariaSelected = "true"; 
             concatCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
             toSearch.push(concatCell);
         }
@@ -133,7 +137,7 @@ function applyPrefixProperty(cell, lcPrefix) {
 
 function applySuffixProperty(cell, rows, columns, lcSuffix) {
     const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - lcSuffix);
-    const ySlice = cell.dataset.yString.substring(0, cell.dataset.xString.length - lcSuffix);
+    const ySlice = cell.dataset.yString.substring(0, cell.dataset.yString.length - lcSuffix);
     let toSearch = [];
 
     for (let SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
@@ -145,8 +149,9 @@ function applySuffixProperty(cell, rows, columns, lcSuffix) {
             if(rows === columns) {
                 concatCell.dataset.derivation = `Slices [0, ${lcSuffix}〉 from ${cell.dataset.xString} and ${cell.dataset.yString}<br>Suffixes with ${suffixString}`;
             } else {
-                concatCell.dataset.derivation = `Slices [0, ${rows - lcSuffix}) from ${cell.dataset.xString} and [0, ${columns - lcSuffix}) ${cell.dataset.yString}<br>Suffixes with ${suffixString}`;
+                concatCell.dataset.derivation = `Slices [0, ${Math.log2(columns) - lcSuffix}) from ${cell.dataset.xString} and [0, ${Math.log2(rows) - lcSuffix}) from ${cell.dataset.yString}<br>Suffixes with ${suffixString}`;
             }
+            concatCell.ariaSelected = "true"; 
             concatCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
             toSearch.push(concatCell);
         }
@@ -157,7 +162,7 @@ function applySuffixProperty(cell, rows, columns, lcSuffix) {
 
 function applyCircumfixProperty(cell, rows, columns, lcPrefix, lcSuffix) {
     const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - lcSuffix).substring(lcPrefix);
-    const ySlice = cell.dataset.yString.substring(0, cell.dataset.xString.length - lcSuffix).substring(lcPrefix);
+    const ySlice = cell.dataset.yString.substring(0, cell.dataset.yString.length - lcSuffix).substring(lcPrefix);
     let toSearch = [];
 
     for (let PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
@@ -171,8 +176,9 @@ function applyCircumfixProperty(cell, rows, columns, lcPrefix, lcSuffix) {
                 if(rows === columns) {
                     concatCell.dataset.derivation = `Slices [${lcPrefix}, ${lcSuffix}〉 from ${cell.dataset.xString} and ${cell.dataset.yString}<br>Prefixes with ${prefixString}<br>Suffixes with ${suffixString}`;
                 } else {
-                    concatCell.dataset.derivation = `Slices [${lcPrefix}, ${rows - lcSuffix}) from ${cell.dataset.xString} and [${lcPrefix}, ${columns - lcSuffix}) ${cell.dataset.yString}<br>Prefixes with ${prefixString}<br>Suffixes with ${suffixString}`;
+                    concatCell.dataset.derivation = `Slices [${lcPrefix}, ${Math.log2(columns) - lcSuffix}) from ${cell.dataset.xString} and [${lcPrefix}, ${Math.log2(rows) - lcSuffix}) ${cell.dataset.yString}<br>Prefixes with ${prefixString}<br>Suffixes with ${suffixString}`;
                 }
+                concatCell.ariaSelected = "true"; 
                 concatCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
                 toSearch.push(concatCell);
             }

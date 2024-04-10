@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>LCS Derivation and Configuration Visualizer</title>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/matrix-builder/matrix-builder.css">
+    <script type="module" src="./js/LCS.js"></script>
+    <script type="module" src="./js/matrix-builder/matrix-builder.js"></script>
+
+    <script src="./js/light-dark.js"></script>
+    <script src="./js/back-arrow.js"></script>
+</head>
+
+<body>
+    <script>setTheme();</script>
+    <header>
+        <div>
+            <h1>LCS Matrix Builder</h1>
+            <p class="sub-text">
+                Look at a 2D representation of all possible binary string combinations, and use the edit properties to derive the length of the LCS of other binary string pairs.
+            </p>
+        </div>
+    </header>
+    <main class="wrapper">
+        <div class="block">
+            <div class="v-center">
+                <div id="generate-wrapper" class="center">
+                    <div class="text-spacing two-margin">
+                        <label for="n">n: </label>
+                        <select id="n">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="text-spacing">
+                        <label for="m">m: </label>
+                        <select id="m">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+                <p>Select the cells whose values are known:</p>
+                <div class="center">
+                    <div class="text-spacing two-margin">
+                        <button id="clear">Clear Matrix</button>
+                    </div>
+                    <div class="text-spacing">
+                        <button id="generate">Fill Matrix</button>
+                    </div>
+                </div>
+            
+            <svg id="table"></svg>
+            <div id="info-popup"></div>
+            </div>
+        </div>
+
+        <div id="filter-list" class="block">
+            <h3>Enabled Properties:</h3>
+            <div id="filter-options" class="v-center">
+                <div>
+                    <input type="checkbox" id="commute" checked>
+                    <label for="commute">Commutative</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="complement" checked>
+                    <label for="complement">Complement</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="reverse" checked>
+                    <label for="reverse">Reverse</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="slicePrefix" checked>
+                    <label for="slicePrefix">Slice and Prefix</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="sliceSuffix" checked>
+                    <label for="sliceSuffix">Slice and Suffix</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="sliceCircumfix" checked>
+                    <label for="sliceCircumfix">Slice and Circumfix</label>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

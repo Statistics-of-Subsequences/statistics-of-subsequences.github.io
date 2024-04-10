@@ -162,7 +162,7 @@ export default class Model {
         let obj = new OBJ();
 
         // get obj file contents
-        const objResponse = await fetch("https://statistics-of-subsequences.github.io/res/models/" + fileName);
+        const objResponse = await fetch("../../res/models/" + fileName);
         obj.objFile = await objResponse.text();
 
         // Split and sanitize OBJ file input
@@ -184,7 +184,7 @@ export default class Model {
         let materialLibraryName = line.split(" ")[1];
 
         // get MTL file contents
-        const mtlResponse = await fetch("https://statistics-of-subsequences.github.io/res/models/" + materialLibraryName);
+        const mtlResponse = await fetch("../../res/models/" + materialLibraryName);
         let mtlFile = await mtlResponse.text();
 
         // parse MTL file

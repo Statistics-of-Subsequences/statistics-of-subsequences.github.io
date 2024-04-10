@@ -1,0 +1,46 @@
+#generate, #clear {
+    padding: 1vw;
+    border: none;
+    border-radius: 2vh;
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+}
+
+.night-mode #generate, .night-mode #clear {
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}
+
+
+#table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3vh;
+    overflow: visible;
+}
+
+#filter-options {
+    align-items: start;
+}
+
+#filter-list {
+    margin-right: 2vw;
+}
+
+.two-margin {
+    margin-right: 2vw;
+}
+
+#info-popup {
+    width: 400px;
+    font-size: 10pt;
+    padding: 1vw;
+    border: none;
+    border-radius: 2vh;
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    position: absolute;
+    text-align: center;
+    display: none;
+}
+
+.night-mode #info-popup {
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}

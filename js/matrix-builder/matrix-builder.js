@@ -1,8 +1,7 @@
-var nBox, mBox, tableMatrix, infoPopup, gradientMap;
-var matrix, infoMatrix, selectedCells;
-var rows, columns;
-const svgns = "http://www.w3.org/2000/svg";
+import { findLCS } from '../LCS.js';
 
+var n, m, rows, columns, cellSize;
+var table, infoPopup, infoMatrix, selectedCells, gradientMap;
 var allowedProperties = {
     "commute": true,
     "complement": true,
@@ -12,70 +11,62 @@ var allowedProperties = {
     "sliceCircumfix": true
 };
 
-function setup() {
-    nBox = document.getElementById("n");
-    mBox = document.getElementById("m");
-    tableMatrix = document.getElementById("table");
-    infoPopup = document.getElementById("infoPopup");
+document.addEventListener("DOMContentLoaded", () => {
+    n = document.querySelector("#n");
+    m = document.querySelector("#m");
+    n.oninput = () => {
+        generateMatrixShell();
+    }
+    m.oninput = n.oninput;
 
-    infoMatrix = [];
-    matrix = document.createElementNS(svgns, "svg");
+    table = document.querySelector("#table");
+    infoPopup = document.querySelector("#info-popup");
 
-    nBox.selectedIndex = 0;
-    mBox.selectedIndex = 0;
+    document.querySelector("#clear").onclick = generateMatrixShell;
+    document.querySelector("#generate").onclick = fillMatrix;
+    document.querySelector("#commute").onchange = setAllowedProperties;
+    document.querySelector("#complement").onchange = setAllowedProperties;
+    document.querySelector("#reverse").onchange = setAllowedProperties;
+    document.querySelector("#slicePrefix").onchange = setAllowedProperties;
+    document.querySelector("#sliceSuffix").onchange = setAllowedProperties;
+    document.querySelector("#sliceCircumfix").onchange = setAllowedProperties;
+
+    const svgElements = document.querySelectorAll("svg");
+    for (let cell of svgElements) {
+        cell.addEventListener("click", selectCell);
+        cell.addEventListener("mouseover", showPopup);
+        cell.addEventListener("mouseout", hidePopup);
+    }
+
     generateMatrixShell();
-
-    var svgElements = document.getElementsByTagName("svg");
-    for (var i = 0; i < svgElements.length; i++) {
-        svgElements[i].addEventListener("click", selectCell);
-        svgElements[i].addEventListener("mouseover", showPopup);
-        svgElements[i].addEventListener("mouseout", hidePopup);
-    }
-
-    var checkboxes = document.getElementsByTagName("input");
-    for (var i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].checked = true;
-    }
-}
+});
 
 function generateMatrixShell() {
     selectedCells = [];
-    columns = Math.pow(2, nBox.value);
-    rows = Math.pow(2, mBox.value);
-    infoMatrix = new Array(rows);
-    for (var i = 0; i < rows; i++) {
-        infoMatrix[i] = new Array(columns);
-    }
+    columns = Math.pow(2, n.value);
+    rows = Math.pow(2, m.value);
+    gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(n.value, m.value) + 1);
 
-    var cellWidth = -7.5 * nBox.value + 57.5;
-    var cellHeight = -7.5 * mBox.value + 57.5;
+    var cellWidth = -7.5 * n.value + 57.5;
+    var cellHeight = -7.5 * m.value + 57.5;
     cellSize = Math.min(cellWidth, cellHeight);
 
-    tableMatrix.innerHTML = "";
-    tableMatrix.appendChild(generateSVGTable(cellSize, cellSize));
+    table.innerHTML = "";
+    generateSVGTable(cellSize, cellSize);
 
-    gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(nBox.value, mBox.value) + 1);
-
-    // fill infoMatrix with Cell objects
-    for (var i = 0; i < rows; i++) {
-        for (var j = 0; j < columns; j++) {
-            infoMatrix[i][j] = new Cell(rows - 1 - i, j, matrix.childNodes[i].childNodes[j], "Unknown", "Not Derived Yet");
-        }
-    }
+    infoMatrix = Array.from({ length: rows }, (_, i) => Array.from({ length: columns }, (_, j) => new Cell(rows - 1 - i, j, table.childNodes[i].childNodes[j], "Unknown", "Not Derived Yet")));
 }
 
 function generateSVGTable(cellWidth, cellHeight) {
-    matrix.innerHTML = "";
-
-    matrix.setAttributeNS(null, "width", columns * cellWidth + cellWidth);
-    matrix.setAttributeNS(null, "height", rows * cellHeight + cellHeight);
+    table.setAttributeNS(null, "width", columns * cellWidth);
+    table.setAttributeNS(null, "height", rows * cellHeight);
 
     for (var i = 0; i < rows; i++) {
-        var row = document.createElementNS(svgns, "g");
+        const row = document.createElementNS("http://www.w3.org/2000/svg", "g");
         for (var j = 0; j < columns; j++) {
-            var rect = document.createElementNS(svgns, "rect");
-            rect.setAttributeNS(null, "x", j * cellWidth + cellWidth / 2);
-            rect.setAttributeNS(null, "y", i * cellHeight + cellHeight / 2);
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttributeNS(null, "x", j * cellWidth);
+            rect.setAttributeNS(null, "y", i * cellHeight);
             rect.setAttributeNS(null, "width", cellWidth);
             rect.setAttributeNS(null, "height", cellHeight);
             rect.setAttributeNS(null, "fill", "white");
@@ -83,10 +74,8 @@ function generateSVGTable(cellWidth, cellHeight) {
             rect.setAttributeNS(null, "stroke-width", "1");
             row.appendChild(rect);
         }
-        matrix.appendChild(row);
+        table.appendChild(row);
     }
-
-    return matrix;
 }
 
 function fillMatrix() {
@@ -94,19 +83,19 @@ function fillMatrix() {
     for (var cell of selectedCells) {
         queue.push(cell);
     }
-    
+
     while (queue.length > 0) {
         // get the row and column of the cell
         var currentCell = queue.shift();
         var row = currentCell.row;
         var column = currentCell.column;
-        
+
         // commutative property
         if (rows == columns && allowedProperties["commute"]) {
             var commutativeCell = infoMatrix[rows - 1 - column][row];
             if (commutativeCell.length == "Unknown") {
                 infoMatrix[rows - 1 - column][row].length = currentCell.length;
-                infoMatrix[rows - 1 - column][row].derivation = "Commutes with " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
+                infoMatrix[rows - 1 - column][row].derivation = "Commutes with " + intToBinStr(column, n.value) + " and " + intToBinStr(row, m.value);
                 commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                 selectedCells.push(commutativeCell);
                 queue.push(commutativeCell);
@@ -117,26 +106,26 @@ function fillMatrix() {
         if (allowedProperties["complement"]) {
             var complementRow = rows - 1 - row;
             var complementColumn = columns - 1 - column;
-            
+
             var complementCell = infoMatrix[rows - 1 - complementRow][complementColumn];
             if (complementCell.length == "Unknown") {
                 infoMatrix[rows - 1 - complementRow][complementColumn].length = currentCell.length;
-                infoMatrix[rows - 1 - complementRow][complementColumn].derivation = "Complement of " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
+                infoMatrix[rows - 1 - complementRow][complementColumn].derivation = "Complement of " + intToBinStr(column, n.value) + " and " + intToBinStr(row, m.value);
                 complementCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                 selectedCells.push(complementCell);
                 queue.push(complementCell);
             }
         }
-        
+
         // reverse property
         if (allowedProperties["reverse"]) {
-            var reverseRow = parseInt(row.toString(2).split("").reverse().join("").concat("0".repeat(mBox.value - row.toString(2).length)), 2);
-            var reverseColumn = parseInt(column.toString(2).split("").reverse().join("").concat("0".repeat(nBox.value - column.toString(2).length)), 2);
+            var reverseRow = parseInt(row.toString(2).split("").reverse().join("").concat("0".repeat(m.value - row.toString(2).length)), 2);
+            var reverseColumn = parseInt(column.toString(2).split("").reverse().join("").concat("0".repeat(n.value - column.toString(2).length)), 2);
 
             var reverseCell = infoMatrix[rows - 1 - reverseRow][reverseColumn];
             if (reverseCell.length == "Unknown") {
                 infoMatrix[rows - 1 - reverseRow][reverseColumn].length = currentCell.length;
-                infoMatrix[rows - 1 - reverseRow][reverseColumn].derivation = "Reverse of " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value);
+                infoMatrix[rows - 1 - reverseRow][reverseColumn].derivation = "Reverse of " + intToBinStr(column, n.value) + " and " + intToBinStr(row, m.value);
                 reverseCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                 selectedCells.push(reverseCell);
                 queue.push(reverseCell);
@@ -145,12 +134,12 @@ function fillMatrix() {
 
         // slice and concatenation property
         if (allowedProperties["slicePrefix"] || allowedProperties["sliceSuffix"] || allowedProperties["sliceCircumfix"]) {
-            var rowBinary = intToBinStr(row, mBox.value);
-            var columnBinary = intToBinStr(column, nBox.value);
+            var rowBinary = intToBinStr(row, m.value);
+            var columnBinary = intToBinStr(column, n.value);
 
             var tempRowBinary = rowBinary;
             var tempColumnBinary = columnBinary;
-            
+
             var lcPrefix = 0; // longest common prefix
             while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[0] == tempColumnBinary[0]) {
                 lcPrefix++;
@@ -180,7 +169,7 @@ function fillMatrix() {
                 lcPrefix = Math.ceil(lcPrefix / 2);
                 lcSuffix = Math.log2(rows) - lcPrefix;
             }
-            
+
             if (lcPrefix > 0) {
                 remainingRowPrefix = rowBinary.slice(lcPrefix);
                 remainingRowCircumfix = rowBinary.slice(lcPrefix);
@@ -206,7 +195,7 @@ function fillMatrix() {
                     var concatCell = infoMatrix[rows - 1 - newRow][newColumn];
                     if (concatCell.length == "Unknown") {
                         infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
-                        infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + (lcPrefix) + "&#12297;from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix);
+                        infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + (lcPrefix) + "&#12297;from " + intToBinStr(column, n.value) + " and " + intToBinStr(row, m.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix);
                         concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                         selectedCells.push(concatCell);
                         queue.push(concatCell);
@@ -216,7 +205,7 @@ function fillMatrix() {
                             var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
                             if (commutativeCell.length == "Unknown") {
                                 infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, n.value) + " and " + intToBinStr(newRow, m.value);
                                 commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                                 selectedCells.push(commutativeCell);
                                 queue.push(commutativeCell);
@@ -235,9 +224,9 @@ function fillMatrix() {
                     if (concatCell.length == "Unknown") {
                         infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
                         if (rows == columns) {
-                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (n.value - lcSuffix) + ") from " + intToBinStr(column, n.value) + " and " + intToBinStr(row, m.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                         } else {
-                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [0, " + (mBox.value - lcSuffix)  + ") from " + intToBinStr(row, mBox.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                            infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [0, " + (n.value - lcSuffix) + ") from " + intToBinStr(column, n.value) + " and [0, " + (m.value - lcSuffix) + ") from " + intToBinStr(row, m.value) + "<br/>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                         }
                         concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                         selectedCells.push(concatCell);
@@ -248,7 +237,7 @@ function fillMatrix() {
                             var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
                             if (commutativeCell.length == "Unknown") {
                                 infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, n.value) + " and " + intToBinStr(newRow, m.value);
                                 commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                                 selectedCells.push(commutativeCell);
                                 queue.push(commutativeCell);
@@ -270,9 +259,9 @@ function fillMatrix() {
                         if (concatCell.length == "Unknown") {
                             infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
                             if (rows == columns) {
-                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (n.value - lcSuffix) + ") from " + intToBinStr(column, n.value) + " and " + intToBinStr(row, m.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                             } else {
-                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [" + lcPrefix + ", " + (mBox.value - lcSuffix) + ") from " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                                infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (n.value - lcSuffix) + ") from " + intToBinStr(column, n.value) + " and [" + lcPrefix + ", " + (m.value - lcSuffix) + ") from " + intToBinStr(row, m.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
                             }
                             concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                             selectedCells.push(concatCell);
@@ -283,7 +272,7 @@ function fillMatrix() {
                                 var commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
                                 if (commutativeCell.length == "Unknown") {
                                     infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                                    infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
+                                    infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, n.value) + " and " + intToBinStr(newRow, m.value);
                                     commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
                                     selectedCells.push(commutativeCell);
                                     queue.push(commutativeCell);
@@ -323,7 +312,7 @@ function selectCell(evt) {
             selectedCells.splice(index, 1);
         }
     } else {
-        infoMatrix[row][column].length = lcs("0".repeat(nBox.value - column.toString(2).length).concat(column.toString(2)), "0".repeat(mBox.value - (rows - 1 - row).toString(2).length).concat((rows - 1 - row).toString(2)));
+        infoMatrix[row][column].length = findLCS("0".repeat(n.value - column.toString(2).length).concat(column.toString(2)), "0".repeat(m.value - (rows - 1 - row).toString(2).length).concat((rows - 1 - row).toString(2)));
         infoMatrix[row][column].derivation = "User Selected";
         selectedCells.push(infoMatrix[row][column]);
 
@@ -367,46 +356,15 @@ class Cell {
 
 function cellValue(cell) {
     // add h3 with column and row
-    var column = "0".repeat(nBox.value - cell.column.toString(2).length).concat(cell.column.toString(2));
-    var row = "0".repeat(mBox.value - cell.row.toString(2).length).concat(cell.row.toString(2));
-    var value = "<h3>LCS of " + column + " and " + row + "</h3>";
+    var column = "0".repeat(n.value - cell.column.toString(2).length).concat(cell.column.toString(2));
+    var row = "0".repeat(m.value - cell.row.toString(2).length).concat(cell.row.toString(2));
+    var value = "<h3 style=\"text-align: center;\"><b>LCS of " + column + " and " + row + "</b></h3>";
 
     // add p with length and derivation
     value += "<p>Length: " + cell.length + "</p>";
     value += "<p>" + cell.derivation + "</p>";
 
     return value;
-}
-
-// lcs length
-function lcs(x, y) {
-    let n = x.length;
-    let m = y.length;
-
-    // Initialize table
-    let T = new Array(n + 1);
-    for (let i = 0; i < n + 1; i++) {
-        T[i] = new Array(m + 1);
-    }
-    for (let i = 0; i < n + 1; i++) {
-        T[i][0] = 0;
-    }
-    for (let i = 0; i < m + 1; i++) {
-        T[0][i] = 0;
-    }
-
-    for (let i = 1; i < n + 1; i++) {
-        for (let j = 1; j < m + 1; j++) {
-            if (x[i - 1] == y[j - 1]) {
-                T[i][j] = T[i - 1][j - 1] + 1;
-            } else {
-                T[i][j] = Math.max(T[i - 1][j], T[i][j - 1]);
-            }
-        }
-    }
-    
-    // return bottom right cell
-    return T[n][m];
 }
 
 function intToBinStr(num, bits) {
@@ -441,17 +399,4 @@ function getPercent(stops, percent) {
         }
     }
     return -1;
-}
-
-function downloadSVG() {
-    var svgData = new XMLSerializer().serializeToString(matrix);
-    var svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
-    var svgUrl = URL.createObjectURL(svgBlob);
-    var downloadLink = document.createElement("a");
-    var fileName = prompt("Enter file name", "level-");
-    downloadLink.href = svgUrl;
-    downloadLink.download = fileName + ".svg";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
 }

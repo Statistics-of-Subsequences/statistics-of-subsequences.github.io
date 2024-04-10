@@ -1,6 +1,6 @@
-//Note: only stores values for partial LCS where both strings are non-empty, as otherwise value is clearly 0
+// Note: only stores values for partial LCS where both strings are non-empty, as otherwise value is clearly 0
 export function generateLCSMemo(string1, string2) {
-    //Initialize table
+    // Initialize table
     let T = [];
     for (let i = 0; i < string1.length; i++) {
         T.push([]);
@@ -9,7 +9,7 @@ export function generateLCSMemo(string1, string2) {
         }
     }
 
-    //Calculate partial LCS lengths and LCS
+    // Calculate partial LCS lengths and LCS
     for (let i = 0; i < string1.length; i++) {
         for (let j = 0; j < string2.length; j++) {
             if(string1[i] === string2[j]) {
@@ -36,8 +36,13 @@ export function generateLCSMemo(string1, string2) {
     return T;
 }
 
+export function findLCS(string1, string2) {
+    const memo = generateLCSMemo(string1, string2);
+    return memo[string1.length - 1][string2.length - 1].lcs[0].length;
+}
+
 export function findOccurences(str, lcs) {
-    if(str === "") { //Failed subsequence
+    if(str === "") { // Failed subsequence
         return [[lcs === ""]];
     }
 

@@ -4,6 +4,7 @@ import generateGradient from "../gradient.js";
 import fillMatrix from "./fill-matrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.cookie = "page=2;";
     const nBox = document.getElementById("n");
     const mBox = document.getElementById("m");
 

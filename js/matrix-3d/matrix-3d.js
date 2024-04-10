@@ -114,6 +114,7 @@ export function initializeMLC(width, height, aspectRatio) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    document.cookie = "page=0;";
     const canvas = document.getElementById('window');
     registerController(canvas);
 

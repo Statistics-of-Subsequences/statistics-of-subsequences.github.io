@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
             slides[oppositeIndex].classList.remove("hidden");
 
             activeIndex = leftIndex;
-            document.cookie = `page=${activeIndex}`;
             setTimeout(() => canRun = true, animationTime + 10);
         }
     }
@@ -82,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
             slides[oppositeIndex].classList.remove("hidden");
 
             activeIndex = rightIndex;
-            document.cookie = `page=${activeIndex}`;
             setTimeout(() => canRun = true, animationTime + 10);
         }
     }

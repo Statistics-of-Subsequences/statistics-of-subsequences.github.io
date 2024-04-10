@@ -70,10 +70,17 @@ tbody p {
     border-radius: 5px;
     padding: 5px 10px 5px 10px;
     cursor: pointer;
+    transition: 0.2s linear filter;
+}
+#lcs-buttons button:hover {
+    filter: brightness(70%);
 }
 .night-mode #lcs-buttons button {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
     color: var(--dark-body-text);
+}
+.night-mode #lcs-buttons button:hover {
+    filter: brightness(130%);
 }
 
 #lcs-configurations {
@@ -94,11 +101,16 @@ tbody p {
     border-radius: 5px;
     cursor: pointer;
     transition: 0.2s linear background-color;
-    background-color: none;
 }
 #lcs-config-table td div.selected {
     background-color: var(--bright-accent);
 }
+#lcs-config-table td div:hover:not(.selected) {
+    background-color: var(--bright-accent-dull);
+}
 .night-mode #lcs-config-table td div.selected {
     background-color: var(--bright-dark-accent);
+}
+.night-mode #lcs-config-table td div:hover:not(.selected) {
+    background-color: var(--bright-dark-accent-dull);
 }

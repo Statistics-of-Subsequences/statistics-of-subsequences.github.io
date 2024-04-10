@@ -16,11 +16,18 @@ button {
     border-radius: 1vw;
     margin-bottom: 1vh;
     margin-top: 1vh;
+    transition: 0.2s linear filter;
+}
+button:hover {
+    filter: brightness(70%);
 }
 
 .night-mode button {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
     color: var(--dark-body-text);
+}
+.night-mode button:hover {
+    filter: brightness(130%);
 }
 
 #left-content {
@@ -36,13 +43,23 @@ button {
 }
 
 #table-wrapper {
-    width: 80%;
-    height: 80%;
+    width: 90%;
+    height: 90%;
+    justify-content: center;
+}
+
+#table-caption {
+    margin: 0;
+    padding: 1vh 0;
 }
 
 #table rect {
     border: 1px solid #000000;
     border-collapse: collapse;
+    transition: 0.2s linear filter;
+}
+#table rect:hover {
+    filter: invert(40%);
 }
 
 #info-popup {

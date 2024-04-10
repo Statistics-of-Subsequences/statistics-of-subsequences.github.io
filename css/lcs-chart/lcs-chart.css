@@ -3,9 +3,16 @@
     border: none;
     border-radius: 2vh;
     background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    transition: 0.2s linear filter;
+}
+#generate:hover {
+    filter: brightness(70%);
 }
 .night-mode #generate {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}
+.night-mode #generate:hover {
+    filter: brightness(130%);
 }
 
 main.v-center>* {

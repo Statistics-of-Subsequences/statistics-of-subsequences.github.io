@@ -61,10 +61,13 @@ export default function fillMatrix(rows, columns) {
 
             const suffixCells = applySuffix && lcSuffix && applySuffixProperty(currentCell, rows, columns, lcSuffix);
             if(suffixCells) {
-                queue = [...queue, ...prefixCells];
+                queue = [...queue, ...suffixCells];
             }
 
-            applyCircumfix && lcPrefix && lcSuffix && applyCircumfixProperty(currentCell, lcPrefix, lcSuffix, lcCircumfix);
+            const circumfixCells = applyCircumfix && lcPrefix && lcSuffix && applyCircumfixProperty(currentCell, rows, columns, lcPrefix, lcSuffix);
+            if(circumfixCells) {
+                queue = [...queue, ...circumfixCells];
+            }
         }
     }
 }
@@ -129,16 +132,14 @@ function applyPrefixProperty(cell, lcPrefix) {
 }
 
 function applySuffixProperty(cell, rows, columns, lcSuffix) {
-    const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - 1 - lcSuffix);
-    const ySlice = cell.dataset.yString.substring(0, cell.dataset.xString.length - 1 - lcSuffix);
+    const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - lcSuffix);
+    const ySlice = cell.dataset.yString.substring(0, cell.dataset.xString.length - lcSuffix);
     let toSearch = [];
 
     for (let SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
         let suffixString = SUFFIX.toString(2).padStart(lcSuffix, "0");
-
-        console.log(`${xSlice}${suffixString}`);
-        console.log(`${ySlice}${suffixString}`);
         const concatCell = document.querySelector(`#table rect[data-x-string='${xSlice}${suffixString}'][data-y-string='${ySlice}${suffixString}']`);
+        
         if (concatCell.dataset.length === "Unknown") {
             concatCell.dataset.length = cell.dataset.length;
             if(rows === columns) {
@@ -150,41 +151,33 @@ function applySuffixProperty(cell, rows, columns, lcSuffix) {
             toSearch.push(concatCell);
         }
     }
+
+    return toSearch;
 }
 
-function applyCircumfixProperty(cell) {
+function applyCircumfixProperty(cell, rows, columns, lcPrefix, lcSuffix) {
+    const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - lcSuffix).substring(lcPrefix);
+    const ySlice = cell.dataset.yString.substring(0, cell.dataset.xString.length - lcSuffix).substring(lcPrefix);
+    let toSearch = [];
+
     for (let PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {
         for (let SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
-            let r = "0".repeat(lcPrefix - PREFIX.toString(2).length).concat(PREFIX.toString(2));
-            let c = "0".repeat(lcSuffix - SUFFIX.toString(2).length).concat(SUFFIX.toString(2));
+            let prefixString = PREFIX.toString(2).padStart(lcPrefix, "0");
+            let suffixString = SUFFIX.toString(2).padStart(lcSuffix, "0");
+            const concatCell = document.querySelector(`#table rect[data-x-string='${prefixString}${xSlice}${suffixString}'][data-y-string='${prefixString}${ySlice}${suffixString}']`);
 
-            let newRow = parseInt(r.toString(2).concat(remainingRowCircumfix).concat(c.toString(2)), 2);
-            let newColumn = parseInt(r.toString(2).concat(remainingColumnCircumfix).concat(c.toString(2)), 2);
-
-            let concatCell = infoMatrix[rows - 1 - newRow][newColumn];
-            if (concatCell.length == "Unknown") {
-                infoMatrix[rows - 1 - newRow][newColumn].length = currentCell.length;
-                if (rows == columns) {
-                    infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+            if (concatCell.dataset.length == "Unknown") {
+                concatCell.dataset.length = cell.dataset.length;
+                if(rows === columns) {
+                    concatCell.dataset.derivation = `Slices [${lcPrefix}, ${lcSuffix}〉 from ${cell.dataset.xString} and ${cell.dataset.yString}<br>Prefixes with ${prefixString}<br>Suffixes with ${suffixString}`;
                 } else {
-                    infoMatrix[rows - 1 - newRow][newColumn].derivation = "Slices [" + lcPrefix + ", " + (nBox.value - lcSuffix) + ") from " + intToBinStr(column, nBox.value) + " and [" + lcPrefix + ", " + (mBox.value - lcSuffix) + ") from " + intToBinStr(row, mBox.value) + "<br/>Prefixes with " + intToBinStr(PREFIX, lcPrefix) + "</br>Suffixes with " + intToBinStr(SUFFIX, lcSuffix);
+                    concatCell.dataset.derivation = `Slices [${lcPrefix}, ${rows - lcSuffix}) from ${cell.dataset.xString} and [${lcPrefix}, ${columns - lcSuffix}) ${cell.dataset.yString}<br>Prefixes with ${prefixString}<br>Suffixes with ${suffixString}`;
                 }
-                concatCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
-                selectedCells.push(concatCell);
-                queue.push(concatCell);
-
-                // commutative property
-                if (rows == columns && allowedProperties["commute"]) {
-                    let commutativeCell = infoMatrix[rows - 1 - newColumn][newRow];
-                    if (commutativeCell.length == "Unknown") {
-                        infoMatrix[rows - 1 - newColumn][newRow].length = currentCell.length;
-                        infoMatrix[rows - 1 - newColumn][newRow].derivation = "Commutes with " + intToBinStr(newColumn, nBox.value) + " and " + intToBinStr(newRow, mBox.value);
-                        commutativeCell.cell.setAttribute("fill", currentCell.cell.getAttribute("fill"));
-                        selectedCells.push(commutativeCell);
-                        queue.push(commutativeCell);
-                    }
-                }
+                concatCell.setAttributeNS(null, "fill", cell.getAttributeNS(null, "fill"));
+                toSearch.push(concatCell);
             }
         }
     }
+
+    return toSearch;
 }

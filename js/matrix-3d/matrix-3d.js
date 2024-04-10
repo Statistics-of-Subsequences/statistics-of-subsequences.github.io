@@ -8,7 +8,7 @@ import GenericCamera from "./render/camera.js";
 import { registerController, resetCamera } from "./controls.js";
 import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from "./edit-properties.js";
 
-const BG_COLOR = { R: 255, G: 255, B: 255 } // Color out of 255
+const BG_COLOR = { R: 220, G: 220, B: 220 } // Color out of 255
 
 export let gl, shaderProgram, objectModel, modelMatrix, lights, viewport, cameraStatus, camera;
 

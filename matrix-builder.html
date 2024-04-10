@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>LCS Matrix Builder</title>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../res/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/common.css">
+    <link rel="stylesheet" type="text/css" href="./css/matrix-builder/matrix-builder.css">
+    <script type="module" src="./js/matrix-builder/matrix-builder.js"></script>
+
+    <script src="./js/light-dark.js"></script>
+    <script src="./js/back-arrow.js"></script>
+</head>
+
+<body>
+    <script>setTheme();</script>
+    <header>
+        <div>
+            <h1>LCS Matrix Builder</h1>
+            <p class="sub-text">
+                Investigate how the LCS of multiple different string pairs are connected.
+            </p>
+        </div>
+    </header>
+    <main>
+        <div class="v-center">
+            <p>Select the cells whose values are known:</p>
+            <div id="table-wrapper" class="center">
+                <svg id="table-svg">
+                    <g id="table">
+
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <div id="left-content">
+            <div class="v-center">
+                <div class="center two-margin">
+                    <div class="center text-spacing">
+                        <label for="n">n: </label>
+                        <select id="n">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="center text-spacing">
+                        <label for="m">m: </label>
+                        <select id="m">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="v-center">
+                <h3>Enabled Properties:</h3>
+                <div id="property-wrapper" class="v-center">
+                    <div>
+                        <label for="commute">Commutative:</label>
+                        <input type="checkbox" id="commute" value="commute" checked>
+                    </div>
+                    <div>
+                        <label for="complement">Complement:</label>
+                        <input type="checkbox" id="complement" value="complement" checked>
+                    </div>
+                    <div>
+                        <label for="reverse">Reverse:</label>
+                        <input type="checkbox" id="reverse" value="reverse" checked>
+                    </div>
+                    <div>
+                        <label for="slicePrefix">Slice and Prefix:</label>
+                        <input type="checkbox" id="slicePrefix" value="slicePrefix" checked>
+                    </div>
+                    <div>
+                        <label for="sliceSuffix">Slice and Suffix:</label>
+                        <input type="checkbox" id="sliceSuffix" value="sliceSuffix" checked>
+                    </div>
+                    <div>
+                        <label for="sliceCircumfix">Slice and Circumfix:</label>
+                        <input type="checkbox" id="sliceCircumfix" value="sliceCircumfix" checked>
+                    </div>
+                </div>
+            </div>
+            <div class="v-center">
+                <button onclick="fillMatrix();" type="button">Fill Matrix</button>
+                <button onclick="generateMatrixShell();" type="button">Clear Matrix</button>
+                <button onclick="downloadSVG();" type="button">Download</button>
+            </div>
+        </div>
+        <div id="info-popup" class="hidden">
+            <div id="info-bg"></div>
+            <div id="info-data" class="v-center">
+                <div class="center">
+                    <h4 id="lcs-display">LCS of <span id="lcs-string-1"></span> and <span id="lcs-string-2"></span></h4>
+                </div>
+                <div class="center">
+                    <h5>Length: <span id="lcs-length"></span></h5>
+                </div>
+                <div class="center">
+                    <h5><span id="lcs-derivation"></span></h5>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

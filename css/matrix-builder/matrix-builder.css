@@ -1,0 +1,80 @@
+main {
+    padding-top: 1vh;
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
+.two-margin>*:first-child {
+    margin-right: 3vw;
+}
+
+button {
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    color: var(--body-text);
+    border: none;
+    padding: 1vw;
+    border-radius: 1vw;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
+}
+
+.night-mode button {
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+    color: var(--dark-body-text);
+}
+
+#left-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: max-content;
+    justify-content: center;
+}
+
+#property-wrapper {
+    align-items: end;
+}
+
+#table-wrapper {
+    width: 80%;
+    height: 80%;
+}
+
+#table rect {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+#info-popup {
+    position: fixed;
+}
+
+#info-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--header-background);
+    opacity: 90%;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.night-mode #info-bg {
+    background-color: var(--dark-header-background);
+}
+
+#info-data {
+    width: max-content;
+    height: max-content;
+    padding: 1vw;
+    z-index: 1;
+}
+
+h5 {
+    padding: 0;
+    margin: 0;
+}
+
+#lcs-display {
+    margin-top: 0;
+}

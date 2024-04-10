@@ -13,7 +13,7 @@ async function setup() {
     matrix = document.createElementNS(svgns, "svg");
 
     // load json file asynchronusly
-    const jsonResponse = await fetch("https://statistics-of-subsequences.github.io/matrix-builder/levelData.json");
+    const jsonResponse = await fetch("../res/levelData.json");
     var json = await jsonResponse.text();
     levelsData = JSON.parse(json);
 

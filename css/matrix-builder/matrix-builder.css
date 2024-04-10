@@ -47,6 +47,7 @@ button {
 
 #info-popup {
     position: fixed;
+    width: max-content;
 }
 
 #info-bg {
@@ -55,11 +56,12 @@ button {
     left: 0;
     background-color: var(--header-background);
     opacity: 90%;
-    width: 100%;
+    width: 110%;
     height: 100%;
     z-index: -1;
+    clip-path: polygon(100% 0, 100% 100%, 10% 100%, 0 50%, 10% 0);
 }
-.night-mode #info-bg {
+.night-mode #info-bg, .night-mode #info-bg-pointer {
     background-color: var(--dark-header-background);
 }
 
@@ -68,6 +70,7 @@ button {
     height: max-content;
     padding: 1vw;
     z-index: 1;
+    margin-left: 10%;
 }
 
 h5 {
@@ -77,4 +80,12 @@ h5 {
 
 #lcs-display {
     margin-top: 0;
+}
+
+#lcs-derivation {
+    text-align: center;
+}
+
+input:not(:disabled), select, button, #table rect {
+    cursor: pointer;
 }

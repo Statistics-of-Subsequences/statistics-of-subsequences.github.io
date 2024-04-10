@@ -1,40 +1,27 @@
 import { generateLCSMemo } from "../LCS.js";
 import generateGradient from "../gradient.js";
 
-let allowedProperties = {
-    "commute": true,
-    "complement": true,
-    "reverse": true,
-    "slicePrefix": true,
-    "sliceSuffix": true,
-    "sliceCircumfix": true
-};
+import fillMatrix from "./fill-matrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const nBox = document.getElementById("n");
     const mBox = document.getElementById("m");
 
-    nBox.selectedIndex = 0;
-    mBox.selectedIndex = 0;
-    generateMatrixShell();
+    generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
 
-    let checkboxes = document.getElementsByTagName("input");
-    for (let i = 0; i < checkboxes.length; i++) {
-        const x = i; //const x to prevent all checkboxes using the last value of i
-        checkboxes[i].onchange = () => allowedProperties[checkboxes[x]] = checkboxes[x].value;
-    }
+    n.onchange = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
+    m.onchange = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
 
-    n.onchange = generateMatrixShell;
-    m.onchange = generateMatrixShell;
+    document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
+    document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
+    document.querySelector("#download-matrix").onclick = downloadSVG;
 });
 
-function generateMatrixShell() {
+function generateMatrixShell(rows, columns) {
     const xLength = parseInt(document.getElementById("n").value);
     const yLength = parseInt(document.getElementById("m").value);
 
     const tableWrapper = document.querySelector("#table-wrapper");
-    const columns = Math.pow(2, xLength);
-    const rows = Math.pow(2, yLength);
 
     const cellSize = Math.min(Math.min(tableWrapper.clientWidth / columns, tableWrapper.clientHeight / rows), 50);
 
@@ -97,7 +84,7 @@ function showPopup(cell) {
     popup.querySelector("#lcs-string-1").textContent = cell.dataset.xString;
     popup.querySelector("#lcs-string-2").textContent = cell.dataset.yString;
     popup.querySelector("#lcs-length").textContent = cell.dataset.length;
-    popup.querySelector("#lcs-derivation").textContent = cell.dataset.derivation;
+    popup.querySelector("#lcs-derivation").innerHTML = cell.dataset.derivation;
 
     const iconPos = cell.getBoundingClientRect();
     popup.classList.remove("hidden");
@@ -105,15 +92,42 @@ function showPopup(cell) {
     popup.style.top = (iconPos.y + iconPos.height / 2 - popup.getBoundingClientRect().height / 2) + "px";
 }
 
-function downloadSVG() {
-    let svgData = new XMLSerializer().serializeToString(matrix);
-    let svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
-    let svgUrl = URL.createObjectURL(svgBlob);
-    let downloadLink = document.createElement("a");
-    let fileName = prompt("Enter file name", "level-");
-    downloadLink.href = svgUrl;
-    downloadLink.download = fileName + ".svg";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+async function downloadSVG() {
+    const n = document.getElementById("n").value;
+    const m = document.getElementById("m").value;
+    const matrix = document.querySelector("#table-svg");
+
+    if(window.showSaveFilePicker) {
+        try {
+            let types = [ {description: "SVG File", accept: { "image/svg+xml": [".svg"]}} ];
+
+            const file = await window.showSaveFilePicker({ 
+                startIn: "downloads", 
+                suggestedName: `matrix${n}x${m}`, 
+                types: types,
+                excludeAcceptAllOption: true
+            });
+            
+            let fileData, writer;
+            const fileParts = file.name.split(".");
+            switch(fileParts[fileParts.length - 1]) {
+                case "svg":
+                    fileData = new XMLSerializer().serializeToString(matrix);
+
+                    writer = await file.createWritable();
+                    await writer.write(fileData);
+                    await writer.close();
+                    break;
+                default:
+                    throw "Attempting to save to unknown file type.";
+            }
+        } catch(err) {
+            console.error(err.name, err.message);
+        }
+    } else {
+        const svgData = new XMLSerializer().serializeToString(matrix);
+        const svgBlob = new Blob([svgData], { type: "image/svg+xml" });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        window.open(svgUrl);
+    }
 }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>LCS Matrix Builder</title>
     <meta charset="utf-8">
@@ -16,7 +15,6 @@
     <script src="./js/light-dark.js"></script>
     <script src="./js/back-arrow.js"></script>
 </head>
-
 <body>
     <script>setTheme();</script>
     <header>
@@ -79,23 +77,23 @@
                         <input type="checkbox" id="reverse" value="reverse" checked>
                     </div>
                     <div>
-                        <label for="slicePrefix">Slice and Prefix:</label>
-                        <input type="checkbox" id="slicePrefix" value="slicePrefix" checked>
+                        <label for="slice-prefix">Slice and Prefix:</label>
+                        <input type="checkbox" id="slice-prefix" value="slice-prefix" checked>
                     </div>
                     <div>
-                        <label for="sliceSuffix">Slice and Suffix:</label>
-                        <input type="checkbox" id="sliceSuffix" value="sliceSuffix" checked>
+                        <label for="slice-suffix">Slice and Suffix:</label>
+                        <input type="checkbox" id="slice-suffix" value="slice-suffix" checked>
                     </div>
                     <div>
-                        <label for="sliceCircumfix">Slice and Circumfix:</label>
-                        <input type="checkbox" id="sliceCircumfix" value="sliceCircumfix" checked>
+                        <label for="slice-circumfix">Slice and Circumfix:</label>
+                        <input type="checkbox" id="slice-circumfix" value="slice-circumfix" checked>
                     </div>
                 </div>
             </div>
             <div class="v-center">
-                <button onclick="fillMatrix();" type="button">Fill Matrix</button>
-                <button onclick="generateMatrixShell();" type="button">Clear Matrix</button>
-                <button onclick="downloadSVG();" type="button">Download</button>
+                <button id="fill-matrix" type="button">Fill Matrix</button>
+                <button id="clear-matrix" type="button">Clear Matrix</button>
+                <button id="download-matrix" type="button">Download</button>
             </div>
         </div>
         <div id="info-popup" class="hidden">
@@ -114,5 +112,4 @@
         </div>
     </main>
 </body>
-
 </html>

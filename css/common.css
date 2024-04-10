@@ -199,13 +199,13 @@ p, a, label, td, th, b, button, caption {
     height: 0;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: var(--accent);
+    background-color: #333333;
     border-radius: 100vw;
     border: 3px solid transparent;
     background-clip: content-box;
 }
 .night-mode ::-webkit-scrollbar-thumb {
-    background-color: var(--dark-accent);
+    background-color: #CCCCCC;
 }
 
 .text-spacing>*:first-child {

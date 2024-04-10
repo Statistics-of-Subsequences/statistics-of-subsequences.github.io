@@ -5,10 +5,6 @@
     background-color: var(--body-background);
 }
 
-.gradient-overlay {
-    backdrop-filter: blur(8px);
-}
-
 main:nth-of-type(1) .content-label {
     background-image: url("../res/img/matrix-3d.PNG");
 }

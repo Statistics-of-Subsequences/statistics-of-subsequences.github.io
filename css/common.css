@@ -45,10 +45,24 @@ header {
     flex-direction: row;
     box-shadow: inset 0 -5vh 2vh #00000033;
 }
+
 .night-mode header {
     background-color: var(--dark-header-background);
     border: var(--dark-accent);
     box-shadow: inset 0 -5vh 2vh #00000077;
+}
+
+.wrapper {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.block {
+    padding: 2vw;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
 }
 
 main {
@@ -56,6 +70,7 @@ main {
     height: 100%;
     background: linear-gradient(90deg, var(--body-background) 0%, var(--body-background) 75%, var(--header-background) 100%);
 }
+
 .night-mode main {
     background: linear-gradient(90deg, var(--dark-body-background) 0%, var(--dark-body-background) 75%, var(--dark-header-background) 100%);
 }
@@ -76,6 +91,7 @@ p, a, label, td, th, b, button, caption {
     text-decoration: none;
     transition: 0.2s filter linear;
 }
+
 .night-mode :is(p, a, label, td, th, b, button, caption) {
     color: var(--dark-body-text);
 }

@@ -91,12 +91,6 @@ async function generateDistribution() {
 
     let gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(n,m) + 1);
     let barColors = [];
-    for (let i = 0; i <= Math.min(n,m); i++) {
-        let color = "#" + gradientMap[i].toString(16);
-        for (let j = 0; j < Math.pow(2, i); j++) {
-            barColors.push(color);
-        }
-    }
 
     const data = await fetch("../../res/files/" + fileName).then(r => r.json());
     let stringOccurrences = data.stringOccurrences;
@@ -169,6 +163,7 @@ async function generateDistribution() {
     for (let key in stringOccurrences) {
         strings.push("\"" + stringOccurrences[key][0] + "\"");
         occurrences.push(stringOccurrences[key][1]);
+        barColors.push("#" + gradientMap[stringOccurrences[key][0].length].toString(16));
     }
 
     const scaleOptions = {

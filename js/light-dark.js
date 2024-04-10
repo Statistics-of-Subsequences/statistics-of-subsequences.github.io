@@ -1,6 +1,6 @@
 function setTheme() {
     const cookies = document.cookie.split(";");
-    if(cookies.filter(c => c.match("theme=dark")).length > 0) {
+    if(cookies.map(c => c.trim()).filter(c => c.match("theme=dark")).length > 0) {
         document.body.classList.add("night-mode");
     } else if (cookies.filter(c => c.match("theme=light")).length > 0) {
         document.body.classList.remove("night-mode");

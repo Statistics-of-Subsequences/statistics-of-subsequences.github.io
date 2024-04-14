@@ -27,6 +27,7 @@ main {
 button:hover {
     filter: brightness(70%);
 }
+
 .night-mode button:hover {
     filter: brightness(130%);
 }

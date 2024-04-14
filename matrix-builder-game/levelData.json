@@ -1,0 +1,275 @@
+{
+    "1": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": true,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 4
+    },
+    "2": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": false,
+            "complement": true,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 4
+    },
+    "3": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 3
+    },
+    "4": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": true,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 3
+    },
+    "5": {
+        "n": 2,
+        "m": 2,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": true,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 3
+    },
+    "6": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": true
+        },
+        "optimalSolution": 3
+    },
+    "7": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "complement": true,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 7
+    },
+    "8": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "complement": false,
+            "reverse": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 8
+    },
+    "9": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": true,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 3
+    },
+    "10": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": true,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 3
+    },
+    "11": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": true,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": true
+        },
+        "optimalSolution": 7
+    },
+    "12": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": true,
+            "reverse": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 6
+    },
+    "13": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": true,
+            "reverse": false,
+            "slicePrefix": true,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 4
+    },
+    "14": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": true,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": true,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 6
+    },
+    "15": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": true,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": true
+        },
+        "optimalSolution": 6
+    },
+    "16": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": true,
+            "slicePrefix": true,
+            "sliceSuffix": false,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 5
+    },
+    "17": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": true,
+            "slicePrefix": false,
+            "sliceSuffix": true,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 5
+    },
+    "18": {
+        "n": 3,
+        "m": 3,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": true,
+            "slicePrefix": false,
+            "sliceSuffix": false,
+            "sliceCircumfix": true
+        },
+        "optimalSolution": 7
+    },
+    "19": {
+        "n": 4,
+        "m": 4,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": true,
+            "sliceSuffix": true,
+            "sliceCircumfix": false
+        },
+        "optimalSolution": 5
+    },
+    "20": {
+        "n": 4,
+        "m": 4,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": true,
+            "sliceSuffix": false,
+            "sliceCircumfix": true
+        },
+        "optimalSolution": 6
+    },
+    "21": {
+        "n": 4,
+        "m": 4,
+        "allowedProperties": {
+            "commute": false,
+            "complement": false,
+            "reverse": false,
+            "slicePrefix": false,
+            "sliceSuffix": true,
+            "sliceCircumfix": true
+        },
+        "optimalSolution": 6
+    }
+}

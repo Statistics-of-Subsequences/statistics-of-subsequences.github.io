@@ -1,0 +1,28 @@
+#level-select {
+    display: block;
+}
+
+.level-column {
+    float: left;
+    width: 20%;
+}
+
+.level-column button {
+    width: 50px;
+    height: 50px;
+    margin: 0 0.5vw;
+    border: none;
+    border-radius: 1vw;
+    color: var(--body-text);
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    transition: 0.2s linear filter;
+}
+
+.night-mode .level-column button {
+    color: var(--dark-body-text);
+    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
+}
+
+#goal-title {
+    margin: -0.5vw;
+}

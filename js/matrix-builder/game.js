@@ -44,16 +44,18 @@ document.addEventListener("readystatechange", () => {
 function checkSolution(rows, columns, optimalSolution) {
     fillMatrix(rows, columns);
 
-    // current checking method does not work
-    // maybe compare the rect colors instead?
-
     var solutionSVGData = table.innerHTML;
+    var solutionSVGDataSanitized = solutionSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
+    console.log(solutionSVGDataSanitized);
+
     fetch(document.getElementById("goal").src)
         .then(response => response.text())
         .then(text => {
             const parsed = new DOMParser().parseFromString(text, 'text/html');
             var goalSVGData = parsed.querySelector('svg').innerHTML;
-            if (solutionSVGData == goalSVGData) {
+            var goalSVGDataSanitized = goalSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
+
+            if (solutionSVGDataSanitized == goalSVGDataSanitized) {
                 if (currentSolution == optimalSolution) {
                     alert("You have found an optimal solution!");
                 } else {

@@ -69,7 +69,17 @@
         </div>
 
         <div id="property-wrapper" class="block">
-            <h3>Enabled Properties:</h3>
+            <h3>
+                Enabled Properties:
+                <button title="info" type="button" id="properties-info">
+                    <svg id="info-icon" viewBox="0 0 24 24">
+                        <g>
+                            <path d="M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 12 7 C 11.45 7 11 7.45 11 8 C 11 8.55 11.45 9 12 9 C 12.55 9 13 8.55 13 8 C 13 7.45 12.55 7 12 7 Z M 13 17 L 11 17 L 11 11 L 13 11 L 13 17 Z" />
+                        </g>
+                    </svg>
+                </button>
+            </h3>
+            
             <div id="property-options" class="v-center">
                 <div>
                     <input type="checkbox" id="commute" checked>
@@ -115,6 +125,42 @@
 
         <div>
             <button id="download-matrix"">Download</button>
+        </div>
+
+        <div id="properties-overlay" class="center hidden">
+            <div id="properties-box" class="center">
+                <svg id="close-x" viewBox="0 0 460.775 460.775">
+                    <g>
+                        <path
+                            d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55  c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55  c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505  c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55  l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719  c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z" />
+                    </g>
+                </svg>
+                <div id="properties-text" class="v-center">
+                    <h2>Controls (Computer)</h2>
+                    <table>
+                        <tr>
+                            <td>Commutative</td>
+                            <td>The order of the strings does not matter</td>
+                        </tr>
+                        <tr>
+                            <td>Complement</td>
+                            <td>The complement of a string is the string with all 1s replaced with 0s and vice versa</td>
+                        </tr>
+                        <tr>
+                            <td>Reverse</td>
+                            <td>The reverse of a string is the string with its characters in reverse order</td>
+                        </tr>
+                        <tr>
+                            <td>Slice and -fix</td>
+                            <td>If two strings have a common -fix, replacing the -fix with another string of equal length will result in
+                            the same LCS length</td>
+                        </tr>
+                    </table>
+                    <div id="further-info">
+                        For more information and proof of these properties, read the <a href="./res/LCS-Properties.pdf">LCS Properties</a> document.
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 </body>

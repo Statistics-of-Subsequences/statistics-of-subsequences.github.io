@@ -132,3 +132,90 @@ h5 {
 input:not(:disabled), select, button, #table rect {
     cursor: pointer;
 }
+
+#properties-info {
+    width: 3vh;
+    height: 3vh;
+    border-radius: 100%;
+    border: none;
+    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
+    filter: brightness(100%) opacity(80%);
+    transition: 0.2s filter linear;
+    cursor: pointer;
+}
+
+#properties-info:hover {
+    filter: brightness(130%) opacity(80%);
+}
+
+#info-icon {
+    width: 100%;
+    height: 100%;
+    fill: var(--dark-body-text);
+}
+
+#properties-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background-color: #000000E0;
+}
+
+#properties-box {
+    width: max-content;
+    height: max-content;
+    padding-bottom: 2vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    background-color: var(--body-background);
+    border-radius: 3vh;
+    position: relative;
+}
+
+.night-mode #properties-box {
+    background-color: var(--dark-body-background);
+}
+
+#close-x {
+    width: 2vw;
+    height: 2vw;
+    position: absolute;
+    top: -2vw;
+    right: -2vw;
+    fill: #FFFFFF;
+    cursor: pointer;
+}
+
+.night-mode #close-x {
+    fill: #FFFFFF;
+}
+
+#properties-text *:not(h2, #further-info) {
+    text-align: center;
+    border: 2px solid var(--accent);
+}
+
+#properties-text td {
+    padding: 1vh;
+}
+
+.night-mode #properties-text *:not(h2, #further-info) {
+    border: 2px solid var(--dark-accent);
+}
+
+#further-info {
+    text-align: center;
+    margin-top: 1vh;
+    border: none;
+    font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
+    font-weight: 400;
+    color: var(--body-text);
+    text-decoration: none;
+}
+
+.night-mode #further-info {
+    color: var(--dark-body-text);
+}

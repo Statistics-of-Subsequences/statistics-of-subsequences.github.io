@@ -1,6 +1,8 @@
 import { generateLCSMemo } from "../LCS.js";
 import generateGradient from "../gradient.js";
-import fillMatrix from "./fill-matrix.js";
+
+export var userSelectedCells;
+export var gradientMap;
 
 export function generateMatrixShell(rows, columns) {
     const n = Math.log2(columns);
@@ -19,7 +21,8 @@ export function generateMatrixShell(rows, columns) {
     tableMatrix.setAttributeNS(null, "width", columns * cellWidth);
     tableMatrix.setAttributeNS(null, "height", rows * cellHeight);
 
-    const gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(xLength, yLength) + 1);
+    userSelectedCells = [];
+    gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(xLength, yLength) + 1);
 
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
@@ -50,17 +53,19 @@ export function generateMatrixShell(rows, columns) {
     activeCell && showPopup(activeCell);
 }
 
-function selectCell(cell, gradientMap) {
+export function selectCell(cell, gradientMap) {
     // if cell is not white, then set it to white
     if (cell.ariaSelected === "true") {
         cell.setAttributeNS(null, "fill", "white");
         cell.dataset.length = "Unknown";
         cell.dataset.derivation = "Not Derived Yet";
+        userSelectedCells = userSelectedCells.filter(e => e !== cell);
     } else {
         const lcs = generateLCSMemo(cell.dataset.xString, cell.dataset.yString);
         cell.dataset.length = lcs[lcs.length - 1][lcs[0].length - 1].len;
         cell.dataset.derivation = "User Selected";
         cell.setAttributeNS(null, "fill", `#${gradientMap[cell.dataset.length].toString(16)}`);
+        userSelectedCells.push(cell);
     }
 
     cell.ariaSelected = !(cell.ariaSelected === "true");

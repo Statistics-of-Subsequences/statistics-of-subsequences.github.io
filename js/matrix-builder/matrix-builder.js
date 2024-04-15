@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#download-matrix").onclick = () => downloadSVG();
 
+    const propertiesDisplay = document.querySelector("#properties-overlay");
+    document.querySelector("#properties-info").onclick = () => propertiesDisplay.classList.remove("hidden");
+    document.querySelector("#close-x").onclick = () => propertiesDisplay.classList.add("hidden");
+    
     window.onresize = () => {
         const rows = Math.pow(2, parseInt(mBox.value));
         const columns = Math.pow(2, parseInt(nBox.value));

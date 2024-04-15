@@ -24,5 +24,18 @@
 }
 
 #goal-title {
-    margin: -0.5vw;
+    margin: 0.5vw;
+}
+
+#notes {
+    font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
+    font-weight: 400;
+    color: var(--body-text);
+    text-decoration: none;
+    transition: 0.2s filter linear;
+    margin: 0 25vw 0 25vw;
+}
+
+.night-mode #notes {
+    color: var(--dark-body-text);
 }

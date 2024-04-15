@@ -1,7 +1,7 @@
-import { generateMatrixShell } from "./generate-matrix.js";
+import { generateMatrixShell, selectCell, gradientMap, userSelectedCells } from "./generate-matrix.js";
 import fillMatrix from "./fill-matrix.js";
 
-export function startLevel(level, n, m, allowedProperties, goal, optimalSolution) {
+export function startLevel(level, n, m, allowedProperties, goal, optimalSolution, notes) {
     window.open("./matrix-builder-game.html", "_self", "height=10");
     document.cookie = `level=${level};`;
     document.cookie = `n=${n};`;
@@ -9,6 +9,7 @@ export function startLevel(level, n, m, allowedProperties, goal, optimalSolution
     document.cookie = `allowedProperties=${JSON.stringify(allowedProperties)};`;
     document.cookie = `goal=${goal};`;
     document.cookie = `optimalSolution=${optimalSolution};`;
+    document.cookie = `notes=${notes};`;
 }
 
 document.addEventListener("readystatechange", () => {
@@ -25,7 +26,7 @@ document.addEventListener("readystatechange", () => {
 
     document.getElementById("goal").src = getCookieValue("goal");
     const optimalSolution = parseInt(getCookieValue("optimalSolution"));
-    var currentSolution = 0;
+    document.getElementById("notes").innerHTML = getCookieValue("notes");
 
     // set checkboxes
     document.getElementById("commute").checked = allowedProperties["commute"];
@@ -46,7 +47,7 @@ function checkSolution(rows, columns, optimalSolution) {
 
     var solutionSVGData = table.innerHTML;
     var solutionSVGDataSanitized = solutionSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
-    console.log(solutionSVGDataSanitized);
+    // solutionSVGDataSanitized = solutionSVGDataSanitized.replace(/><\/rect>/gm, "/>"); // convert ending tags to self-closing tags
 
     fetch(document.getElementById("goal").src)
         .then(response => response.text())
@@ -54,16 +55,22 @@ function checkSolution(rows, columns, optimalSolution) {
             const parsed = new DOMParser().parseFromString(text, 'text/html');
             var goalSVGData = parsed.querySelector('svg').innerHTML;
             var goalSVGDataSanitized = goalSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
+            goalSVGDataSanitized = goalSVGDataSanitized.match(/.+(?:<\/rect>)/gm)[0]; // remove any junk after document element
 
-            if (solutionSVGDataSanitized == goalSVGDataSanitized) {
-                if (currentSolution == optimalSolution) {
+            if (solutionSVGDataSanitized === goalSVGDataSanitized) {
+                if (userSelectedCells.length == optimalSolution) {
                     alert("You have found an optimal solution!");
                 } else {
                     alert("You have found a solution, but it is not optimal.");
                 }
             } else {
                 alert("Your solution is incorrect. Try again!");
+                var temp = userSelectedCells.map(e => ({x: e.dataset.x, y: e.dataset.y}));
                 generateMatrixShell(rows, columns);
+                for (let i = 0; i < temp.length; i++) {
+                    selectCell(document.querySelector(`rect[data-x="${temp[i].x}"][data-y="${temp[i].y}"]`), gradientMap);
+                }
+                document.querySelector("#info-popup").classList.add("hidden");
             }
         });
 }

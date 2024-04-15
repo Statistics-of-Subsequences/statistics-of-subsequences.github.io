@@ -28,9 +28,10 @@ window.addEventListener("DOMContentLoaded", () => {
             var allowedProperties = levelsData[level].allowedProperties;
             var goal = "../res/graphics/level-" + level + ".svg";
             var optimalSolution = levelsData[level].optimalSolution;
+            var notes = levelsData[level].notes;
 
             // start the level
-                startLevel(level, n, m, allowedProperties, goal, optimalSolution);
+                startLevel(level, n, m, allowedProperties, goal, optimalSolution, notes);
         });
     });
 });

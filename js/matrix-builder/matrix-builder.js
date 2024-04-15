@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
-    // document.querySelector("#download-matrix").onclick = downloadSVG;
+    document.querySelector("#download-matrix").onclick = downloadSVG;
 
     window.onresize = () => {
         const rows = Math.pow(2, parseInt(mBox.value));

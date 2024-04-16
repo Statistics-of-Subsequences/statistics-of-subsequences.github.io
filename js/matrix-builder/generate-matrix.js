@@ -56,7 +56,7 @@ export function generateMatrixShell(rows, columns) {
 export function selectCell(cell, gradientMap) {
     // if cell is not white, then set it to white
     if (cell.ariaSelected === "true") {
-        cell.setAttributeNS(null, "fill", "white");
+        cell.setAttributeNS(null, "fill", "#FFFFFF");
         cell.dataset.length = "Unknown";
         cell.dataset.derivation = "Not Derived Yet";
         userSelectedCells = userSelectedCells.filter(e => e !== cell);

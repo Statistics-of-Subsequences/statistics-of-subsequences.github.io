@@ -9,7 +9,7 @@
     --bright-accent-dull: #aca9c5;
 }
 
-:root .night-mode {
+:root body.night-mode {
     --body-text: #f2f4fc;
     --sub-text: #B1B2BB;
     --body-background: #282D3E;
@@ -33,6 +33,7 @@
 html {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -75,7 +76,7 @@ p, a, label, td, th, b, button, caption {
     font-weight: 400;
     color: var(--body-text);
     text-decoration: none;
-    transition: 0.2s filter linear;
+    transition: 0.2s linear filter;
 }
 
 .center {
@@ -101,27 +102,21 @@ p, a, label, td, th, b, button, caption {
 #back-button {
     background-color: transparent;
     border: none;
-    aspect-ratio: 1/1;
+    width: min-content;
     height: 100%;
     fill: var(--body-text);
-    transition: 0.2s linear background-color, 0.2s linear filter;
+    padding: 0 2vw;
     margin-right: 1vw;
+    display: flex;
+    justify-content: center;
 }
 #back-button svg {
-    width: 2.5vw;
+    width: max(4vw, 4vh);
     aspect-ratio: 1/1;
-}
-#back-button:hover {
-    background-color: #00000022;
-    filter: brightness(80%);
-}
-.night-mode #back-button:hover {
-    background-color: #77777722;
-    filter: brightness(130%);
 }
 
 ::-webkit-scrollbar {
-    background-color: var(--body-background);
+    background-color: var(--header-background);
 }
 ::-webkit-scrollbar-button:increment,
 ::-webkit-scrollbar-button:decrement {
@@ -134,8 +129,12 @@ p, a, label, td, th, b, button, caption {
     border: 3px solid transparent;
     background-clip: content-box;
 }
-.night-mode ::-webkit-scrollbar-thumb {
+body.night-mode ::-webkit-scrollbar-thumb {
     background-color: #CCCCCC;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: var(--body-background);
 }
 
 .text-spacing>*:first-child {
@@ -149,7 +148,25 @@ p, a, label, td, th, b, button, caption {
 .hoverable:hover {
     backdrop-filter: brightness(80%);
 }
-.night-mode .hoverable:hover {
+body.night-mode .hoverable:hover {
+    backdrop-filter: brightness(130%);
+}
+
+.fancy-button {
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    transition: 0.2s linear filter;
+}
+.fancy-button:hover {
+    filter: brightness(80%);
+}
+body.night-mode .fancy-button:hover {    
+    filter: brightness(130%);
+}
+
+body:not(.night-mode) #sun-wrapper {
+    backdrop-filter: brightness(80%);
+}
+body.night-mode #moon-wrapper {
     backdrop-filter: brightness(130%);
 }
 
@@ -163,13 +180,12 @@ p, a, label, td, th, b, button, caption {
         grid-template-columns: 90% 10%;
         box-shadow: inset 0 -5vh 2vh #00000033;
     }
-    .night-mode header {
+    body.night-mode header {
         box-shadow: inset 0 -5vh 2vh #00000077;
     }
     
     #header-title {
         width: 100%;
-        padding-left: 2vw;
         box-sizing: border-box;
     }
     
@@ -207,11 +223,10 @@ p, a, label, td, th, b, button, caption {
         aspect-ratio: 1/1;
         max-height: 100%;
     }
-    body:not(.night-mode) #sun-wrapper {
-        backdrop-filter: brightness(80%);
-    }
-    body.night-mode #moon-wrapper {
-        backdrop-filter: brightness(130%);
+
+    #header-title {
+        display: flex;
+        flex-direction: row;
     }
 }
 
@@ -225,7 +240,7 @@ p, a, label, td, th, b, button, caption {
         flex-direction: column;
         box-shadow: inset 0 -5vh 2vh #00000033;
     }
-    .night-mode header {
+    body.night-mode header {
         box-shadow: inset 0 -5vh 2vh #00000077;
     }
     
@@ -269,5 +284,20 @@ p, a, label, td, th, b, button, caption {
         aspect-ratio: 1/1;
         max-width: 50%;
         padding: 2vw 0;
+    }
+
+    #header-title {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #back-button {
+        width: 100%;
+        padding: 1vh 0;
+        border-bottom: 1px solid var(--accent);
+    }
+
+    h1 {
+        margin-top: 0;
     }
 }

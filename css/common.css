@@ -251,6 +251,11 @@ body.night-mode #moon-wrapper {
         text-align: center;
         box-sizing: border-box;
     }
+
+    #header-title-text {
+        padding-left: 5vw;
+        padding-right: 5vw;
+    }
     
     #header-about {
         margin: 0;

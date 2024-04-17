@@ -1,7 +1,9 @@
 main {
     padding-top: 1vh;
     display: grid;
-    grid-template-columns: 70% 30%;
+    overflow: auto;
+    flex-grow: 1;
+    height: 100%;
 }
 
 .two-margin {
@@ -14,22 +16,6 @@ main {
     border: none;
     border-radius: 1vw;
     color: var(--body-text);
-    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
-    transition: 0.2s linear filter;
-}
-
-.night-mode #fill-matrix,
-.night-mode #clear-matrix {
-    color: var(--dark-body-text);
-    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
-}
-
-button:hover {
-    filter: brightness(70%);
-}
-
-.night-mode button:hover {
-    filter: brightness(130%);
 }
 
 .table-wrapper {
@@ -65,6 +51,9 @@ button:hover {
 
 #property-wrapper {
     align-items: end;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #table-wrapper {
@@ -97,15 +86,11 @@ button:hover {
     top: 0;
     left: 0;
     background-color: var(--header-background);
-    opacity: 90%;
+    opacity: 80%;
     width: 110%;
     height: 100%;
-    z-index: -1;
+    z-index: -2;
     clip-path: polygon(100% 0, 100% 100%, 10% 100%, 0 50%, 10% 0);
-}
-
-.night-mode #info-bg, .night-mode #info-bg-pointer {
-    background-color: var(--dark-header-background);
 }
 
 #info-data {
@@ -131,4 +116,30 @@ h5 {
 
 input:not(:disabled), select, button, #table rect {
     cursor: pointer;
+}
+
+@media all and (min-width: 601px) {
+    #table {
+        margin-bottom: min(10vh, 40px);
+    }
+
+    main {
+        grid-template-columns: 70% 30%;
+    }
+}
+
+@media all and (max-width: 600px) {
+    #table {
+        margin-left: min(50vw, 25ch);
+        margin-right: min(50vw, 25ch);
+    }
+
+    main {
+        grid-template-rows: max-content max-content;
+    }
+
+    #property-wrapper {
+        align-items: center;
+        margin-bottom: 5vh;
+    }
 }

@@ -179,6 +179,7 @@ body.night-mode #moon-wrapper {
         display: grid;
         grid-template-columns: 90% 10%;
         box-shadow: inset 0 -5vh 2vh #00000033;
+        z-index: 1000;
     }
     body.night-mode header {
         box-shadow: inset 0 -5vh 2vh #00000077;
@@ -239,6 +240,7 @@ body.night-mode #moon-wrapper {
         display: flex;
         flex-direction: column;
         box-shadow: inset 0 -5vh 2vh #00000033;
+        z-index: 1000;
     }
     body.night-mode header {
         box-shadow: inset 0 -5vh 2vh #00000077;

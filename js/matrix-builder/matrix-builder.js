@@ -1,4 +1,5 @@
-import { generateMatrixShell } from "./generate-matrix.js";
+import { generateMatrixShell, showPopup } from "./generate-matrix.js";
+import fillMatrix from "./fill-matrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     document.cookie = "page=2;";
@@ -12,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
-    document.querySelector("#download-matrix").onclick = downloadSVG;
 
     window.onresize = () => {
         const rows = Math.pow(2, parseInt(mBox.value));
@@ -32,5 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
             e.setAttributeNS(null, "width", cellSize);
             e.setAttributeNS(null, "height", cellSize);
         });
+    };
+
+    const popup = document.querySelector("#info-popup");
+    document.querySelector("main").onscroll = () => {
+        if(!popup.classList.contains("hidden")) {
+            showPopup();
+        }
     };
 });

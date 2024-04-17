@@ -2,6 +2,7 @@ export default function fillMatrix(rows, columns) {
     let queue = [];
     for (let cell of document.querySelector("#table").querySelectorAll("rect[aria-selected=true]")) {
         queue.push(cell);
+        cell.ariaSelected = false;
     }
     
     const applyCommutative = document.querySelector("#commute").checked;
@@ -14,6 +15,8 @@ export default function fillMatrix(rows, columns) {
     while (queue.length > 0) {
         // get the row and column of the cell
         let currentCell = queue.shift();
+        currentCell.dataset.calculated = "true";
+
         let row = parseInt(currentCell.dataset.x) + 1;
         let column = parseInt(currentCell.dataset.y) + 1;
         

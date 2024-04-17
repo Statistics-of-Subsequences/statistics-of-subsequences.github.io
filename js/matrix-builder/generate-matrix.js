@@ -1,6 +1,5 @@
 import { generateLCSMemo } from "../LCS.js";
 import generateGradient from "../gradient.js";
-import fillMatrix from "./fill-matrix.js";
 
 export function generateMatrixShell(rows, columns) {
     const n = Math.log2(columns);
@@ -32,13 +31,18 @@ export function generateMatrixShell(rows, columns) {
             entry.setAttributeNS(null, "stroke", "#000000");
             entry.dataset.length = "Unknown";
             entry.dataset.derivation = "Not Derived Yet";
+            entry.dataset.calculated = "false";
             entry.dataset.x = j;
             entry.dataset.y = i;
             entry.dataset.xString = j.toString(2).padStart(xLength, "0");
             entry.dataset.yString = i.toString(2).padStart(yLength, "0");
             entry.ariaSelected = false;
 
-            entry.addEventListener("click", () => selectCell(entry, gradientMap));
+            entry.addEventListener("click", () => {
+                if(entry.dataset.calculated === "false") {
+                    selectCell(entry, gradientMap);
+                }
+            });
             entry.addEventListener("mouseover", () => showPopup(entry));
             entry.addEventListener("mouseout", () => popup.classList.add("hidden"));
             
@@ -67,56 +71,22 @@ function selectCell(cell, gradientMap) {
     showPopup(cell);
 }
 
-function showPopup(cell) {
+let popupCell;
+export function showPopup(cell) {
     const popup = document.querySelector("#info-popup");
+    popupCell = cell || popupCell;
 
-    popup.querySelector("#lcs-string-1").textContent = cell.dataset.xString;
-    popup.querySelector("#lcs-string-2").textContent = cell.dataset.yString;
-    popup.querySelector("#lcs-length").textContent = cell.dataset.length;
-    popup.querySelector("#lcs-derivation").innerHTML = cell.dataset.derivation;
-
-    const iconPos = cell.getBoundingClientRect();
-    popup.classList.remove("hidden");
-    popup.style.left = iconPos.x + iconPos.width + "px";
-    popup.style.top = (iconPos.y + iconPos.height / 2 - popup.getBoundingClientRect().height / 2) + "px";
-}
-
-async function downloadSVG() {
-    const n = document.getElementById("n").value;
-    const m = document.getElementById("m").value;
-    const matrix = document.querySelector("#table-svg");
-
-    if(window.showSaveFilePicker) {
-        try {
-            let types = [ {description: "SVG File", accept: { "image/svg+xml": [".svg"]}} ];
-
-            const file = await window.showSaveFilePicker({ 
-                startIn: "downloads", 
-                suggestedName: `matrix${n}x${m}`, 
-                types: types,
-                excludeAcceptAllOption: true
-            });
-            
-            let fileData, writer;
-            const fileParts = file.name.split(".");
-            switch(fileParts[fileParts.length - 1]) {
-                case "svg":
-                    fileData = new XMLSerializer().serializeToString(matrix);
-
-                    writer = await file.createWritable();
-                    await writer.write(fileData);
-                    await writer.close();
-                    break;
-                default:
-                    throw "Attempting to save to unknown file type.";
-            }
-        } catch(err) {
-            console.error(err.name, err.message);
-        }
-    } else {
-        const svgData = new XMLSerializer().serializeToString(matrix);
-        const svgBlob = new Blob([svgData], { type: "image/svg+xml" });
-        const svgUrl = URL.createObjectURL(svgBlob);
-        window.open(svgUrl);
+    if(popupCell) {
+        popup.querySelector("#lcs-string-1").textContent = popupCell.dataset.xString;
+        popup.querySelector("#lcs-string-2").textContent = popupCell.dataset.yString;
+        popup.querySelector("#lcs-length").textContent = popupCell.dataset.length;
+        popup.querySelector("#lcs-derivation").innerHTML = popupCell.dataset.derivation;
     }
+
+    const iconPos = popupCell.getBoundingClientRect();
+
+    popup.classList.remove("hidden");
+    const popupDim = popup.getBoundingClientRect();
+    popup.style.left = iconPos.x + iconPos.width + "px";
+    popup.style.top = (iconPos.y + iconPos.height / 2 - popupDim.height / 2) + "px";
 }

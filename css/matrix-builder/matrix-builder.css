@@ -27,8 +27,6 @@ main {
 }
 
 #table {
-    margin-left: auto;
-    margin-right: auto;
     margin-top: 3vh;
     overflow: visible;
 }
@@ -50,7 +48,7 @@ main {
 }
 
 #property-wrapper {
-    align-items: end;
+    align-items: start;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -118,6 +116,11 @@ input:not(:disabled), select, button, #table rect {
     cursor: pointer;
 }
 
+#start-game {
+    padding: max(1vw, 1vh);
+    margin-top: max(4vw, 4vh);
+}
+
 @media all and (min-width: 601px) {
     #table {
         margin-bottom: min(10vh, 40px);
@@ -130,8 +133,8 @@ input:not(:disabled), select, button, #table rect {
 
 @media all and (max-width: 600px) {
     #table {
-        margin-left: min(50vw, 25ch);
-        margin-right: min(50vw, 25ch);
+        margin-left: max(30vw, 20ch);
+        margin-right: max(30vw, 20ch);
     }
 
     main {

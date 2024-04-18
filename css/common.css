@@ -2,7 +2,7 @@
     --body-text: #171a26;
     --sub-text: #4b4b50;
     --body-background: #eef0f6;
-    --header-background: #c3ccf5;
+    --header-background: #d8defc;
     --accent: #8a85ad;
     --bright-accent-shine: #d5d4db;
     --bright-accent: #c5c4d0;
@@ -223,6 +223,7 @@ body.night-mode #moon-wrapper {
         width: 60%;
         aspect-ratio: 1/1;
         max-height: 100%;
+        padding: 2vw 0;
     }
 
     #header-title {

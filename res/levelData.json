@@ -1,5 +1,5 @@
-{
-    "1": {
+[
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -13,7 +13,7 @@
         "goal": "res/graphics/level-1.svg",
         "optimalSolution": 4
     },
-    "2": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -27,7 +27,7 @@
         "goal": "res/graphics/level-2.svg",
         "optimalSolution": 4
     },
-    "3": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -41,7 +41,7 @@
         "goal": "res/graphics/level-3.svg",
         "optimalSolution": 3
     },
-    "4": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -55,7 +55,7 @@
         "goal": "res/graphics/level-4.svg",
         "optimalSolution": 3
     },
-    "5": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -69,7 +69,7 @@
         "goal": "res/graphics/level-5.svg",
         "optimalSolution": 3
     },
-    "6": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -83,7 +83,7 @@
         "goal": "res/graphics/level-6.svg",
         "optimalSolution": 3
     },
-    "7": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -97,7 +97,7 @@
         "goal": "res/graphics/level-7.svg",
         "optimalSolution": 7
     },
-    "8": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -111,7 +111,7 @@
         "goal": "res/graphics/level-8.svg",
         "optimalSolution": 8
     },
-    "9": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -125,7 +125,7 @@
         "goal": "res/graphics/level-9.svg",
         "optimalSolution": 3
     },
-    "10": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -139,7 +139,7 @@
         "goal": "res/graphics/level-10.svg",
         "optimalSolution": 3
     },
-    "11": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -153,7 +153,7 @@
         "goal": "res/graphics/level-11.svg",
         "optimalSolution": 7
     },
-    "12": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -167,7 +167,7 @@
         "goal": "res/graphics/level-12.svg",
         "optimalSolution": 6
     },
-    "13": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -181,7 +181,7 @@
         "goal": "res/graphics/level-13.svg",
         "optimalSolution": 4
     },
-    "14": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -195,7 +195,7 @@
         "goal": "res/graphics/level-14.svg",
         "optimalSolution": 6
     },
-    "15": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -209,7 +209,7 @@
         "goal": "res/graphics/level-15.svg",
         "optimalSolution": 6
     },
-    "16": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -223,7 +223,7 @@
         "goal": "res/graphics/level-16.svg",
         "optimalSolution": 5
     },
-    "17": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -237,7 +237,7 @@
         "goal": "res/graphics/level-17.svg",
         "optimalSolution": 5
     },
-    "18": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -251,7 +251,7 @@
         "goal": "res/graphics/level-18.svg",
         "optimalSolution": 7
     },
-    "19": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -265,7 +265,7 @@
         "goal": "res/graphics/level-19.svg",
         "optimalSolution": 5
     },
-    "20": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -279,7 +279,7 @@
         "goal": "res/graphics/level-20.svg",
         "optimalSolution": 6
     },
-    "21": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -293,4 +293,4 @@
         "goal": "res/graphics/level-21.svg",
         "optimalSolution": 6
     }
-}
+]

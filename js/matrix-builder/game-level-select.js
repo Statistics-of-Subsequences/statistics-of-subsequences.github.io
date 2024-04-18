@@ -1,36 +1,27 @@
-import { startLevel } from "./game.js";
-var levelsData;
+import getSortedLevels from "./level.js";
 
-async function loadJSON() {
-    // load json file asynchronusly
-    const jsonResponse = await fetch("../res/levelData.json");
-    var json = await jsonResponse.text();
-    // return the <value> of the json file
-    levelsData = JSON.parse(json);
-}
-
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     document.cookie = "page=2;";
-    levelsData = loadJSON();
     
-    // get all buttons
-    let buttons = document.querySelectorAll("#level-select button");
+    document.querySelector("#back-button").onclick = () => {
+        window.open("./matrix-builder.html", "_self");
+    };
 
-    // attach event listener to each button
-    buttons.forEach(button => {
-        button.addEventListener("click", function () {
-            // get the level number
-            let level = parseInt(this.innerHTML.split(" ")[1]);
+    let levelData = await getSortedLevels();
 
-            // get the level data
-            var n = levelsData[level].n;
-            var m = levelsData[level].m;
-            var allowedProperties = levelsData[level].allowedProperties;
-            var goal = "../res/graphics/level-" + level + ".svg";
-            var optimalSolution = levelsData[level].optimalSolution;
+    const difficultyColumns = document.querySelectorAll(".level-column");
+    
+    for(let i = 0; i < levelData.length; i++) {
+        const button = document.createElement("button");
+        button.classList.add("fancy-button");
+        button.innerText = `Level ${i + 1}`;
 
-            // start the level
-                startLevel(level, n, m, allowedProperties, goal, optimalSolution);
-        });
-    });
+        button.onclick = () => {
+            window.open(`../../matrix-builder-game.html?id=${i}`, "_self");
+        };
+
+        const column = Math.max(1, Math.min(5, levelData[i].difficulty)) - 1;
+        difficultyColumns[column].appendChild(button);
+        difficultyColumns[column].classList.remove("hidden");
+    }
 });

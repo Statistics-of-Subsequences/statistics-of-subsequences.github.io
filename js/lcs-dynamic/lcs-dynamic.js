@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded",  () => {
     document.cookie = "page=1;";
     const string1 = document.querySelector("#x-box");
     const string2 = document.querySelector("#y-box");
+    string1.value = "";
+    string2.value = "";
+    
     string1.oninput = async () => {
         setString1Path([]);
         setString2Path([]);

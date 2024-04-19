@@ -2,10 +2,8 @@ import { startLevel } from "./game.js";
 var levelsData;
 
 async function loadJSON() {
-    // load json file asynchronusly
     const jsonResponse = await fetch("../res/levelData.json");
     var json = await jsonResponse.text();
-    // return the <value> of the json file
     levelsData = JSON.parse(json);
 }
 
@@ -29,6 +27,10 @@ window.addEventListener("DOMContentLoaded", () => {
             var goal = "../res/graphics/level-" + level + ".svg";
             var optimalSolution = levelsData[level].optimalSolution;
             var notes = levelsData[level].notes;
+
+            if (notes == "") {
+                notes = "No notes for this level.";
+            }
 
             // start the level
                 startLevel(level, n, m, allowedProperties, goal, optimalSolution, notes);

@@ -76,7 +76,6 @@ main {
     padding: 1vh;
 }
 #dimension-button, #lcs-button, #operation-button {
-    cursor: pointer;
     border: none;
     margin: 1vh auto;
     width: 20ch;
@@ -85,14 +84,14 @@ main {
     background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
     transition: 0.2s linear filter;
 }
-:is(#dimension-button, #lcs-button, #operation-button):hover {
+:is(#dimension-button:not(:disabled), #lcs-button:not(:disabled), #operation-button:not(:disabled)):hover {
+    cursor: pointer;
     filter: brightness(70%);
 }
 .night-mode :is(#dimension-button, #lcs-button, #operation-button) {
     background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
 }
-.night-mode 
-:is(#dimension-button, #lcs-button, #operation-button):hover {
+.night-mode :is(#dimension-button:not(:disabled), #lcs-button:not(:disabled), #operation-button:not(:disabled)):hover {
     filter: brightness(130%);
 }
 

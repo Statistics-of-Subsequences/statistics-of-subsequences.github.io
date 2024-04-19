@@ -70,11 +70,9 @@ function toggleCameraType() {
 
     if (cameraStatus.time >= 1.0) {
         cameraStatus.isPerspective = false;
-        camera.isPerspective = false;
         cameraStatus.isAnimating = false;
     } else if (cameraStatus.time <= -1.0) {
         cameraStatus.isPerspective = true;
-        camera.isPerspective = true;
         cameraStatus.isAnimating = false;
     }
 }
@@ -118,8 +116,14 @@ window.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('window');
     registerController(canvas);
 
+    document.querySelector("#n").value = 1;;
+    document.querySelector("#m").value = 1;
+
     const xBox = document.querySelector("#x-box");
     const yBox = document.querySelector("#y-box");
+    xBox.value = "";
+    yBox.value = "";
+    
     const lcsButton = document.querySelector("#lcs-button");
     xBox.onbeforeinput = e => {
         // clear if not a binary string
@@ -135,6 +139,7 @@ window.addEventListener("DOMContentLoaded", () => {
         // clear if not a binary string
         if(e.data && !e.data.match("[01]+")) {
             e.preventDefault();
+            alert("Strings x and y must only contain the characters '0' and '1'");
             return;
         }
         
@@ -258,8 +263,8 @@ window.addEventListener("DOMContentLoaded", () => {
     gl.useProgram(shaderProgram);
 
     // Initialize models, lighting, and camera
-    let { updatedPerspective, updatedTime, updatedAlpha } = changeMatrix();
     initializeMLC(width, height, aspectRatio);
+    let { updatedPerspective, updatedTime, updatedAlpha } = changeMatrix();
 
     // initialize uniforms
     const n = parseInt(document.querySelector("#n").value);
@@ -301,8 +306,9 @@ window.addEventListener("DOMContentLoaded", () => {
         if(yBox.value.length > newMaxY) {
             yBox.value = yBox.value.slice(0, newMaxY);
         }
-        changeMatrix();
+        let { updatedPerspective, updatedTime, updatedAlpha } = changeMatrix();
         initializeMLC(width, height, aspectRatio);
+        cameraStatus = { isAnimating: false, isPerspective: updatedPerspective, time: updatedTime, alpha: updatedAlpha };
     }
     document.querySelector("#lcs-button").onclick = changeLCS;
     document.querySelector("#reset").onclick = resetCamera;

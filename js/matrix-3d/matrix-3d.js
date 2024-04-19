@@ -277,18 +277,20 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     // Set up DOM Bindings
-    const renderer = document.querySelector("#window");
-    renderer.onresize = () => {
-        const wrapper = document.querySelector("#window-wrapper").getBoundingClientRect();
-        canvas.width = wrapper.width;
-        canvas.height = wrapper.height;
+    window.onresize = () => {
+        const wrapperBounds = wrapper.getBoundingClientRect();
+        canvas.width = wrapperBounds.width;
+        canvas.height = wrapperBounds.height;
         gl.viewport(0, 0, canvas.width, canvas.height);
         registerController(canvas);
         initializeMLC(canvas.width, canvas.height, canvas.width / canvas.height);
         render();
     };
-    renderer.addEventListener("mouseover", _ => {
-        renderer.focus();
+    canvas.addEventListener("mouseover", () => {
+        canvas.focus();
+    });
+    canvas.addEventListener("mouseleave", () => {
+        window.focus();
     });
 
     const controlDisplay = document.querySelector("#control-overlay");

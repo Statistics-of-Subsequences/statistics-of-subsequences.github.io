@@ -1,4 +1,4 @@
-import { generateMatrixShell } from "./generate-matrix.js";
+import { generateMatrixShell, showPopup } from "./generate-matrix.js";
 import fillMatrix from "./fill-matrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
-    // document.querySelector("#download-matrix").onclick = () => downloadSVG();
 
     const propertiesDisplay = document.querySelector("#properties-overlay");
     document.querySelector("#properties-info").onclick = () => propertiesDisplay.classList.remove("hidden");
@@ -40,19 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
             e.setAttributeNS(null, "height", cellSize);
         });
     };
+
+    const popup = document.querySelector("#info-popup");
+    document.querySelector("main").onscroll = () => {
+        if(!popup.classList.contains("hidden")) {
+            showPopup();
+        }
+    };
 });
-
-function downloadSVG() {
-    var matrix = document.querySelector("#table");
-
-    var svgData = new XMLSerializer().serializeToString(matrix);
-    var svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-    var svgUrl = URL.createObjectURL(svgBlob);
-    var downloadLink = document.createElement("a");
-    var fileName = prompt("Enter file name", "level-");
-    downloadLink.href = svgUrl;
-    downloadLink.download = fileName + ".svg";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-}

@@ -1,50 +1,9 @@
 main {
     padding-top: 1vh;
     display: grid;
-    grid-template-columns: 70% 30%;
-}
-
-.two-margin {
-    margin-right: 2vw;
-}
-
-#fill-matrix,
-#clear-matrix {
-    padding: 1vw;
-    border: none;
-    border-radius: 1vw;
-    color: var(--body-text);
-    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
-    transition: 0.2s linear filter;
-}
-
-.night-mode #fill-matrix,
-.night-mode #clear-matrix {
-    color: var(--dark-body-text);
-    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
-}
-
-button:hover {
-    filter: brightness(70%);
-}
-
-.night-mode button:hover {
-    filter: brightness(130%);
-}
-
-.table-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+    overflow: auto;
+    flex-grow: 1;
     height: 100%;
-}
-
-#table {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 3vh;
-    overflow: visible;
 }
 
 #property-options {
@@ -63,175 +22,33 @@ button:hover {
     justify-content: center;
 }
 
-#property-wrapper {
-    align-items: end;
+#start-game {
+    padding: max(1vw, 1vh);
+    margin-top: max(4vw, 4vh);
 }
 
-#table-wrapper {
-    width: 90%;
-    height: 90%;
-    justify-content: center;
+@media all and (min-width: 601px) {
+    #table {
+        margin-bottom: min(10vh, 40px);
+    }
+
+    main {
+        grid-template-columns: 70% 30%;
+    }
 }
 
-#table-caption {
-    margin: 0;
-    padding: 1vh 0;
-}
+@media all and (max-width: 600px) {
+    #table {
+        margin-left: max(30vw, 20ch);
+        margin-right: max(30vw, 20ch);
+    }
 
-#table rect {
-    border: 1px solid #000000;
-    border-collapse: collapse;
-    transition: 0.2s linear filter;
-}
-#table rect:hover {
-    filter: invert(40%);
-}
+    main {
+        grid-template-rows: max-content max-content;
+    }
 
-#info-popup {
-    position: fixed;
-    width: max-content;
-}
-
-#info-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: var(--header-background);
-    opacity: 90%;
-    width: 110%;
-    height: 100%;
-    z-index: -1;
-    clip-path: polygon(100% 0, 100% 100%, 10% 100%, 0 50%, 10% 0);
-}
-
-.night-mode #info-bg, .night-mode #info-bg-pointer {
-    background-color: var(--dark-header-background);
-}
-
-#info-data {
-    width: max-content;
-    height: max-content;
-    padding: 1vw;
-    z-index: 1;
-    margin-left: 10%;
-}
-
-h5 {
-    padding: 0;
-    margin: 0;
-}
-
-#lcs-display {
-    margin-top: 0;
-}
-
-#lcs-derivation {
-    text-align: center;
-}
-
-input:not(:disabled), select, button, #table rect {
-    cursor: pointer;
-}
-
-#properties-info {
-    width: 3vh;
-    height: 3vh;
-    border-radius: 100%;
-    border: none;
-    background-image: linear-gradient(var(--accent), var(--body-background));
-    filter: brightness(100%) opacity(80%);
-    transition: 0.2s filter linear;
-    cursor: pointer;
-}
-
-.night-mode #properties-info {
-    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
-}
-
-#properties-info:hover {
-    filter: brightness(130%) opacity(80%);
-}
-
-#info-icon {
-    width: 100%;
-    height: 100%;
-    fill: var(--body-text);
-}
-
-.night-mode #info-icon {
-    fill: var(--dark-body-text);
-}
-
-#properties-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 10;
-    background-color: #000000E0;
-}
-
-#properties-box {
-    width: max-content;
-    height: max-content;
-    padding-bottom: 2vh;
-    padding-left: 5vw;
-    padding-right: 5vw;
-    background-color: var(--body-background);
-    border-radius: 3vh;
-    position: relative;
-}
-
-.night-mode #properties-box {
-    background-color: var(--dark-body-background);
-}
-
-#close-x {
-    width: 2vw;
-    height: 2vw;
-    position: absolute;
-    top: -2vw;
-    right: -2vw;
-    fill: #FFFFFF;
-    cursor: pointer;
-}
-
-.night-mode #close-x {
-    fill: #FFFFFF;
-}
-
-#properties-text *:not(h2, #further-info) {
-    text-align: center;
-    border: 2px solid var(--accent);
-}
-
-#properties-text td {
-    padding: 1vh;
-}
-
-.night-mode #properties-text *:not(h2, #further-info) {
-    border: 2px solid var(--dark-accent);
-}
-
-#further-info {
-    text-align: center;
-    margin-top: 1vh;
-    border: none;
-    font-family: "Arvo", "TimesNewRoman", "Times New Roman", "Times", "Baskerville", "Georgia", serif;
-    font-weight: 400;
-    color: var(--body-text);
-    text-decoration: none;
-}
-
-.night-mode #further-info {
-    color: var(--dark-body-text);
-}
-
-#puzzle-button {
-    color: darkblue;
-}
-
-.night-mode #puzzle-button {
-    color: lightsteelblue;
+    #property-wrapper {
+        align-items: center;
+        margin-bottom: 5vh;
+    }
 }

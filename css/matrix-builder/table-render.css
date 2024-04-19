@@ -1,0 +1,158 @@
+main {
+    position: relative;
+}
+
+#info-popup {
+    position: fixed;
+    width: max-content;
+}
+
+#info-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--header-background);
+    opacity: 80%;
+    width: 110%;
+    height: 100%;
+    z-index: -2;
+    clip-path: polygon(100% 0, 100% 100%, 10% 100%, 0 50%, 10% 0);
+}
+
+#info-data {
+    width: max-content;
+    height: max-content;
+    padding: 1vw;
+    z-index: 1;
+    margin-left: 10%;
+}
+
+h5 {
+    padding: 0;
+    margin: 0;
+}
+
+#lcs-display {
+    margin-top: 0;
+}
+
+#lcs-derivation {
+    text-align: center;
+}
+
+#table-wrapper {
+    width: 90%;
+    height: 90%;
+    justify-content: center;
+}
+
+#table-caption {
+    margin: 0;
+    padding: 1vh 0;
+}
+
+#table rect {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    transition: 0.2s linear filter;
+}
+#table rect:hover {
+    filter: invert(40%);
+}
+
+input:not(:disabled), select, button, #table rect {
+    cursor: pointer;
+}
+
+#fill-matrix,
+#clear-matrix {
+    padding: 1vw;
+    border: none;
+    border-radius: 1vw;
+    color: var(--body-text);
+}
+
+.table-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#table {
+    margin-top: 3vh;
+}
+
+#property-wrapper {
+    align-items: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.two-margin {
+    margin-right: 2vw;
+}
+
+#properties-info {
+    width: max(3vh, 3vw);
+    aspect-ratio: 1/1;
+    border: none;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1vw;
+}
+
+#properties-info svg {
+    fill: var(--body-text);
+}
+
+#properties-overlay:not(.hidden) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #00000099;
+}
+
+#properties-box {
+    width: 70%;
+    max-height: 80%;
+    height: max-content;
+    overflow-y: auto;
+    padding: 2vw;
+    background-color: var(--body-background);
+}
+
+#close-x {
+    width: max(3vw, 3vh);
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: max(2vh, 2vw);
+    right: max(2vh, 2vw);
+    fill: #FFFFFF;
+}
+
+#properties-box td:first-child {
+    text-align: right;
+    font-weight: bolder;
+}
+#properties-box td:last-child {
+    color: var(--sub-text);
+}
+
+#further-info a {
+    color: #8181ff;
+    text-decoration: underline;
+}
+
+@media all and (max-width: 600px) {
+    #property-wrapper {
+        align-items: center;
+        margin-bottom: 5vh;
+    }
+}

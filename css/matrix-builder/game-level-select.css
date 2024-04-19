@@ -1,0 +1,47 @@
+main {
+    overflow-y: auto;
+}
+
+.level-column:not(.hidden) {
+    width: max-content;
+    height: max-content;
+    display: grid;
+    grid-template-columns: 80px 80px 80px;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.level-column h2 {
+    grid-column: span 3;
+    text-align: center;
+    width: 100%;
+}
+
+.level-column button {
+    aspect-ratio: 1/1;
+    height: 80px;
+    border: none;
+    border-radius: 25%;
+    margin: 0 auto;
+}
+
+@media all and (min-width: 601px) {
+    #level-select {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        justify-content: space-evenly;
+        padding-bottom: 5vh;
+    }
+}
+
+@media all and (max-width: 600px) {
+    #level-select {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 5vh;
+        align-items: center;
+    }
+}

@@ -1,27 +1,10 @@
 #generate {
     padding: 1vw;
     border: none;
-    border-radius: 2vh;
-    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
-    transition: 0.2s linear filter;
-}
-#generate:hover {
-    filter: brightness(70%);
-}
-.night-mode #generate {
-    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
-}
-.night-mode #generate:hover {
-    filter: brightness(130%);
 }
 
 main.v-center>* {
     margin-top: 1vh;
-}
-
-#chart-center {
-    width: 80%;
-    height: 80%;
 }
 
 #chart {
@@ -29,11 +12,7 @@ main.v-center>* {
     width: 100%;
     border: 3px solid var(--accent);
     border-radius: 0.5vw;
-    padding: 1vw;
     box-sizing: border-box;
-}
-.night-mode #chart {
-    border: 3px solid var(--dark-accent);
 }
 
 #sort-selection, #filter-options {
@@ -48,6 +27,11 @@ main.v-center>* {
     margin-right: 2vw;
 }
 
+#generate-wrapper {
+    justify-content: flex-end;
+    height: 100%;
+}
+
 #generate-wrapper>:first-child {
     margin-bottom: 2vh;
 }
@@ -59,4 +43,50 @@ main.v-center>* {
 
 input:not(:disabled), select, button {
     cursor: pointer;
+}
+
+main {
+    overflow-y: auto;
+}
+
+@media all and (min-width: 601px) {
+    #chart-center {
+        max-width: 80%;
+        width: 100%;
+        aspect-ratio: 16/9;
+        margin-bottom: 10vh;
+        margin-top: 2vh;
+    }
+
+    #chart {
+        padding: 1vw;
+    }
+}
+
+@media all and (max-width: 600px) {
+    #options-wrapper {
+        flex-direction: column;
+    }
+
+    #options-wrapper>*:not(:first-child) {
+        margin-top: 2vh;
+        border-top: 3px solid var(--accent);
+    }
+
+    #generate-wrapper {
+        padding-top: 2vh;
+        width: 100%;
+    }
+
+    #chart-center {
+        width: 90%;
+        height: 70vh;
+        min-height: 70vh;
+        margin-top: 2vh;
+        margin-bottom: 2vh;
+    }
+
+    #chart {
+        padding: 1vh;
+    }
 }

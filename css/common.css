@@ -2,25 +2,38 @@
     --body-text: #171a26;
     --sub-text: #4b4b50;
     --body-background: #eef0f6;
-    --header-background: #c3ccf5;
+    --header-background: #d8defc;
     --accent: #8a85ad;
     --bright-accent-shine: #d5d4db;
     --bright-accent: #c5c4d0;
     --bright-accent-dull: #aca9c5;
+}
 
-    --dark-body-text: #f2f4fc;
-    --dark-sub-text: #B1B2BB;
-    --dark-body-background: #282D3E;
-    --dark-header-background: #1B1E2B;
-    --dark-accent: #4a4561;
-    --bright-dark-accent-shine: #69647e;
-    --bright-dark-accent: #59546f;
-    --bright-dark-accent-dull: #4d4864;
+:root body.night-mode {
+    --body-text: #f2f4fc;
+    --sub-text: #c8c8cc;
+    --body-background: #282D3E;
+    --header-background: #1B1E2B;
+    --accent: #4a4561;
+    --bright-accent-shine: #69647e;
+    --bright-accent: #59546f;
+    --bright-accent-dull: #4d4864;
+}
+
+@font-face {
+    font-family: Arvo;
+    src: url("../res/fonts/Arvo-Regular.ttf");
+}
+
+@font-face {
+    font-family: Sarabun;
+    src: url("../res/fonts/Sarabun-Regular.ttf");
 }
 
 html {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -31,25 +44,6 @@ body {
     margin: 0;
     padding: 0;
     border-color: var(--accent);
-}
-body.night-mode {
-    border-color: var(--dark-accent);
-}
-
-header {
-    background-color: var(--header-background);
-    border: 1px solid var(--accent);
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    box-shadow: inset 0 -5vh 2vh #00000033;
-}
-
-.night-mode header {
-    background-color: var(--dark-header-background);
-    border: var(--dark-accent);
-    box-shadow: inset 0 -5vh 2vh #00000077;
 }
 
 .wrapper {
@@ -71,17 +65,10 @@ main {
     background: linear-gradient(90deg, var(--body-background) 0%, var(--body-background) 75%, var(--header-background) 100%);
 }
 
-.night-mode main {
-    background: linear-gradient(90deg, var(--dark-body-background) 0%, var(--dark-body-background) 75%, var(--dark-header-background) 100%);
-}
-
 h1, h2, h3, h4, h5, h6 {
     font-family: "Sarabun", "Century Gothic", "CenturyGothic", "AppleGothic", sans-serif;
     font-weight: 400;
     color: var(--body-text);
-}
-.night-mode :is(h1, h2, h3, h4, h5, h6) {
-    color: var(--dark-body-text);
 }
 
 p, a, label, td, th, b, button, caption {
@@ -89,11 +76,7 @@ p, a, label, td, th, b, button, caption {
     font-weight: 400;
     color: var(--body-text);
     text-decoration: none;
-    transition: 0.2s filter linear;
-}
-
-.night-mode :is(p, a, label, td, th, b, button, caption) {
-    color: var(--dark-body-text);
+    transition: 0.2s linear filter;
 }
 
 .center {
@@ -112,86 +95,28 @@ p, a, label, td, th, b, button, caption {
     display: none;
 }
 
-#day-theme {
-    position: absolute;
-    top: 1vh;
-    right: 1vw;
-    width: 2vw;
-    aspect-ratio: 1/1;
-    border: none;
-    border-radius: 50%;
-    transition: 0.2s filter linear;
-    background-image: linear-gradient(var(--body-background), var(--accent));
-    fill: var(--body-text);
-    padding: 0.5vw;
-    cursor: pointer;
-}
-#day-theme:hover {
-    filter: brightness(80%);
-}
-.night-mode #day-theme {
-    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
-    fill: var(--dark-body-text);
-}
-.night-mode #day-theme:hover {
-    filter: brightness(130%);
-}
-
-#sun-icon {
-    display: none;
-    width: 100%;
-    height: 100%;
-}
-.night-mode #sun-icon {
-    display: block;
-}
-
-#moon-icon {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-.night-mode #moon-icon {
-    display: none;
-}
-
 .sub-text {
     color: var(--sub-text);
-}
-.night-mode .sub-text {
-    color: var(--dark-sub-text);
 }
 
 #back-button {
     background-color: transparent;
     border: none;
-    aspect-ratio: 1/1;
+    width: min-content;
     height: 100%;
     fill: var(--body-text);
-    transition: 0.2s linear background-color, 0.2s linear filter;
+    padding: 0 2vw;
     margin-right: 1vw;
+    display: flex;
+    justify-content: center;
 }
 #back-button svg {
-    width: 2.5vw;
+    width: max(4vw, 4vh);
     aspect-ratio: 1/1;
-}
-#back-button:hover {
-    background-color: #00000022;
-    filter: brightness(80%);
-}
-.night-mode #back-button {
-    fill: var(--dark-body-text);
-}
-.night-mode #back-button:hover {
-    background-color: #77777722;
-    filter: brightness(130%);
 }
 
 ::-webkit-scrollbar {
-    background-color: var(--body-background);
-}
-.night-mode ::-webkit-scrollbar {
-    background-color: var(--dark-body-background);
+    background-color: var(--header-background);
 }
 ::-webkit-scrollbar-button:increment,
 ::-webkit-scrollbar-button:decrement {
@@ -204,11 +129,183 @@ p, a, label, td, th, b, button, caption {
     border: 3px solid transparent;
     background-clip: content-box;
 }
-.night-mode ::-webkit-scrollbar-thumb {
+body.night-mode ::-webkit-scrollbar-thumb {
     background-color: #CCCCCC;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: var(--body-background);
 }
 
 .text-spacing>*:first-child {
     padding-right: 0.5vw;
     width: max-content;
+}
+
+.hoverable {
+    transition: 0.2s linear backdrop-filter;
+}
+.hoverable:hover {
+    backdrop-filter: brightness(80%);
+}
+body.night-mode .hoverable:hover {
+    backdrop-filter: brightness(130%);
+}
+
+.fancy-button {
+    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
+    transition: 0.2s linear filter;
+}
+.fancy-button:hover {
+    filter: brightness(80%);
+}
+body.night-mode .fancy-button:hover {    
+    filter: brightness(130%);
+}
+
+body:not(.night-mode) #sun-wrapper {
+    backdrop-filter: brightness(80%);
+}
+body.night-mode #moon-wrapper {
+    backdrop-filter: brightness(130%);
+}
+
+@media all and (min-width: 601px) {
+    header {
+        background-color: var(--header-background);
+        border-bottom: 1px solid var(--accent);
+        width: 100%;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 90% 10%;
+        box-shadow: inset 0 -5vh 2vh #00000033;
+        z-index: 1000;
+    }
+    body.night-mode header {
+        box-shadow: inset 0 -5vh 2vh #00000077;
+    }
+    
+    #header-title {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    #header-about {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        display: grid;
+        grid-template-rows: 50% 50%;
+        grid-template-columns: 50% 50%;
+    }
+    #about-link {
+        grid-column: span 2;
+    }
+
+    #header-about {
+        border-left: 1px solid var(--accent);
+    }
+    #header-about>* {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #sun-wrapper, #moon-wrapper {
+        border-top: 1px solid var(--accent);
+    }
+    
+    #sun-icon, #moon-icon {
+        fill: var(--body-text);
+        width: 60%;
+        aspect-ratio: 1/1;
+        max-height: 100%;
+        padding: 2vw 0;
+    }
+
+    #header-title {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+@media all and (max-width: 600px) {
+    header {
+        background-color: var(--header-background);
+        border: 1px solid var(--accent);
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        box-shadow: inset 0 -5vh 2vh #00000033;
+        z-index: 1000;
+    }
+    body.night-mode header {
+        box-shadow: inset 0 -5vh 2vh #00000077;
+    }
+    
+    #header-title {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    #header-title-text {
+        padding-left: 5vw;
+        padding-right: 5vw;
+    }
+    
+    #header-about {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 50% 25% 25%;
+    }
+
+    #about-link {
+        padding: 3vw;
+        box-sizing: border-box;
+    }
+
+    #header-about {
+        border-top: 1px solid var(--accent);
+    }
+    #header-about>* {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #sun-wrapper {
+        border-left: 1px solid var(--accent);
+    }
+    
+    #sun-icon, #moon-icon {
+        fill: var(--body-text);
+        aspect-ratio: 1/1;
+        max-width: 50%;
+        padding: 2vw 0;
+    }
+
+    #header-title {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #back-button {
+        width: 100%;
+        padding: 1vh 0;
+        border-bottom: 1px solid var(--accent);
+    }
+
+    h1 {
+        margin-top: 0;
+    }
 }

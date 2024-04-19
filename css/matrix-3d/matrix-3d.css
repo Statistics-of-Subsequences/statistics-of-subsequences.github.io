@@ -15,23 +15,19 @@ main {
     position: absolute;
     top: 2vh;
     right: 2vh;
-    width: 4vh;
-    height: 4vh;
+    width: 3.5vw;
+    height: 3.5vw;
     border-radius: 100%;
     border: none;
-    background-image: linear-gradient(var(--dark-accent), var(--dark-body-background));
-    filter: brightness(100%) opacity(80%);
-    transition: 0.2s filter linear;
+    background-color: var(--accent);
+    fill: var(--body-text);
+    filter: opacity(80%);
     cursor: pointer;
-}
-#computer-controls:hover {
-    filter: brightness(130%) opacity(80%);
 }
 
 #info-icon {
     width: 100%;
     height: 100%;
-    fill: var(--dark-body-text);
 }
 
 #window-wrapper {
@@ -57,9 +53,6 @@ main {
     border-radius: 2vw;
     box-sizing: border-box;
 }
-.night-mode :is(#matrix-dimensions, #legend, #lcs-information, #edit-operations) {
-    border-color: var(--dark-accent);
-}
 
 #nm-spacer {
     display: flex;
@@ -81,18 +74,6 @@ main {
     width: 20ch;
     padding-top: 1vh;
     padding-bottom: 1vh;
-    background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
-    transition: 0.2s linear filter;
-}
-:is(#dimension-button:not(:disabled), #lcs-button:not(:disabled), #operation-button:not(:disabled)):hover {
-    cursor: pointer;
-    filter: brightness(70%);
-}
-.night-mode :is(#dimension-button, #lcs-button, #operation-button) {
-    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
-}
-.night-mode :is(#dimension-button:not(:disabled), #lcs-button:not(:disabled), #operation-button:not(:disabled)):hover {
-    filter: brightness(130%);
 }
 
 #edit-operations {
@@ -143,14 +124,11 @@ main {
 #gradient-ticks > span:nth-child(2n + 2) {
     border-left: 3px solid var(--body-text);
 }
-.night-mode #gradient-ticks > span:nth-child(2n + 2) {
-    border-left: 3px solid var(--dark-body-text);
-}
 
 #gradient-ticks, #gradient-labels {
     width: 100%;
     height: 2vh;
-    margin-bottom: 0.6vh;
+    margin-bottom: min(2vw, 10px);
 }
 #gradient-labels p {
     width: 100%;
@@ -195,12 +173,6 @@ main {
     width: 20vw;
     height: 5vh;
     border: none;
-    color: var(--dark-body-text);
-    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
-    transition: 0.2s linear filter;
-}
-#mobile-controls button:hover {
-    filter: brightness(130%);
 }
 
 input:not(:disabled, :read-only), select {
@@ -213,7 +185,7 @@ input:not(:disabled, :read-only), select {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 10;
+    z-index: 100000;
     background-color: #000000E0;
 }
 
@@ -226,9 +198,6 @@ input:not(:disabled, :read-only), select {
     background-color: var(--body-background);
     border-radius: 3vh;
     position: relative;
-}
-.night-mode #control-box {
-    background-color: var(--dark-body-background);
 }
 
 #close-x {
@@ -258,10 +227,6 @@ input:not(:disabled, :read-only), select {
     padding: 1vh;
 }
 
-.night-mode #control-text-mobile *:not(h2), .night-mode #control-text-pc *:not(h2) {
-    border: 2px solid var(--dark-accent);
-}
-
 #lcs-information, #edit-operations {
     justify-content: flex-start;
 }
@@ -275,9 +240,6 @@ input:not(:disabled, :read-only), select {
     padding: 1vw;
     background-image: linear-gradient(to bottom right, var(--bright-accent-shine), var(--bright-accent), var(--bright-accent-dull));
 }
-.night-mode #lcs-set p, .night-mode #new-set p {
-    background-image: linear-gradient(to bottom right, var(--bright-dark-accent-shine), var(--bright-dark-accent), var(--bright-dark-accent-dull));
-}
 
 .no-padding {
     padding: 0;
@@ -290,6 +252,13 @@ input:not(:disabled, :read-only), select {
 #edit-selection {
     align-items: end;
 }
+
+#edit-selection>div {
+    display: flex;
+    justify-content: right;
+    text-align: end;
+}
+
 #edit-operation-results {
     grid-column: span 2;
 }
@@ -310,4 +279,67 @@ input:not(:disabled, :read-only), select {
 .perm-label {
     width: 6ch;
     text-align: center;
+}
+
+@media all and (min-height: 50.00001vw) {
+    #mobile-controls {
+        display: none;
+    }
+
+    #mobile-vertical-warning {
+        display: none;
+    }
+}
+
+@media all and (max-height: 50vw) {
+    #mobile-controls {
+        display: flex;
+    }
+
+    #mobile-vertical-warning {
+        display: none;
+    }
+}
+
+@media all and (max-width: 600px) and (max-width: 50vh) {
+    main {
+        overflow: hidden;
+    }
+
+    #mobile-vertical-warning {
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--body-background);
+    }
+
+    #mobile-warning-box {
+        width: 80%;
+        max-height: 80%;
+        aspect-ratio: 1/1;
+        background-color: var(--header-background);
+        display: grid;
+        grid-template-rows: 40% 30% 30%;
+        text-align: center;
+        padding: 3vh;
+    }
+
+    #warning-icon {
+        max-width: 50%;
+        height: 100%;
+        aspect-ratio: 1/1;
+        margin: 0 auto;
+        fill: none;
+    }
+    #warning-icon circle {
+        fill: #DDDD22;
+    }
+    #warning-icon path {
+        stroke: #DDDD22;
+        stroke-width: 2;
+        stroke-linejoin: "round";
+    }
 }

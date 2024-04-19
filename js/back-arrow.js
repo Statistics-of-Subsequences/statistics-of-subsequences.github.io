@@ -2,7 +2,7 @@ function attachBackArrow() {
     const backButton = document.createElement("div");
     backButton.id = "back-button";
     backButton.tabIndex = 0;
-    backButton.classList.add("center");
+    backButton.classList.add("hoverable");
 
     const backArrowSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     backArrowSVG.setAttributeNS(null, "viewBox", "0 0 38.273 38.273");
@@ -12,7 +12,7 @@ function attachBackArrow() {
 
     backArrowSVG.appendChild(backArrowPath);
     backButton.appendChild(backArrowSVG);
-    document.querySelector("header").prepend(backButton);
+    document.querySelector("#header-title").prepend(backButton);
 
     backButton.onclick = () => {
         window.open("./index.html", "_self");

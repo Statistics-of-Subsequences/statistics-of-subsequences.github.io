@@ -1,5 +1,5 @@
-{
-    "1": {
+[
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -13,7 +13,7 @@
         "optimalSolution": 4,
         "notes": "This matrix represents every pairing of binary strings of lengths n and m. Can you recreate the given matrix using the allowed properties?<br/><br/>The Commutative Property states that the lengthof the LCS of two strings x and y is the same as the LCS of y and x."
     },
-    "2": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -27,7 +27,7 @@
         "optimalSolution": 4,
         "notes": "The Complement Property states that the length of the LCS of two strings x and y is the same as the length of the LCS of the complement of x and the complement of y."
     },
-    "3": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -41,7 +41,7 @@
         "optimalSolution": 3,
         "notes": "The Reverse Property states that the length of the LCS of two strings x and y is the same as the length of the LCS of the reverse of x and y."
     },
-    "4": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -55,7 +55,7 @@
         "optimalSolution": 3,
         "notes": "The Slice-Prefix Property states that if the strings x and y have a common prefix, then the length of the LCS of x and y is the same as the length of the LCS of the x and y with their prefix replaced with an equally long new prefix string."
     },
-    "5": {
+    {
         "n": 2,
         "m": 2,
         "allowedProperties": {
@@ -69,7 +69,7 @@
         "optimalSolution": 3,
         "notes": "The Slice-Suffix Property states that if the strings x and y have a common suffix, then the length of the LCS of x and y is the same as the length of the LCS of the x and y with their suffix replaced with an equally long new suffix string."
     },
-    "6": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -83,7 +83,7 @@
         "optimalSolution": 3,
         "notes": "The Slice-Circumfix Property states that if the strings x and y have both a common prefix and suffix, then the length of the LCS of x and y is the same as the length of the LCS of the x and y with their prefix and suffix replaced with equally long new prefix and suffix strings."
     },
-    "7": {
+    {
         "n": 3,
         "m": 2,
         "allowedProperties": {
@@ -97,7 +97,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "8": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -111,7 +111,7 @@
         "optimalSolution": 7,
         "notes": ""
     },
-    "9": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -125,7 +125,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "10": {
+    {
         "n": 4,
         "m": 3,
         "allowedProperties": {
@@ -139,7 +139,7 @@
         "optimalSolution": 4,
         "notes": "Mediocrity is unacceptable. Being optimal is of upmost importance."
     },
-    "11": {
+    {
         "n": 2,
         "m": 3,
         "allowedProperties": {
@@ -153,7 +153,7 @@
         "optimalSolution": 3,
         "notes": ""
     },
-    "12": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -167,7 +167,7 @@
         "optimalSolution": 7,
         "notes": ""
     },
-    "13": {
+    {
         "n": 4,
         "m": 3,
         "allowedProperties": {
@@ -181,7 +181,7 @@
         "optimalSolution": 3,
         "notes": ""
     },
-    "14": {
+    {
         "n": 3,
         "m": 4,
         "allowedProperties": {
@@ -195,7 +195,7 @@
         "optimalSolution": 3,
         "notes": ""
     },
-    "15": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -209,7 +209,7 @@
         "optimalSolution": 2,
         "notes": ""
     },
-    "16": {
+    {
         "n": 5,
         "m": 3,
         "allowedProperties": {
@@ -223,7 +223,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "17": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -237,7 +237,7 @@
         "optimalSolution": 3,
         "notes": ""
     },
-    "18": {
+    {
         "n": 5,
         "m": 5,
         "allowedProperties": {
@@ -251,7 +251,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "19": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -265,7 +265,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "20": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -279,7 +279,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "21": {
+    {
         "n": 2,
         "m": 5,
         "allowedProperties": {
@@ -293,7 +293,7 @@
         "optimalSolution": 2,
         "notes": ""
     },
-    "22": {
+    {
         "n": 2,
         "m": 3,
         "allowedProperties": {
@@ -307,7 +307,7 @@
         "optimalSolution": 5,
         "notes": "Things are about to get harder. Hopefully you have a good memory."
     },
-    "23": {
+    {
         "n": 5,
         "m": 5,
         "allowedProperties": {
@@ -321,7 +321,7 @@
         "optimalSolution": 5,
         "notes": ""
     },
-    "24": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -335,7 +335,7 @@
         "optimalSolution": 4,
         "notes": ""
     },
-    "25": {
+    {
         "n": 3,
         "m": 2,
         "allowedProperties": {
@@ -349,7 +349,7 @@
         "optimalSolution": 3,
         "notes": ""
     },
-    "26": {
+    {
         "n": 2,
         "m": 4,
         "allowedProperties": {
@@ -363,7 +363,7 @@
         "optimalSolution": 5,
         "notes": ""
     },
-    "27": {
+    {
         "n": 5,
         "m": 4,
         "allowedProperties": {
@@ -377,7 +377,7 @@
         "optimalSolution": 10,
         "notes": ""
     },
-    "28": {
+    {
         "n": 3,
         "m": 3,
         "allowedProperties": {
@@ -391,7 +391,7 @@
         "optimalSolution": 5,
         "notes": ""
     },
-    "29": {
+    {
         "n": 4,
         "m": 4,
         "allowedProperties": {
@@ -405,7 +405,7 @@
         "optimalSolution": 23,
         "notes": ""
     },
-    "30": {
+    {
         "n": 5,
         "m": 5,
         "allowedProperties": {
@@ -419,4 +419,4 @@
         "optimalSolution": 83,
         "notes": "Good Luck!"
     }
-}
+]

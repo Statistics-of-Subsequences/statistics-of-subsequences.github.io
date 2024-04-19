@@ -1,127 +1,219 @@
-import { generateMatrixShell, selectCell, gradientMap, userSelectedCells } from "./generate-matrix.js";
+import { generateMatrixShell, showPopup } from "./generate-matrix.js";
 import fillMatrix from "./fill-matrix.js";
+import getSortedLevels from "./level.js";
 
-let level = 0;
+const count = 200;
+const defaults = {
+    origin: { y: 0.7 }
+};
 
-export function startLevel(level, n, m, allowedProperties, goal, optimalSolution, notes) {
-    window.open("./matrix-builder-game.html", "_self", "height=10");
-    document.cookie = `level=${level};`;
-    document.cookie = `n=${n};`;
-    document.cookie = `m=${m};`;
-    document.cookie = `allowedProperties=${JSON.stringify(allowedProperties)};`;
-    document.cookie = `goal=${goal};`;
-    document.cookie = `optimalSolution=${optimalSolution};`;
-    document.cookie = `notes=${notes};`;
+function fire(particleRatio, opts) {
+    confetti({
+        ...defaults,
+        ...opts,
+        particleCount: Math.floor(count * particleRatio)
+    });
 }
 
-document.addEventListener("readystatechange", () => {
-    level = parseInt(getCookieValue("level"));
-    var n = parseInt(getCookieValue("n"));
-    var m = parseInt(getCookieValue("m"));
-    const rows = Math.pow(2, m);
-    const columns = Math.pow(2, n);
+async function loadLevelData(level, levelNum) {
+    console.log(level);
+    const rows = Math.pow(2, level.m);
+    const columns = Math.pow(2, level.n);
 
-    const allowedProperties = {};
-    getCookieValue("allowedProperties").split(",").forEach(e => {
-        allowedProperties[e.replace(/[^0-9a-z:]/gi, '').split(":")[0]] = e.replace(/[^0-9a-z:]/gi, '').split(":")[1] == "true";
-    });
-
-    document.getElementById("goal").src = getCookieValue("goal");
-    const optimalSolution = parseInt(getCookieValue("optimalSolution"));
-
-    var notes = getCookieValue("notes");
-    if (notes == "No notes for this level.") {
-        document.getElementById("notes").innerHTML = "";
-    } else {
-        document.getElementById("notes").innerHTML = notes;
-    }
+    const goalHTML = document.querySelector("#goal");
+    goalHTML.innerHTML = await fetch(`../../res/graphics/level-${levelNum + 1}.svg`).then(r => r.text());
+    const optimalSolution = level.optimalSolution;
 
     // set checkboxes
-    document.getElementById("commute").checked = allowedProperties["commute"];
-    document.getElementById("complement").checked = allowedProperties["complement"];
-    document.getElementById("reverse").checked = allowedProperties["reverse"];
-    document.getElementById("slice-prefix").checked = allowedProperties["slicePrefix"];
-    document.getElementById("slice-suffix").checked = allowedProperties["sliceSuffix"];
-    document.getElementById("slice-circumfix").checked = allowedProperties["sliceCircumfix"];
+    document.querySelector("#commute").checked = level.allowedProperties.commute;
+    document.querySelector("#complement").checked = level.allowedProperties.complement;
+    document.querySelector("#reverse").checked = level.allowedProperties.reverse;
+    document.querySelector("#slice-prefix").checked = level.allowedProperties.slicePrefix;
+    document.querySelector("#slice-suffix").checked = level.allowedProperties.sliceSuffix;
+    document.querySelector("#slice-circumfix").checked = level.allowedProperties.sliceCircumfix;
 
     generateMatrixShell(rows, columns);
 
+    const matrix = document.querySelector("#table");
+    const goalSVG = goalHTML.querySelector("svg");
+    const goalEntries = goalSVG.querySelectorAll("rect");
+
+    goalSVG.removeAttribute("id");
+    const matrixWidth = matrix.getAttributeNS(null, "width");
+    const matrixHeight = matrix.getAttributeNS(null, "height");
+    const cellDim = matrix.querySelector("rect").getAttributeNS(null, "width");
+    goalSVG.setAttributeNS(null, "width", matrixWidth);
+    goalSVG.setAttributeNS(null, "height", matrixHeight);
+    for (let row = rows - 1; row >= 0; row--) {
+        for (let col = 0; col < columns; col++) {
+            const index = (rows - row - 1) * columns + col;
+            goalEntries[index].setAttributeNS(null, "x", col * cellDim);
+            goalEntries[index].setAttributeNS(null, "y", row * cellDim);
+            goalEntries[index].setAttributeNS(null, "width", cellDim);
+            goalEntries[index].setAttributeNS(null, "height", cellDim);
+
+            const fill = goalEntries[index].getAttributeNS(null, "fill");
+            goalEntries[index].dataset.length = (fill === "white" || fill === "#FFFFFF") ? "Unknown" : "Known";
+            goalEntries[index].removeAttribute("data-derivation");
+            goalEntries[index].removeAttribute("aria-selected");
+        }
+    }
+
     document.querySelector("#fill-matrix").onclick = () => checkSolution(rows, columns, optimalSolution);
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(rows, columns);
-});
+}
 
 function checkSolution(rows, columns, optimalSolution) {
     fillMatrix(rows, columns);
 
-    var solutionSVGData = table.innerHTML;
-    var solutionSVGDataSanitized = solutionSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
+    const matrix = document.querySelector("#table");
+    const matrixEntries = matrix.querySelectorAll("rect");
 
-    fetch(document.getElementById("goal").src)
-        .then(response => response.text())
-        .then(text => {
-            const parsed = new DOMParser().parseFromString(text, 'text/html');
-            var goalSVGData = parsed.querySelector('svg').innerHTML;
-            var goalSVGDataSanitized = goalSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
-            goalSVGDataSanitized = goalSVGDataSanitized.match(/.+(?:<\/rect>)/gm)[0]; // remove any junk after document element
+    const goalHTML = document.querySelector("#goal");
+    const goalSVG = goalHTML.querySelector("svg");
+    const goalEntries = goalSVG.querySelectorAll("rect");
+    let count = 0;
 
-            var userSelectedCellCoordinates = userSelectedCells.map(e => ({ x: e.dataset.x, y: e.dataset.y }));
-            if (solutionSVGDataSanitized === goalSVGDataSanitized) {
-                if (userSelectedCells.length == optimalSolution) {
-                    alert("You have found an optimal solution!");
-                } else {
-                    alert("You have found a solution, but it is not optimal.");
-                    if (level >= 13) {
-                        generateMatrixShell(rows, columns);
-                        for (let i = 0; i < userSelectedCellCoordinates.length; i++) {
-                            selectCell(document.querySelector(`rect[data-x="${userSelectedCellCoordinates[i].x}"][data-y="${userSelectedCellCoordinates[i].y}"]`), gradientMap);
-                        }
-                        document.querySelector("#info-popup").classList.add("hidden");
-                    }
-                }
-            } else {
-                alert("Your solution is incorrect. Try again!");
-                generateMatrixShell(rows, columns);
-                if (level < 22) {
-                    for (let i = 0; i < userSelectedCellCoordinates.length; i++) {
-                        selectCell(document.querySelector(`rect[data-x="${userSelectedCellCoordinates[i].x}"][data-y="${userSelectedCellCoordinates[i].y}"]`), gradientMap);
-                    }
-                    document.querySelector("#info-popup").classList.add("hidden");
-                }
+    for (let row = rows - 1; row >= 0; row--) {
+        for (let col = 0; col < columns; col++) {
+            const index = (rows - row - 1) * columns + col;
+            const tableUnknown = matrixEntries[index].dataset.length === "Unknown";
+            const goalUnknown = goalEntries[index].dataset.length === "Unknown";
+            if (tableUnknown !== goalUnknown) {
+                displayResult("incorrect");
+                return;
             }
-        });
-}
 
-function attachBackArrow() {
-    const backButton = document.createElement("div");
-    backButton.id = "back-button";
-    backButton.tabIndex = 0;
-    backButton.classList.add("center");
-
-    const backArrowSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    backArrowSVG.setAttributeNS(null, "viewBox", "0 0 38.273 38.273");
-
-    const backArrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    backArrowPath.setAttributeNS(null, "d", "M 20.621 10.484 L 20.621 5.84 C 20.621 5.032 20.163 4.292 19.44 3.931 C 18.718 3.572 17.851 3.652 17.204 4.137 L 7.718 11.284 C 7.041 11.576 6.601 11.954 6.317 12.342 L 0.849 16.461 C 0.312 16.866 -0.003 17.501 0 18.173 C 0.002 18.846 0.322 19.478 0.862 19.879 L 17.217 32.012 C 17.863 32.492 18.727 32.566 19.447 32.203 C 20.167 31.841 20.621 31.103 20.621 30.298 L 20.621 24.781 C 20.634 24.781 20.646 24.781 20.659 24.781 C 24.501 24.781 31.346 25.87 34.025 33.167 C 34.336 34.013 35.141 34.564 36.026 34.564 C 36.105 34.564 36.183 34.56 36.262 34.551 C 37.237 34.443 38.013 33.683 38.142 32.711 C 38.194 32.317 39.35 23.029 33.681 16.481 C 30.621 12.948 26.235 10.935 20.621 10.484 Z");
-
-    backArrowSVG.appendChild(backArrowPath);
-    backButton.appendChild(backArrowSVG);
-    document.querySelector("header").prepend(backButton);
-
-    backButton.onclick = () => {
-        if (window.location.pathname.includes("level-select")) {
-            window.open("./matrix-builder.html", "_self");
-        } else {
-            window.open("./matrix-builder-game-level-select.html", "_self");
+            if (matrixEntries[index].dataset.derivation === "User Selected") {
+                count += 1;
+            }
         }
-    };
-}
+    }
 
-function getCookieValue(name) {
-    const regex = new RegExp(`(^| )${name}=([^;]+)`)
-    const match = document.cookie.match(regex)
-    if (match) {
-        return match[2]
+    if (count <= optimalSolution) {
+        displayResult("optimal", optimalSolution);
+    } else {
+        displayResult("suboptimal", optimalSolution, count);
+        generateMatrixShell(rows, columns);
     }
 }
 
-window.addEventListener("DOMContentLoaded", attachBackArrow);
+function displayResult(type, optimal, count) {
+    switch (type) {
+        case "incorrect":
+            document.querySelector("#result-heading").textContent = "Not Quite...";
+            document.querySelector("#result-body").textContent = "Click/Tap anywhere to try again";
+            break;
+        case "optimal":
+            document.querySelector("#result-heading").textContent = "Great Job!";
+            document.querySelector("#result-body").innerHTML = `You reached our goal score of ${optimal} squares!.<br />Click/Tap anywhere to close`;
+            break;
+        case "suboptimal":
+            document.querySelector("#result-heading").textContent = "Good, but...";
+            document.querySelector("#result-body").innerHTML = `You can do better!<br />Your solution has ${count} squares selected.<br />The best solution has at most ${optimal} squares selected.<br />Click/tap anywhere to try again`;
+            break;
+        default:
+            console.error("Unexpected result type provided.");
+    }
+    const resultPopup = document.querySelector("#result-popup");
+    resultPopup.onclick = null;
+    resultPopup.classList.remove("hidden");
+
+    if (type === "optimal") {
+        fire(0.25, {
+            spread: 26,
+            startVelocity: 55,
+        });
+        fire(0.2, {
+            spread: 60,
+        });
+        fire(0.35, {
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8
+        });
+        fire(0.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2
+        });
+        fire(0.1, {
+            spread: 120,
+            startVelocity: 45,
+        });
+    }
+
+    // Prevent accidentally closing
+    setTimeout(() => {
+        resultPopup.onclick = () => resultPopup.classList.add("hidden");
+    }, 200);
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+    document.querySelector("#back-button").onclick = () => {
+        window.open("../../matrix-builder-game-level-select.html", "_self");
+    };
+
+    const params = new URLSearchParams(document.location.search);
+    const levelNum = parseInt(params.get("id"));
+
+    const levels = await getSortedLevels();
+    const level = levels[parseInt(levelNum)];
+
+    let subHeaderString = `Level ${levelNum + 1}`;
+    if(level.notes) {
+        subHeaderString += " - ";
+        subHeaderString += level.notes;
+    }
+    document.querySelector("#game-label").innerHTML = subHeaderString;
+
+    window.onresize = () => {
+        const rows = Math.pow(2, level.m);
+        const columns = Math.pow(2, level.n);
+
+        const cellWidth = -6.75 * level.m + 51.75;
+        const cellHeight = -6.75 * level.n + 51.75;
+        const cellSize = Math.min(cellWidth, cellHeight);
+
+        const tableMatrix = document.querySelector("#table");
+        tableMatrix.setAttributeNS(null, "width", columns * cellSize);
+        tableMatrix.setAttributeNS(null, "height", rows * cellSize);
+
+        tableMatrix.querySelectorAll("rect").forEach(e => {
+            e.setAttributeNS(null, "x", cellSize * e.dataset.x);
+            e.setAttributeNS(null, "y", cellSize * (rows - e.dataset.y - 1)); // reverses so that (00..., 00...) is in bottom left instead of top left
+            e.setAttributeNS(null, "width", cellSize);
+            e.setAttributeNS(null, "height", cellSize);
+        });
+
+        const goalHTML = document.querySelector("#goal");
+        const goalSVG = goalHTML.querySelector("svg");
+        const matrixWidth = tableMatrix.getAttributeNS(null, "width");
+        const matrixHeight = tableMatrix.getAttributeNS(null, "height");
+        goalSVG.setAttributeNS(null, "width", matrixWidth);
+        goalSVG.setAttributeNS(null, "height", matrixHeight);
+        const svgRows = goalSVG.querySelectorAll("g");
+        for (let row = 0; row < svgRows.length; row++) {
+            const rowCols = svgRows[row].querySelectorAll("rect");
+            for (let col = 0; col < rowCols.length; col++) {
+                rowCols[col].setAttributeNS(null, "x", col * matrixHeight / rows);
+                rowCols[col].setAttributeNS(null, "y", row * matrixWidth / columns);
+                rowCols[col].setAttributeNS(null, "width", matrixWidth / rows);
+                rowCols[col].setAttributeNS(null, "height", matrixHeight / columns);
+
+                const fill = rowCols[col].getAttributeNS(null, "fill");
+                rowCols[col].dataset.length = (fill === "white" || fill === "#FFFFFF") ? "Unknown" : "Known";
+            }
+        }
+    };
+
+    const popup = document.querySelector("#info-popup");
+    document.querySelector("main").onscroll = () => {
+        if (!popup.classList.contains("hidden")) {
+            showPopup();
+        }
+    };
+
+    loadLevelData(level, levelNum);
+});

@@ -5,7 +5,7 @@ import { setString1Path, setString2Path, animateBacktracking } from './table-ani
 const cellWidth = 50;
 const cellHeight = 50;
 
-document.addEventListener("DOMContentLoaded",  () => {
+document.addEventListener("DOMContentLoaded", () => {
     document.cookie = "page=1;";
     const string1 = document.querySelector("#x-box");
     const string2 = document.querySelector("#y-box");
@@ -35,6 +35,7 @@ function createLCSButtons(string1, string2, memo) {
     if(string1.length > 0 && string2.length > 0 && memo[string1.length - 1][string2.length - 1].len > 0) {
         for (let lcs of memo[string1.length - 1][string2.length - 1].lcs) {
             const button = document.createElement("button");
+            button.classList.add("fancy-button");
             button.textContent = lcs;
             button.onclick = () => {
                 displayLCSInformation(string1, string2, lcs);

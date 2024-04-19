@@ -4,7 +4,6 @@ export default async function getSortedLevels() {
         e.difficulty = Object.values(e.allowedProperties).filter(v => v).length;
     });
     levels = levels.sort(v => v.difficulty);
-    levels.reverse();
 
     return levels;
 }

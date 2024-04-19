@@ -1,8 +1,9 @@
-import { generateMatrixShell, showPopup } from "./generate-matrix.js";
+import { generateMatrixShell, showPopup, selectCell, gradientMap, userSelectedCells } from "./generate-matrix.js";
 import fillMatrix from "./fill-matrix.js";
 import getSortedLevels from "./level.js";
 
-const count = 200;
+let count = 200;
+let currentLevel = 0;
 const defaults = {
     origin: { y: 0.7 }
 };
@@ -11,12 +12,12 @@ function fire(particleRatio, opts) {
     confetti({
         ...defaults,
         ...opts,
-        particleCount: Math.floor(count * particleRatio)
+        particleCount: Math.floor(count * Math.ceil(currentLevel / 5) * particleRatio)
     });
 }
 
 async function loadLevelData(level, levelNum) {
-    console.log(level);
+    currentLevel = levelNum + 1;
     const rows = Math.pow(2, level.m);
     const columns = Math.pow(2, level.n);
 
@@ -34,31 +35,6 @@ async function loadLevelData(level, levelNum) {
 
     generateMatrixShell(rows, columns);
 
-    const matrix = document.querySelector("#table");
-    const goalSVG = goalHTML.querySelector("svg");
-    const goalEntries = goalSVG.querySelectorAll("rect");
-
-    goalSVG.removeAttribute("id");
-    const matrixWidth = matrix.getAttributeNS(null, "width");
-    const matrixHeight = matrix.getAttributeNS(null, "height");
-    const cellDim = matrix.querySelector("rect").getAttributeNS(null, "width");
-    goalSVG.setAttributeNS(null, "width", matrixWidth);
-    goalSVG.setAttributeNS(null, "height", matrixHeight);
-    for (let row = rows - 1; row >= 0; row--) {
-        for (let col = 0; col < columns; col++) {
-            const index = (rows - row - 1) * columns + col;
-            goalEntries[index].setAttributeNS(null, "x", col * cellDim);
-            goalEntries[index].setAttributeNS(null, "y", row * cellDim);
-            goalEntries[index].setAttributeNS(null, "width", cellDim);
-            goalEntries[index].setAttributeNS(null, "height", cellDim);
-
-            const fill = goalEntries[index].getAttributeNS(null, "fill");
-            goalEntries[index].dataset.length = (fill === "white" || fill === "#FFFFFF") ? "Unknown" : "Known";
-            goalEntries[index].removeAttribute("data-derivation");
-            goalEntries[index].removeAttribute("aria-selected");
-        }
-    }
-
     document.querySelector("#fill-matrix").onclick = () => checkSolution(rows, columns, optimalSolution);
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(rows, columns);
 }
@@ -66,39 +42,32 @@ async function loadLevelData(level, levelNum) {
 function checkSolution(rows, columns, optimalSolution) {
     fillMatrix(rows, columns);
 
-    const matrix = document.querySelector("#table");
-    const matrixEntries = matrix.querySelectorAll("rect");
+    var solutionSVGData = document.querySelector("#table").innerHTML;
+    var solutionSVGDataSanitized = solutionSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
 
-    const goalHTML = document.querySelector("#goal");
-    const goalSVG = goalHTML.querySelector("svg");
-    const goalEntries = goalSVG.querySelectorAll("rect");
-    let count = 0;
+    fetch(`../../res/graphics/level-${currentLevel}.svg`)
+        .then(response => response.text())
+        .then(text => {
+            const parsed = new DOMParser().parseFromString(text, 'text/html');
+            var goalSVGData = parsed.querySelector('svg').innerHTML;
+            var goalSVGDataSanitized = goalSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
+            goalSVGDataSanitized = goalSVGDataSanitized.match(/.+(?:<\/rect>)/gm)[0]; // remove any junk after document element
 
-    for (let row = rows - 1; row >= 0; row--) {
-        for (let col = 0; col < columns; col++) {
-            const index = (rows - row - 1) * columns + col;
-            const tableUnknown = matrixEntries[index].dataset.length === "Unknown";
-            const goalUnknown = goalEntries[index].dataset.length === "Unknown";
-            if (tableUnknown !== goalUnknown) {
-                displayResult("incorrect");
-                return;
+            var userSelectedCellCoordinates = userSelectedCells.map(e => ({ x: e.dataset.x, y: e.dataset.y }));
+            if (solutionSVGDataSanitized === goalSVGDataSanitized) {
+                if (userSelectedCells.length == optimalSolution) {
+                    displayResult("optimal", optimalSolution);
+                } else {
+                    displayResult("suboptimal", optimalSolution, userSelectedCellCoordinates, rows, columns);
+                    
+                }
+            } else {
+                displayResult("incorrect", optimalSolution, userSelectedCellCoordinates, rows, columns);
             }
-
-            if (matrixEntries[index].dataset.derivation === "User Selected") {
-                count += 1;
-            }
-        }
-    }
-
-    if (count <= optimalSolution) {
-        displayResult("optimal", optimalSolution);
-    } else {
-        displayResult("suboptimal", optimalSolution, count);
-        generateMatrixShell(rows, columns);
-    }
+        });
 }
 
-function displayResult(type, optimal, count) {
+function displayResult(type, optimal, userSelectedCellCoordinates, rows, columns) {
     switch (type) {
         case "incorrect":
             document.querySelector("#result-heading").textContent = "Not Quite...";
@@ -110,7 +79,7 @@ function displayResult(type, optimal, count) {
             break;
         case "suboptimal":
             document.querySelector("#result-heading").textContent = "Good, but...";
-            document.querySelector("#result-body").innerHTML = `You can do better!<br />Your solution has ${count} squares selected.<br />The best solution has at most ${optimal} squares selected.<br />Click/tap anywhere to try again`;
+            document.querySelector("#result-body").innerHTML = `You can do better!<br />Your solution has ${userSelectedCellCoordinates.length} squares selected.<br />The best solution has at most ${optimal} squares selected.<br />Click/tap anywhere to try again`;
             break;
         default:
             console.error("Unexpected result type provided.");
@@ -146,7 +115,26 @@ function displayResult(type, optimal, count) {
 
     // Prevent accidentally closing
     setTimeout(() => {
-        resultPopup.onclick = () => resultPopup.classList.add("hidden");
+        resultPopup.onclick = () => {
+            resultPopup.classList.add("hidden");
+            if (type === 'suboptimal') {
+                if (currentLevel >= 10) {
+                    generateMatrixShell(rows, columns);
+                    for (let i = 0; i < userSelectedCellCoordinates.length; i++) {
+                        selectCell(document.querySelector(`rect[data-x="${userSelectedCellCoordinates[i].x}"][data-y="${userSelectedCellCoordinates[i].y}"]`), gradientMap);
+                    }
+                    document.querySelector("#info-popup").classList.add("hidden");
+                }
+            } else if (type === 'incorrect') {
+                generateMatrixShell(rows, columns);
+                if (currentLevel < 22) {
+                    for (let i = 0; i < userSelectedCellCoordinates.length; i++) {
+                        selectCell(document.querySelector(`rect[data-x="${userSelectedCellCoordinates[i].x}"][data-y="${userSelectedCellCoordinates[i].y}"]`), gradientMap);
+                    }
+                    document.querySelector("#info-popup").classList.add("hidden");
+                }
+            }
+        }
     }, 200);
 }
 
@@ -159,6 +147,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const levelNum = parseInt(params.get("id"));
 
     const levels = await getSortedLevels();
+    console.log(levels);
     const level = levels[parseInt(levelNum)];
 
     let subHeaderString = `Level ${levelNum + 1}`;

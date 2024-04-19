@@ -31,7 +31,6 @@ export default function fillMatrix(rows, columns) {
 
         // slice and concatenation property
         if (applyPrefix || applySuffix || applyCircumfix) {
-            console.log("NOW CHECKING FOR " + currentCell.dataset.xString + " and " + currentCell.dataset.yString);
             let rowBinary = currentCell.dataset.xString;
             let columnBinary = currentCell.dataset.yString;
             

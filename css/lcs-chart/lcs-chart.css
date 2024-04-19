@@ -52,7 +52,7 @@ main {
 @media all and (min-width: 601px) {
     #chart-center {
         max-width: 80%;
-        width: 100%;
+        width: 60%;
         aspect-ratio: 16/9;
         margin-bottom: 10vh;
         margin-top: 2vh;

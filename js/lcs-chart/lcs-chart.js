@@ -8,18 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#generate").onclick = generateDistribution;
 
     const chart = document.querySelector("#chart");
-    window.onresize = async () => {
-        chart.width = chart.getBoundingClientRect().width;
-        if (window.innerWidth > 600 && !lock) {
-            chart.height = chart.width * 9 / 16;
-            lock = window.innerWidth > 600;
-            await refresh();
-        } else if(window.innerWidth <= 600 && lock) {
-            chart.height = window.innerHeight * 0.7;
-            lock = window.innerWidth > 600;
-            await refresh();
-        }
-    };
+    // make chart smaller on load
+    chart.width = chart.getBoundingClientRect().width / 2;
+    chart.height = chart.width * 9 / 16;
+
 
     const complement = document.querySelector("#remove-complement");
     const symm = document.querySelector("#symmetric-sort");

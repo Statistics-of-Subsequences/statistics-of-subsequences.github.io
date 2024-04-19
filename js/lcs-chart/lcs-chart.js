@@ -99,8 +99,8 @@ async function generateDistribution() {
     const data = await fetch("../../res/files/" + fileName).then(r => r.json());
     let stringOccurrences = data.stringOccurrences;
 
-    if(document.querySelector("#remove-max").checked) {
-        stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m));
+    if(document.querySelector("#remove-max-min").checked) {
+        stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m) && v[0].length !== 0);
     }
     if(document.querySelector("#remove-max-1").checked) {
         stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m) - 1);

@@ -15,12 +15,13 @@ function fire(particleRatio, opts) {
     });
 }
 
-async function loadLevelData(level) {
+async function loadLevelData(level, levelNum) {
+    console.log(level);
     const rows = Math.pow(2, level.m);
     const columns = Math.pow(2, level.n);
 
     const goalHTML = document.querySelector("#goal");
-    goalHTML.innerHTML = await fetch(level.goal).then(r => r.text());
+    goalHTML.innerHTML = await fetch(`../../res/graphics/level-${levelNum + 1}.svg`).then(r => r.text());
     const optimalSolution = level.optimalSolution;
 
     // set checkboxes
@@ -35,21 +36,26 @@ async function loadLevelData(level) {
 
     const matrix = document.querySelector("#table");
     const goalSVG = goalHTML.querySelector("svg");
+    const goalEntries = goalSVG.querySelectorAll("rect");
+
+    goalSVG.removeAttribute("id");
     const matrixWidth = matrix.getAttributeNS(null, "width");
     const matrixHeight = matrix.getAttributeNS(null, "height");
+    const cellDim = matrix.querySelector("rect").getAttributeNS(null, "width");
     goalSVG.setAttributeNS(null, "width", matrixWidth);
     goalSVG.setAttributeNS(null, "height", matrixHeight);
-    const svgRows = goalSVG.querySelectorAll("g");
-    for (let row = 0; row < svgRows.length; row++) {
-        const rowCols = svgRows[row].querySelectorAll("rect");
-        for (let col = 0; col < rowCols.length; col++) {
-            rowCols[col].setAttributeNS(null, "x", col * matrixHeight / rows);
-            rowCols[col].setAttributeNS(null, "y", row * matrixWidth / columns);
-            rowCols[col].setAttributeNS(null, "width", matrixWidth / rows);
-            rowCols[col].setAttributeNS(null, "height", matrixHeight / columns);
+    for (let row = rows - 1; row >= 0; row--) {
+        for (let col = 0; col < columns; col++) {
+            const index = (rows - row - 1) * columns + col;
+            goalEntries[index].setAttributeNS(null, "x", col * cellDim);
+            goalEntries[index].setAttributeNS(null, "y", row * cellDim);
+            goalEntries[index].setAttributeNS(null, "width", cellDim);
+            goalEntries[index].setAttributeNS(null, "height", cellDim);
 
-            const fill = rowCols[col].getAttributeNS(null, "fill");
-            rowCols[col].dataset.length = (fill === "white" || fill === "#FFFFFF") ? "Unknown" : "Known";
+            const fill = goalEntries[index].getAttributeNS(null, "fill");
+            goalEntries[index].dataset.length = (fill === "white" || fill === "#FFFFFF") ? "Unknown" : "Known";
+            goalEntries[index].removeAttribute("data-derivation");
+            goalEntries[index].removeAttribute("aria-selected");
         }
     }
 
@@ -65,20 +71,20 @@ function checkSolution(rows, columns, optimalSolution) {
 
     const goalHTML = document.querySelector("#goal");
     const goalSVG = goalHTML.querySelector("svg");
-    const svgRows = goalSVG.querySelectorAll("g");
+    const goalEntries = goalSVG.querySelectorAll("rect");
     let count = 0;
 
-    for (let row = 0; row < svgRows.length; row++) {
-        const rowCols = svgRows[svgRows.length - row - 1].querySelectorAll("rect");
-        for (let col = 0; col < rowCols.length; col++) {
-            const tableUnknown = matrix.querySelector(`rect[data-x='${col}'][data-y='${row}']`).dataset.length === "Unknown";
-            const goalUnknown = rowCols[col].dataset.length === "Unknown";
+    for (let row = rows - 1; row >= 0; row--) {
+        for (let col = 0; col < columns; col++) {
+            const index = (rows - row - 1) * columns + col;
+            const tableUnknown = matrixEntries[index].dataset.length === "Unknown";
+            const goalUnknown = goalEntries[index].dataset.length === "Unknown";
             if (tableUnknown !== goalUnknown) {
                 displayResult("incorrect");
                 return;
             }
 
-            if (matrixEntries[row * rowCols.length + col].dataset.derivation === "User Selected") {
+            if (matrixEntries[index].dataset.derivation === "User Selected") {
                 count += 1;
             }
         }
@@ -87,12 +93,12 @@ function checkSolution(rows, columns, optimalSolution) {
     if (count <= optimalSolution) {
         displayResult("optimal", optimalSolution);
     } else {
-        displayResult("suboptimal", optimalSolution);
+        displayResult("suboptimal", optimalSolution, count);
         generateMatrixShell(rows, columns);
     }
 }
 
-function displayResult(type, optimal) {
+function displayResult(type, optimal, count) {
     switch (type) {
         case "incorrect":
             document.querySelector("#result-heading").textContent = "Not Quite...";
@@ -104,7 +110,7 @@ function displayResult(type, optimal) {
             break;
         case "suboptimal":
             document.querySelector("#result-heading").textContent = "Good, but...";
-            document.querySelector("#result-body").innerHTML = `You can do better! The best solution has at most ${optimal} squares selected.<br />Click/tap anywhere to try again`;
+            document.querySelector("#result-body").innerHTML = `You can do better!<br />Your solution has ${count} squares selected.<br />The best solution has at most ${optimal} squares selected.<br />Click/tap anywhere to try again`;
             break;
         default:
             console.error("Unexpected result type provided.");
@@ -152,22 +158,27 @@ window.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(document.location.search);
     const levelNum = parseInt(params.get("id"));
 
-    document.querySelector("#game-label").textContent = `Level ${levelNum + 1}`;
-
     const levels = await getSortedLevels();
     const level = levels[parseInt(levelNum)];
+
+    let subHeaderString = `Level ${levelNum + 1}`;
+    if(level.notes) {
+        subHeaderString += " - ";
+        subHeaderString += level.notes;
+    }
+    document.querySelector("#game-label").innerHTML = subHeaderString;
 
     window.onresize = () => {
         const rows = Math.pow(2, level.m);
         const columns = Math.pow(2, level.n);
 
-        var cellWidth = -6.75 * level.m + 51.75;
-        var cellHeight = -6.75 * level.n + 51.75;
+        const cellWidth = -6.75 * level.m + 51.75;
+        const cellHeight = -6.75 * level.n + 51.75;
         const cellSize = Math.min(cellWidth, cellHeight);
 
         const tableMatrix = document.querySelector("#table");
-        tableMatrix.setAttributeNS(null, "width", columns * cellWidth);
-        tableMatrix.setAttributeNS(null, "height", rows * cellHeight);
+        tableMatrix.setAttributeNS(null, "width", columns * cellSize);
+        tableMatrix.setAttributeNS(null, "height", rows * cellSize);
 
         tableMatrix.querySelectorAll("rect").forEach(e => {
             e.setAttributeNS(null, "x", cellSize * e.dataset.x);
@@ -204,5 +215,5 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    loadLevelData(level);
+    loadLevelData(level, levelNum);
 });

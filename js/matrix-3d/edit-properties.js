@@ -1,4 +1,4 @@
-import { objectModel } from "./matrix-3d.js";
+import { objectModel, initializeMLC } from "./matrix-3d.js";
 import { generateLCSMemo } from "../LCS.js";
 
 let lcsGenerated = false;
@@ -47,7 +47,6 @@ export function changeMatrix() {
     document.getElementById("new-length").innerHTML = 0;
     document.getElementById("new-set").innerHTML = "";
     operationRadio[0].checked = true;
-    operationRadio[1].disabled = true;
     operationRadio[2].disabled = true;
     document.querySelector("#operation-button").disabled = true;
 
@@ -62,6 +61,9 @@ export function changeMatrix() {
         substitutionKBox.options.add(new Option(i, i));
     }
     substitutionKBox.selectedIndex = -1;
+    substitutionKBox.onchange = function () {
+        operationButton.disabled = (lcsButton.disabled) || (substitutionKBox.selectedIndex === -1);
+    };
 
     const header = document.querySelector("#permutation-header");
     header.innerHTML = "";
@@ -87,7 +89,8 @@ export function changeMatrix() {
 
         cellInput.onchange = function () {
             const range = [...permRow.children].map(c => c.firstChild.value).filter((v, i, a) => a.indexOf(v) === i && v !== "");
-            operationButton.disabled = range.length !== m;
+            operationButton.disabled = (lcsButton.disabled) || (range.length !== m);
+            console.log(lcsButton.disabled, range.length, m);
         };
 
         headerCell.appendChild(headerInput);
@@ -146,7 +149,6 @@ export function changeLCS() {
     let x = parseInt(xBox.value, 2);
     let y = parseInt(yBox.value, 2);
 
-
     // select mesh
     let index = x * Math.pow(2, m) + y;
     objectModel.select(index);
@@ -174,13 +176,25 @@ export function changeLCS() {
     const sliceConcatModeBox = document.querySelector("#slice-concat-mode");
     const operationRadio = document.getElementsByName("operation");
     const operationButton = document.querySelector("#operation-button");
+
+    // when a new option is selected in operationRadio
+    operationRadio.forEach(radio => {
+        radio.onchange = function() {
+            if(radio.value === "complement" || radio.value === "reverse") {
+                operationButton.disabled = false;
+            } else {
+                operationButton.disabled = true;
+            }
+        };
+    });
+
+
     const substitutionKBox = document.querySelector("#substitution-k-box");
     substitutionKBox.value = "";
 
     sliceConcatModeBox.options.length = 0;
     document.querySelector("#concat-prefix-wrapper").classList.add("hidden");
     document.querySelector("#concat-suffix-wrapper").classList.add("hidden");
-    operationRadio[1].disabled = true;
     operationRadio[2].disabled = true;
 
     document.getElementById("new-x").value = "";
@@ -206,8 +220,6 @@ export function changeLCS() {
         }
 
         sliceConcatModeBox.selectedIndex = -1;
-
-        operationRadio[1].disabled = false;
         operationRadio[2].disabled = false;
     } else {
         operationRadio[0].checked = true;

@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const n = document.querySelector("#n");
     const m = document.querySelector("#m");
+    n.value = 1;
+    m.value = 1;
+
     n.onchange = _e => {
         if (parseInt(n.value) > 5 && parseInt(m.value) > 5) {
             document.querySelector("#remove-max").checked = true;
@@ -132,8 +135,8 @@ async function generateDistribution() {
     const data = await fetch("../../res/files/" + fileName).then(r => r.json());
     let stringOccurrences = data.stringOccurrences;
 
-    if (document.querySelector("#remove-max").checked) {
-        stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m));
+    if(document.querySelector("#remove-max-min").checked) {
+        stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m) && v[0].length !== 0);
     }
     if (document.querySelector("#remove-max-1").checked) {
         stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m) - 1);

@@ -5,14 +5,17 @@ import { setString1Path, setString2Path, animateBacktracking } from './table-ani
 const cellWidth = 50;
 const cellHeight = 50;
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     document.cookie = "page=1;";
     const string1 = document.querySelector("#x-box");
     const string2 = document.querySelector("#y-box");
+    string1.value = "";
+    string2.value = "";
+    
     string1.oninput = async () => {
         setString1Path([]);
         setString2Path([]);
-        await generateSVGTable(string1.value, string2.value, cellWidth, cellHeight);
+        generateSVGTable(string1.value, string2.value, cellWidth, cellHeight);
         const memo = generateLCSMemo(string1.value, string2.value);
         fillTable(memo, cellWidth, cellHeight);
         createLCSButtons(string1.value, string2.value, memo);

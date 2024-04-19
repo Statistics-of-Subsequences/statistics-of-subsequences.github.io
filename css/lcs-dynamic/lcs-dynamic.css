@@ -88,6 +88,10 @@ tbody p {
     background-color: var(--bright-accent-dull);
 }
 
+#lcs-results>p {
+    text-align: center;
+}
+
 @media all and (min-width: 601px) {
     #input-wrapper {
         display: flex;

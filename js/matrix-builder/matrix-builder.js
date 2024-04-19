@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.cookie = "page=2;";
     const nBox = document.getElementById("n");
     const mBox = document.getElementById("m");
+    nBox.value = 1;
+    mBox.value = 1;
 
     generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
 
@@ -14,6 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#fill-matrix").onclick = () => fillMatrix(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
     document.querySelector("#clear-matrix").onclick = () => generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
 
+    const propertiesDisplay = document.querySelector("#properties-overlay");
+    document.querySelector("#properties-info").onclick = () => propertiesDisplay.classList.remove("hidden");
+    document.querySelector("#close-x").onclick = () => propertiesDisplay.classList.add("hidden");
+    
     window.onresize = () => {
         const rows = Math.pow(2, parseInt(mBox.value));
         const columns = Math.pow(2, parseInt(nBox.value));

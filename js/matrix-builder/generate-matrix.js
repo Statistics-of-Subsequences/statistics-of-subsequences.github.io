@@ -5,20 +5,17 @@ export function generateMatrixShell(rows, columns) {
     const n = Math.log2(columns);
     const m = Math.log2(rows);
 
-    const xLength = parseInt(n);
-    const yLength = parseInt(m);
-
-    var cellWidth = -6.75 * n + 51.75;
-    var cellHeight = -6.75 * m + 51.75;
+    const cellWidth = -6.75 * n + 51.75;
+    const cellHeight = -6.75 * m + 51.75;
     const cellSize = Math.min(cellWidth, cellHeight);
 
     const popup = document.querySelector("#info-popup");
     const tableMatrix = document.querySelector("#table");
     tableMatrix.innerHTML = "";
-    tableMatrix.setAttributeNS(null, "width", columns * cellWidth);
-    tableMatrix.setAttributeNS(null, "height", rows * cellHeight);
+    tableMatrix.setAttributeNS(null, "width", columns * cellSize);
+    tableMatrix.setAttributeNS(null, "height", rows * cellSize);
 
-    const gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(xLength, yLength) + 1);
+    const gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(n, m) + 1);
 
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
@@ -34,8 +31,8 @@ export function generateMatrixShell(rows, columns) {
             entry.dataset.calculated = "false";
             entry.dataset.x = j;
             entry.dataset.y = i;
-            entry.dataset.xString = j.toString(2).padStart(xLength, "0");
-            entry.dataset.yString = i.toString(2).padStart(yLength, "0");
+            entry.dataset.xString = j.toString(2).padStart(n, "0");
+            entry.dataset.yString = i.toString(2).padStart(m, "0");
             entry.ariaSelected = false;
 
             entry.addEventListener("click", () => {
@@ -57,7 +54,7 @@ export function generateMatrixShell(rows, columns) {
 function selectCell(cell, gradientMap) {
     // if cell is not white, then set it to white
     if (cell.ariaSelected === "true") {
-        cell.setAttributeNS(null, "fill", "white");
+        cell.setAttributeNS(null, "fill", "#FFFFFF");
         cell.dataset.length = "Unknown";
         cell.dataset.derivation = "Not Derived Yet";
     } else {

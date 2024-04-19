@@ -1,4 +1,9 @@
 main {
+    padding-top: 1vh;
+    display: grid;
+    overflow: auto;
+    flex-grow: 1;
+    height: 100%;
     position: relative;
 }
 
@@ -54,8 +59,11 @@ main {
     main {
         display: flex;
         flex-direction: column;
-        overflow: auto;
-        align-items: center;
+    }
+
+    main>* {
+        margin-left: max(30vw, 20ch);
+        margin-right: max(30vw, 20ch);
     }
 
     #property-wrapper>*:first-child {
@@ -65,15 +73,11 @@ main {
     #property-wrapper {
         order: -1;
         margin-top: 5vh;
+        width: 100%;
     }
 
     .block {
         width: max-content;
-    }
-
-    #table, #goal {
-        margin-left: max(30vw, 20ch);
-        margin-right: max(30vw, 20ch);
     }
 
     #goal {

@@ -1,3 +1,7 @@
+main {
+    position: relative;
+}
+
 #info-popup {
     position: fixed;
     width: max-content;
@@ -78,7 +82,6 @@ input:not(:disabled), select, button, #table rect {
 
 #table {
     margin-top: 3vh;
-    overflow: visible;
 }
 
 #property-wrapper {
@@ -90,4 +93,66 @@ input:not(:disabled), select, button, #table rect {
 
 .two-margin {
     margin-right: 2vw;
+}
+
+#properties-info {
+    width: max(3vh, 3vw);
+    aspect-ratio: 1/1;
+    border: none;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1vw;
+}
+
+#properties-info svg {
+    fill: var(--body-text);
+}
+
+#properties-overlay:not(.hidden) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #00000099;
+}
+
+#properties-box {
+    width: 70%;
+    max-height: 80%;
+    height: max-content;
+    overflow-y: auto;
+    padding: 2vw;
+    background-color: var(--body-background);
+}
+
+#close-x {
+    width: max(3vw, 3vh);
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: max(2vh, 2vw);
+    right: max(2vh, 2vw);
+    fill: #FFFFFF;
+}
+
+#properties-box td:first-child {
+    text-align: right;
+    font-weight: bolder;
+}
+#properties-box td:last-child {
+    color: var(--sub-text);
+}
+
+#further-info a {
+    color: #8181ff;
+    text-decoration: underline;
+}
+
+@media all and (max-width: 600px) {
+    #property-wrapper {
+        align-items: center;
+        margin-bottom: 5vh;
+    }
 }

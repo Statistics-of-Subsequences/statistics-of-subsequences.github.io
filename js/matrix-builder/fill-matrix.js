@@ -31,30 +31,57 @@ export default function fillMatrix(rows, columns) {
 
         // slice and concatenation property
         if (applyPrefix || applySuffix || applyCircumfix) {
+            console.log("NOW CHECKING FOR " + currentCell.dataset.xString + " and " + currentCell.dataset.yString);
             let rowBinary = currentCell.dataset.xString;
             let columnBinary = currentCell.dataset.yString;
             
+            var tempRowBinary = rowBinary;
+            var tempColumnBinary = columnBinary;
+
             let lcPrefix = 0; // longest common prefix
-            while (rowBinary.length > 0 && columnBinary.length > 0 && rowBinary[0] === columnBinary[0]) {
+            while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[0] === tempColumnBinary[0]) {
                 lcPrefix++;
-                rowBinary = rowBinary.substring(1);
-                columnBinary = columnBinary.substring(1);
+                tempRowBinary = tempRowBinary.slice(1);
+                tempColumnBinary = tempColumnBinary.slice(1);
             }
+
+            var tempRowBinary = rowBinary;
+            var tempColumnBinary = columnBinary;
 
             let lcSuffix = 0; // longest common suffix
-            while (rowBinary.length > 0 && columnBinary.length > 0 && rowBinary[rowBinary.length - 1] === columnBinary[columnBinary.length - 1]) {
+            while (tempRowBinary.length > 0 && tempColumnBinary.length > 0 && tempRowBinary[tempRowBinary.length - 1] === tempColumnBinary[tempColumnBinary.length - 1]) {
                 lcSuffix++;
-                rowBinary = rowBinary.substring(0, rowBinary.length - 1);
-                columnBinary = columnBinary.substring(0, columnBinary.length - 1);
+                tempRowBinary = tempRowBinary.slice(0, -1);
+                tempColumnBinary = tempColumnBinary.slice(0, -1);
             }
 
-            // In diagonal, prefix === suffix === circumfix, so if prefix is hogging substring but isn't being used, switch to -ix being used
-            if (row === column && !applyPrefix && applySuffix) {
-                lcSuffix = lcPrefix;
-                lcPrefix = 0;
-            } else if (row === column && !applyPrefix && applyCircumfix) {
-                lcSuffix = Math.floor(lcPrefix / 2);
-                lcPrefix = Math.ceil(lcPrefix / 2);
+            // In diagonal, prefix === suffix === circumfix, so if prefix is hogging slice but isn't being used, switch to -ix being used
+            let alreadyCompletedCircumfix = false;
+            if (lcPrefix + lcSuffix >= Math.min(rowBinary.length, columnBinary.length)) {
+                if (applyPrefix && lcPrefix == lcSuffix) {
+                    lcSuffix = 0;
+                } else if (!applyPrefix && applySuffix && lcPrefix == lcSuffix) {
+                    lcPrefix = 0;
+                }
+                if (applyCircumfix) {
+                    let lcPrefixes;
+                    if (lcPrefix == lcSuffix && lcPrefix == Math.min(rowBinary.length, columnBinary.length)) {
+                        lcPrefixes = Array.from({ length: lcPrefix - 1 }, (_, i) => i + 1);
+                    } else {
+                        lcPrefixes = Array.from({ length: Math.min(lcPrefix, lcSuffix) }, (_, i) => i + 1);
+                    }
+                    
+                    for (let i = 0; i < lcPrefixes.length; i++) {
+                        let prefix = lcPrefixes[i];
+                        let suffix = lcPrefixes[lcPrefixes.length - 1 - i];
+                        const extraCircumfixCells = applyCircumfix && Math.min(rowBinary.length, columnBinary.length) > 1 && prefix && suffix && applyCircumfixProperty(currentCell, rows, columns, prefix, suffix);
+                        if (extraCircumfixCells) {
+                            queue = [...queue, ...extraCircumfixCells];
+                        }
+                    }
+
+                    alreadyCompletedCircumfix = true;
+                }
             }
 
             const prefixCells = applyPrefix && lcPrefix && applyPrefixProperty(currentCell, lcPrefix);
@@ -67,9 +94,11 @@ export default function fillMatrix(rows, columns) {
                 queue = [...queue, ...suffixCells];
             }
 
-            const circumfixCells = applyCircumfix && lcPrefix && lcSuffix && applyCircumfixProperty(currentCell, rows, columns, lcPrefix, lcSuffix);
-            if(circumfixCells) {
-                queue = [...queue, ...circumfixCells];
+            if (!alreadyCompletedCircumfix) {
+                const circumfixCells = applyCircumfix && Math.min(rowBinary.length, columnBinary.length) > 1 && lcPrefix && lcSuffix && applyCircumfixProperty(currentCell, rows, columns, lcPrefix, lcSuffix);
+                if (circumfixCells) {
+                    queue = [...queue, ...circumfixCells];
+                }
             }
         }
     }
@@ -117,8 +146,8 @@ function applyReverseProperty(cell) {
 }
 
 function applyPrefixProperty(cell, lcPrefix) {
-    const xSlice = cell.dataset.xString.substring(lcPrefix);
-    const ySlice = cell.dataset.yString.substring(lcPrefix);
+    const xSlice = cell.dataset.xString.slice(lcPrefix);
+    const ySlice = cell.dataset.yString.slice(lcPrefix);
     let toSearch = [];
 
     // Iterate through every possible prefix
@@ -139,8 +168,8 @@ function applyPrefixProperty(cell, lcPrefix) {
 }
 
 function applySuffixProperty(cell, rows, columns, lcSuffix) {
-    const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - lcSuffix);
-    const ySlice = cell.dataset.yString.substring(0, cell.dataset.yString.length - lcSuffix);
+    const xSlice = cell.dataset.xString.slice(0, cell.dataset.xString.length - lcSuffix);
+    const ySlice = cell.dataset.yString.slice(0, cell.dataset.yString.length - lcSuffix);
     let toSearch = [];
 
     for (let SUFFIX = 0; SUFFIX < Math.pow(2, lcSuffix); SUFFIX++) {
@@ -164,8 +193,8 @@ function applySuffixProperty(cell, rows, columns, lcSuffix) {
 }
 
 function applyCircumfixProperty(cell, rows, columns, lcPrefix, lcSuffix) {
-    const xSlice = cell.dataset.xString.substring(0, cell.dataset.xString.length - lcSuffix).substring(lcPrefix);
-    const ySlice = cell.dataset.yString.substring(0, cell.dataset.yString.length - lcSuffix).substring(lcPrefix);
+    const xSlice = cell.dataset.xString.slice(0, cell.dataset.xString.length - lcSuffix).slice(lcPrefix);
+    const ySlice = cell.dataset.yString.slice(0, cell.dataset.yString.length - lcSuffix).slice(lcPrefix);
     let toSearch = [];
 
     for (let PREFIX = 0; PREFIX < Math.pow(2, lcPrefix); PREFIX++) {

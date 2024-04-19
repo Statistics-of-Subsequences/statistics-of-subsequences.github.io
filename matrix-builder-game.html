@@ -12,6 +12,8 @@
     <link rel="stylesheet" type="text/css" href="./css/matrix-builder/table-render.css">
     <script type="module" src="./js/LCS.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
     <script src="./js/light-dark.js"></script>
     <script src="./js/back-arrow.js"></script>
 
@@ -46,20 +48,20 @@
     <main>
         <div class="block">
             <div class="v-center">
-                <div class="center">
-                    <div class="text-spacing two-margin">
-                        <button id="clear-matrix" class="fancy-button">Clear Matrix</button>
-                    </div>
-                    <div class="text-spacing">
-                        <button id="fill-matrix" class="fancy-button">Fill Matrix</button>
-                    </div>
-                </div>
-
+                <h3>Enter starting squares:</h3>
                 <svg id="table"></svg>
             </div>
         </div>
 
         <div id="property-wrapper" class="block">
+            <div class="center">
+                <div class="text-spacing two-margin">
+                    <button id="clear-matrix" class="fancy-button">Clear Matrix</button>
+                </div>
+                <div class="text-spacing">
+                    <button id="fill-matrix" class="fancy-button">Fill Matrix</button>
+                </div>
+            </div>
             <h3>Enabled Properties:</h3>
             <div id="property-options" class="v-center">
                 <div>
@@ -91,7 +93,7 @@
         <div class="block">
             <div class="v-center">
                 <h3 id="goal-title">Goal:</h3>
-                <image id="goal">
+                <div id="goal">
             </div>
         </div>
 
@@ -107,6 +109,12 @@
                 <div class="center">
                     <h5><span id="lcs-derivation"></span></h5>
                 </div>
+            </div>
+        </div>
+        <div id="result-popup" class="hidden">
+            <div id="result-box">
+                <h3 id="result-heading"></h3>
+                <p class="sub-text" id="result-body"></p>
             </div>
         </div>
     </main>

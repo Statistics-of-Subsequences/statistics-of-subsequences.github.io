@@ -1,6 +1,8 @@
 import { generateMatrixShell, selectCell, gradientMap, userSelectedCells } from "./generate-matrix.js";
 import fillMatrix from "./fill-matrix.js";
 
+let level = 0;
+
 export function startLevel(level, n, m, allowedProperties, goal, optimalSolution, notes) {
     window.open("./matrix-builder-game.html", "_self", "height=10");
     document.cookie = `level=${level};`;
@@ -13,7 +15,7 @@ export function startLevel(level, n, m, allowedProperties, goal, optimalSolution
 }
 
 document.addEventListener("readystatechange", () => {
-    var level = parseInt(getCookieValue("level"));
+    level = parseInt(getCookieValue("level"));
     var n = parseInt(getCookieValue("n"));
     var m = parseInt(getCookieValue("m"));
     const rows = Math.pow(2, m);
@@ -26,7 +28,13 @@ document.addEventListener("readystatechange", () => {
 
     document.getElementById("goal").src = getCookieValue("goal");
     const optimalSolution = parseInt(getCookieValue("optimalSolution"));
-    document.getElementById("notes").innerHTML = getCookieValue("notes");
+
+    var notes = getCookieValue("notes");
+    if (notes == "No notes for this level.") {
+        document.getElementById("notes").innerHTML = "";
+    } else {
+        document.getElementById("notes").innerHTML = notes;
+    }
 
     // set checkboxes
     document.getElementById("commute").checked = allowedProperties["commute"];
@@ -47,7 +55,6 @@ function checkSolution(rows, columns, optimalSolution) {
 
     var solutionSVGData = table.innerHTML;
     var solutionSVGDataSanitized = solutionSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
-    // solutionSVGDataSanitized = solutionSVGDataSanitized.replace(/><\/rect>/gm, "/>"); // convert ending tags to self-closing tags
 
     fetch(document.getElementById("goal").src)
         .then(response => response.text())
@@ -57,20 +64,29 @@ function checkSolution(rows, columns, optimalSolution) {
             var goalSVGDataSanitized = goalSVGData.replace(/ (?:data[^=]+(?:=".*?")|aria[^=]+(?:=".*?"))/gm, ""); // remove any tag starting with the word " data" or " aria"
             goalSVGDataSanitized = goalSVGDataSanitized.match(/.+(?:<\/rect>)/gm)[0]; // remove any junk after document element
 
+            var userSelectedCellCoordinates = userSelectedCells.map(e => ({ x: e.dataset.x, y: e.dataset.y }));
             if (solutionSVGDataSanitized === goalSVGDataSanitized) {
                 if (userSelectedCells.length == optimalSolution) {
                     alert("You have found an optimal solution!");
                 } else {
                     alert("You have found a solution, but it is not optimal.");
+                    if (level >= 13) {
+                        generateMatrixShell(rows, columns);
+                        for (let i = 0; i < userSelectedCellCoordinates.length; i++) {
+                            selectCell(document.querySelector(`rect[data-x="${userSelectedCellCoordinates[i].x}"][data-y="${userSelectedCellCoordinates[i].y}"]`), gradientMap);
+                        }
+                        document.querySelector("#info-popup").classList.add("hidden");
+                    }
                 }
             } else {
                 alert("Your solution is incorrect. Try again!");
-                var temp = userSelectedCells.map(e => ({x: e.dataset.x, y: e.dataset.y}));
                 generateMatrixShell(rows, columns);
-                for (let i = 0; i < temp.length; i++) {
-                    selectCell(document.querySelector(`rect[data-x="${temp[i].x}"][data-y="${temp[i].y}"]`), gradientMap);
+                if (level < 22) {
+                    for (let i = 0; i < userSelectedCellCoordinates.length; i++) {
+                        selectCell(document.querySelector(`rect[data-x="${userSelectedCellCoordinates[i].x}"][data-y="${userSelectedCellCoordinates[i].y}"]`), gradientMap);
+                    }
+                    document.querySelector("#info-popup").classList.add("hidden");
                 }
-                document.querySelector("#info-popup").classList.add("hidden");
             }
         });
 }

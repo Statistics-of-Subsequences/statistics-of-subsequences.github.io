@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const n = document.querySelector("#n");
     const m = document.querySelector("#m");
+    n.value = 1;
+    m.value = 1;
+
     n.onchange = _e => {
         if(parseInt(n.value) > 5 && parseInt(m.value) > 5) {
             document.querySelector("#remove-max").checked = true;

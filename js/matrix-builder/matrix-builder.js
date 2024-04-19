@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.cookie = "page=2;";
     const nBox = document.getElementById("n");
     const mBox = document.getElementById("m");
+    nBox.value = 1;
+    mBox.value = 1;
 
     generateMatrixShell(Math.pow(2, parseInt(mBox.value)), Math.pow(2, parseInt(nBox.value)));
 

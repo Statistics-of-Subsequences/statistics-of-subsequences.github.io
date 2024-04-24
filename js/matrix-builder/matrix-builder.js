@@ -2,7 +2,7 @@ import { generateMatrixShell, showPopup } from "./generate-matrix.js";
 import fillMatrix from "./fill-matrix.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.cookie = "page=2;";
+    document.cookie = "page=1;";
     const nBox = document.getElementById("n");
     const mBox = document.getElementById("m");
     nBox.value = 1;

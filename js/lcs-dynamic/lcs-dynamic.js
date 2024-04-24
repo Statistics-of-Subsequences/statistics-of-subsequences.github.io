@@ -6,7 +6,7 @@ const cellWidth = 50;
 const cellHeight = 50;
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.cookie = "page=1;";
+    document.cookie = "page=2;";
     const string1 = document.querySelector("#x-box");
     const string2 = document.querySelector("#y-box");
     string1.value = "";

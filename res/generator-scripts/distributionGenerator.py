@@ -1,10 +1,15 @@
-def genStringSet(length):
-    # Generate all binary strings of length n
+def genStringSet(length, sigma):
+    # Generate all strings of length n over an alphabet of size sigma
     if length == 0:
         return ['']
     else:
-        return ['0' + s for s in genStringSet(length - 1)] + ['1' + s for s in genStringSet(length - 1)]
-      
+        if sigma < 1 or sigma > 16:
+            return []
+        else:
+            # all hexadecimal characters
+            symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+            return [s + x for s in symbols[:sigma] for x in genStringSet(length - 1, sigma)]
+
 def lcsTable(x, y):
     # calculate length of x and y
     n, m = len(x), len(y)
@@ -22,58 +27,67 @@ def lcsTable(x, y):
 
     return T
 
+def allLCS(x, y, T):
+    n = len(x)
+    m = len(y)
+
+    # if either string is empty, return empty string
+    if n == 0 or m == 0:
+        return ['']
+    
+    # if the last characters of x and y are the same, all LCSs must end with that character
+    if x[n - 1] == y[m - 1]:
+        lcs = allLCS(x[:-1], y[:-1], T)
+        return [s + x[n - 1] for s in lcs]
+    
+    # if the left cell is greater than the top cell, move left
+    if T[n - 1][m] > T[n][m - 1]:
+        return allLCS(x[:-1], y, T)
+    
+    # if the top cell is greater than the left cell, move up
+    if T[n][m - 1] > T[n - 1][m]:
+        return allLCS(x, y[:-1], T)
+
+    # if the left and top cells are equal, move in both directions
+    top = allLCS(x[:-1], y, T)
+    left = allLCS(x, y[:-1], T)
+
+    # merge the two lists
+    return top + left
+
 def lcsSet(x, y):
+    # generate the memoization table
     T = lcsTable(x, y)
 
-    Q = [(len(x), len(y), "")]
-    S = set()
-    while Q:
-        i, j, s = Q.pop(0)
+    # find all LCSs
+    lcs = allLCS(x, y, T)
 
-        if i == 0 or j == 0:
-            S.add(s)
-        elif x[i - 1] == y[j - 1]:
-            Q.append((i - 1, j - 1, x[i - 1] + s))
-        else:
-            if T[i - 1][j] >= T[i][j - 1]:
-                Q.append((i - 1, j, s))
-            if T[i][j - 1] >= T[i - 1][j]:
-                Q.append((i, j - 1, s))
-    return S
+    # return the unique LCSs
+    return list(set(lcs))
 
 # ===============================================================================
 
-def generate(n, m):
+def generate(n, m, sigma):
     # generate all binary strings of length n and m
-    nStrings = genStringSet(n)
-    mStrings = genStringSet(m)
+    nStrings = genStringSet(n, sigma)
+    mStrings = genStringSet(m, sigma)
 
     # find all LCSs of each pair of strings
     occurrences = {}
-    if n == m:
-        for i in range(len(nStrings)):
-            for j in range(i, len(mStrings)):
-                lcs = lcsSet(nStrings[i], mStrings[j])
-                for l in lcs:
-                    if l in occurrences:
-                        occurrences[l] += 1
-                    else:
-                        occurrences[l] = 1
-    else:
-        for nString in nStrings:
-            for mString in mStrings:
-                lcs = lcsSet(nString, mString)
-                for l in lcs:
-                    if l in occurrences:
-                        occurrences[l] += 1
-                    else:
-                        occurrences[l] = 1
+    for nString in nStrings:
+        for mString in mStrings:
+            lcs = lcsSet(nString, mString)
+            for l in lcs:
+                if l in occurrences:
+                    occurrences[l] += 1
+                else:
+                    occurrences[l] = 1
     
     # sort occurrences by key length
     occurrences = {k: v for k, v in sorted(occurrences.items(), key=lambda item: len(item[0]))}
 
     # create JSON file with each key-value pair as an array
-    with open('res/files/' + str(n) + 'x' + str(m) + '.json', 'w') as f:
+    with open('res/files/' + str(n) + 'x' + str(m) + '-sigma' + str(sigma) + '.json', 'w') as f:
         f.write("{\n\t\"stringOccurrences\": [\n")
         for key in occurrences:
             f.write("\t\t[\"" + key + "\", " + str(occurrences[key]) + "],\n")
@@ -86,4 +100,4 @@ def generate(n, m):
 if __name__ == "__main__":
     for i in range(1, 11):
         for j in range(i, 11):
-            generate(i, j)
+            generate(i, j, 2)

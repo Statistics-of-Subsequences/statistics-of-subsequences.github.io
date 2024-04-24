@@ -1,8 +1,6 @@
 import getSortedLevels from "./level.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
-    document.cookie = "page=2;";
-    
     document.querySelector("#back-button").onclick = () => {
         window.open("./matrix-builder.html", "_self");
     };

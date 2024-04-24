@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     chart.width = chart.getBoundingClientRect().width / 2;
     chart.height = chart.width * 9 / 16;
 
-
     const complement = document.querySelector("#remove-complement");
     const symm = document.querySelector("#symmetric-sort");
     symm.onchange = _e => {
@@ -26,13 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const n = document.querySelector("#n");
     const m = document.querySelector("#m");
+    const sigma = document.querySelector("#sigma");
     n.value = 1;
     m.value = 1;
+    sigma.value = 2;
 
     n.onchange = _e => {
+        console.log("here");
         if (parseInt(n.value) > 5 && parseInt(m.value) > 5) {
-            document.querySelector("#remove-max").checked = true;
-            document.querySelector("#remove-max-1").checked = true;
+            console.log("there");
+            document.querySelector("#remove-max-min").checked = true;
+            document.querySelector("#remove-max-2").checked = true;
         }
         if (parseInt(n.value) > 8 && parseInt(m.value) > 8 && !symm.checked) {
             complement.checked = true;
@@ -40,13 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     m.onchange = _e => {
         if (parseInt(n.value) > 5 && parseInt(m.value) > 5) {
-            document.querySelector("#remove-max").checked = true;
-            document.querySelector("#remove-max-1").checked = true;
+            document.querySelector("#remove-max-min").checked = true;
+            document.querySelector("#remove-max-2").checked = true;
         }
         if (parseInt(n.value) > 8 && parseInt(m.value) > 8 && !symm.checked) {
             complement.checked = true;
         }
     };
+    sigma.onchange = _e => {
+        if (parseInt(sigma.value) > 4) {
+            document.querySelector("#remove-complement").checked = true;
+        }
+    }
 
     setTimeout(() => {
         setupDefaultCanvas();
@@ -113,12 +121,13 @@ async function generateDistribution() {
 
     let n = parseInt(document.querySelector("#n").value);
     let m = parseInt(document.querySelector("#m").value);
+    let sigma = parseInt(document.querySelector("#sigma").value);
 
     let fileName;
     if (n > m) {
-        fileName = m + "x" + n + ".json";
+        fileName = m + "x" + n + "-sigma" + sigma + ".json";
     } else {
-        fileName = n + "x" + m + ".json";
+        fileName = n + "x" + m + "-sigma" + sigma + ".json";
     }
 
     let gradientMap = generateGradient([0xfde724, 0x79d151, 0x29788e, 0x404387, 0x440154], Math.min(n, m) + 1);
@@ -130,7 +139,7 @@ async function generateDistribution() {
     if(document.querySelector("#remove-max-min").checked) {
         stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m) && v[0].length !== 0);
     }
-    if (document.querySelector("#remove-max-1").checked) {
+    if (document.querySelector("#remove-max-2").checked) {
         stringOccurrences = stringOccurrences.filter(v => v[0].length !== Math.min(n, m) - 1);
     }
     if (document.querySelector("#remove-complement").checked) {

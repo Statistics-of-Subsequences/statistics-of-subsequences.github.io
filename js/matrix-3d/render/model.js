@@ -3,7 +3,7 @@ import Texture from "./texture.js";
 import Mesh from "./mesh.js";
 import Vertex from "./vertex.js";
 import { OBJ } from "./objmtl.js";
-import { modelMatrix } from "../matrix-3d.js";
+import { modelMatrix, reflectionMatrix } from "../matrix-3d.js";
 
 export default class Model {
     constructor(gl, fileName, shader) {
@@ -223,11 +223,10 @@ export default class Model {
         };
 
         // convert bounds from local space to world space
-        let reverseReflectionMatrix = (WebGL.reflectionMatrix(WebGL.vec4(1.0, 0.0, 0.0, 0)));
-        
+        let inverseReflectionMatrix = WebGL.inverse(reflectionMatrix);
 
-        this.bounds.min = WebGL.mult(WebGL.mult(reverseReflectionMatrix, modelMatrix), WebGL.vec4(this.bounds.min[0], this.bounds.min[1], this.bounds.min[2], 1.0)).slice(0, 3);
-        this.bounds.max = WebGL.mult(WebGL.mult(reverseReflectionMatrix, modelMatrix), WebGL.vec4(this.bounds.max[0], this.bounds.max[1], this.bounds.max[2], 1.0)).slice(0, 3);
+        this.bounds.min = WebGL.mult(WebGL.mult(inverseReflectionMatrix, modelMatrix), WebGL.vec4(this.bounds.min[0], this.bounds.min[1], this.bounds.min[2], 1.0)).slice(0, 3);
+        this.bounds.max = WebGL.mult(WebGL.mult(inverseReflectionMatrix, modelMatrix), WebGL.vec4(this.bounds.max[0], this.bounds.max[1], this.bounds.max[2], 1.0)).slice(0, 3);
         this.bounds.center = WebGL.mix(this.bounds.min, this.bounds.max, 0.5);
 
         this.modelLoaded = true;

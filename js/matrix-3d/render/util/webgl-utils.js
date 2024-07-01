@@ -377,27 +377,82 @@ export function transpose(m) {
 }
 
 export function determinant(m) {
-    var result = [];
+    var result = 0.0;
 
     if (!m.matrix) {
         return "determinant(): trying to get the determinant of a non-matrix";
     }
 
-    // TODO: Implement this
+    // generate set of all permutations of the set {1, 2, ..., n}
+    var perms = Perms.group(m.length);
+
+    // compute the determinant
+    for (var i = 0; i < perms.length; i++) {
+        var perm = perms[i];
+        var parity = Perms.parity(perm);
+
+        var product = 1.0;
+        for (var j = 0; j < m.length; j++) {
+            product *= m[j][perm[j]];
+        }
+
+        result += parity * product;
+    }
+
+    return result;
+}
+
+export function cofactor(m) {
+    var result = [];
+    result.matrix = true;
+
+    if (!m.matrix) {
+        return "cofactor(): trying to get the cofactor of a non-matrix";
+    }
+
+    for (var i = 0; i < m.length; ++i) {
+        result.push([]);
+
+        for (var j = 0; j < m.length; ++j) {
+            var minor = [];
+            minor.matrix = true;
+            for (var k = 0; k < m.length; ++k) {
+                if (k == i) {
+                    continue;
+                }
+
+                minor.push([]);
+                for (var l = 0; l < m.length; ++l) {
+                    if (l == j) {
+                        continue;
+                    }
+
+                    minor[minor.length - 1].push(m[k][l]);
+                }
+            }
+            
+            var parity = (i + j) % 2 == 0 ? 1 : -1;
+            result[i].push(parity * determinant(minor));
+        }
+    }
 
     return result;
 }
 
 export function inverse(m) {
-    var result = [];
-
     if (!m.matrix) {
         return "inverse(): trying to get the inverse of a non-matrix";
     }
 
-    // TODO: Implement this
+    var det = determinant(m);
+    if (det == 0) {
+        return "inverse(): trying to get the inverse of a singular matrix";
+    }
 
-    return m;
+    var result = scale(1.0 / det, transpose(cofactor(m)));
+    result.matrix = true;
+
+    return result;
 }
 
 // Vector-Specific Operations

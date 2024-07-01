@@ -10,7 +10,7 @@ import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from
 
 const BG_COLOR = { R: 220, G: 220, B: 220 } // Color out of 255
 
-export let gl, shaderProgram, objectModel, modelMatrix, lights, viewport, cameraStatus, camera;
+export let gl, shaderProgram, objectModel, modelMatrix, reflectionMatrix lights, viewport, cameraStatus, camera;
 
 // =================
 // ==== PROGRAM ====
@@ -82,7 +82,7 @@ export function initializeMLC(width, height, aspectRatio) {
     const m = document.querySelector("#m").value;
 
     // Generate model matrix
-    let reflectionMatrix = WebGL.reflectionMatrix(WebGL.vec4(1.0, 0.0, 0.0, 0));
+    reflectionMatrix = WebGL.reflectionMatrix(WebGL.vec4(1.0, 0.0, 0.0, 0));
     let translationMatrix = WebGL.translationMatrix(-Math.pow(2, n - 1), 0, -Math.pow(2, m - 1));
     modelMatrix = WebGL.mult(reflectionMatrix, translationMatrix);
 

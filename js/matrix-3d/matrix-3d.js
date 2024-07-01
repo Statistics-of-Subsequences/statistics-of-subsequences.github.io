@@ -10,7 +10,7 @@ import { changeMatrix, changeLCS, findFix, isInProgress, performOperation } from
 
 const BG_COLOR = { R: 220, G: 220, B: 220 } // Color out of 255
 
-export let gl, shaderProgram, objectModel, modelMatrix, reflectionMatrix lights, viewport, cameraStatus, camera;
+export let gl, shaderProgram, objectModel, modelMatrix, reflectionMatrix, lights, viewport, cameraStatus, camera;
 
 // =================
 // ==== PROGRAM ====

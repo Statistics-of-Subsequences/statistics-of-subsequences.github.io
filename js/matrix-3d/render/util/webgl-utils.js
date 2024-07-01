@@ -1,3 +1,5 @@
+import * as Permutations from './permutations.js';
+
 export function argumentsToArray(args) {
     return [].concat.apply([], Array.prototype.slice.apply(args));
 }
@@ -384,12 +386,12 @@ export function determinant(m) {
     }
 
     // generate set of all permutations of the set {1, 2, ..., n}
-    var perms = Perms.group(m.length);
+    var perms = Permutations.group(m.length);
 
     // compute the determinant
     for (var i = 0; i < perms.length; i++) {
         var perm = perms[i];
-        var parity = Perms.parity(perm);
+        var parity = Permutations.parity(perm);
 
         var product = 1.0;
         for (var j = 0; j < m.length; j++) {
